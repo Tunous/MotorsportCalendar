@@ -13,7 +13,7 @@ public struct MotorsportEventStage: Identifiable, Codable {
     public let startDate: Date
     public let endDate: Date
 
-    package init(
+    public init(
         id: String,
         title: String,
         startDate: Date,

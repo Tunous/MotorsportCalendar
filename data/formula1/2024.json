@@ -1,938 +1,875 @@
 [
   {
     "endDate" : "2024-03-02T17:00:00Z",
-    "id" : "BAHRAIN GRAND PRIX",
+    "id" : "Bahrain",
     "isConfirmed" : true,
     "stages" : [
       {
         "endDate" : "2024-02-29T12:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-02-29T11:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
         "endDate" : "2024-02-29T16:00:00Z",
-        "id" : "practice2",
+        "id" : "Practice 2",
         "startDate" : "2024-02-29T15:00:00Z",
-        "title" : "practice2"
-      },
-      {
-        "endDate" : "2024-03-01T17:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-03-01T16:00:00Z",
-        "title" : "qualifying"
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-03-01T13:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-03-01T12:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-03-01T17:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-03-01T16:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-03-02T17:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-03-02T15:00:00Z",
-        "title" : "race"
+        "title" : "Race"
       }
     ],
     "startDate" : "2024-02-29T11:30:00Z",
-    "title" : "BAHRAIN GRAND PRIX"
+    "title" : "Bahrain"
   },
   {
     "endDate" : "2024-03-09T19:00:00Z",
-    "id" : "SAUDI ARABIAN GRAND PRIX",
+    "id" : "Saudi Arabia",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-03-07T18:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-03-07T17:00:00Z",
-        "title" : "practice2"
-      },
-      {
         "endDate" : "2024-03-07T14:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-03-07T13:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-03-08T18:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-03-08T17:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-03-07T18:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-03-07T17:00:00Z",
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-03-08T14:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-03-08T13:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-03-08T18:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-03-08T17:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-03-09T19:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-03-09T17:00:00Z",
-        "title" : "race"
+        "title" : "Race"
       }
     ],
     "startDate" : "2024-03-07T13:30:00Z",
-    "title" : "SAUDI ARABIAN GRAND PRIX"
+    "title" : "Saudi Arabia"
   },
   {
     "endDate" : "2024-03-24T06:00:00Z",
-    "id" : "AUSTRALIAN GRAND PRIX",
+    "id" : "Australia",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-03-22T06:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-03-22T05:00:00Z",
-        "title" : "practice2"
-      },
-      {
         "endDate" : "2024-03-22T02:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-03-22T01:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-03-23T06:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-03-23T05:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-03-22T06:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-03-22T05:00:00Z",
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-03-23T02:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-03-23T01:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-03-23T06:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-03-23T05:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-03-24T06:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-03-24T04:00:00Z",
-        "title" : "race"
+        "title" : "Race"
       }
     ],
     "startDate" : "2024-03-22T01:30:00Z",
-    "title" : "AUSTRALIAN GRAND PRIX"
+    "title" : "Australia"
   },
   {
     "endDate" : "2024-04-07T07:00:00Z",
-    "id" : "JAPANESE GRAND PRIX ",
+    "id" : "Japan",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-04-05T07:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-04-05T06:00:00Z",
-        "title" : "practice2"
-      },
-      {
         "endDate" : "2024-04-05T03:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-04-05T02:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-04-06T07:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-04-06T06:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-04-05T07:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-04-05T06:00:00Z",
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-04-06T03:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-04-06T02:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-04-06T07:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-04-06T06:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-04-07T07:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-04-07T05:00:00Z",
-        "title" : "race"
+        "title" : "Race"
       }
     ],
     "startDate" : "2024-04-05T02:30:00Z",
-    "title" : "JAPANESE GRAND PRIX "
+    "title" : "Japan"
   },
   {
-    "endDate" : "2024-04-21T22:00:00Z",
-    "id" : "CHINESE GRAND PRIX",
-    "isConfirmed" : false,
+    "endDate" : "2024-04-21T09:00:00Z",
+    "id" : "China",
+    "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-04-19T22:00:00Z",
-        "id" : "sprintShootout",
-        "startDate" : "2024-04-18T22:00:00Z",
-        "title" : "sprintShootout"
+        "endDate" : "2024-04-19T04:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-04-19T03:30:00Z",
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-04-19T22:00:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-04-18T22:00:00Z",
-        "title" : "practice1"
+        "endDate" : "2024-04-20T04:00:00Z",
+        "id" : "Sprint Race",
+        "startDate" : "2024-04-20T03:00:00Z",
+        "title" : "Sprint Race"
       },
       {
-        "endDate" : "2024-04-20T22:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-04-19T22:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-04-20T08:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-04-20T07:00:00Z",
+        "title" : "Qualifying"
       },
       {
-        "endDate" : "2024-04-20T22:00:00Z",
-        "id" : "sprintRace",
-        "startDate" : "2024-04-19T22:00:00Z",
-        "title" : "sprintRace"
-      },
-      {
-        "endDate" : "2024-04-21T22:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-04-20T22:00:00Z",
-        "title" : "race"
+        "endDate" : "2024-04-21T09:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-04-21T07:00:00Z",
+        "title" : "Race"
       }
     ],
-    "startDate" : "2024-04-18T22:00:00Z",
-    "title" : "CHINESE GRAND PRIX"
-  },
-  {
-    "endDate" : "2024-05-05T22:00:00Z",
-    "id" : "MIAMI GRAND PRIX",
-    "isConfirmed" : false,
-    "stages" : [
-      {
-        "endDate" : "2024-05-03T22:00:00Z",
-        "id" : "sprintShootout",
-        "startDate" : "2024-05-02T22:00:00Z",
-        "title" : "sprintShootout"
-      },
-      {
-        "endDate" : "2024-05-03T22:00:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-05-02T22:00:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-05-04T22:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-05-03T22:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-05-04T22:00:00Z",
-        "id" : "sprintRace",
-        "startDate" : "2024-05-03T22:00:00Z",
-        "title" : "sprintRace"
-      },
-      {
-        "endDate" : "2024-05-05T22:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-05-04T22:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-05-02T22:00:00Z",
-    "title" : "MIAMI GRAND PRIX"
+    "startDate" : "2024-04-19T03:30:00Z",
+    "title" : "China"
   },
   {
     "endDate" : "2024-05-19T15:00:00Z",
-    "id" : "GRAN PREMIO DELL'",
+    "id" : "Italy",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-05-17T16:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-05-17T15:00:00Z",
-        "title" : "practice2"
-      },
-      {
         "endDate" : "2024-05-17T12:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-05-17T11:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-05-18T15:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-05-18T14:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-05-17T16:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-05-17T15:00:00Z",
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-05-18T11:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-05-18T10:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-05-18T15:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-05-18T14:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-05-19T15:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-05-19T13:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-05-17T11:30:00Z",
-    "title" : "GRAN PREMIO DELL'"
-  },
-  {
-    "endDate" : "2024-05-26T15:00:00Z",
-    "id" : "GRAND PRIX DE MONACO",
-    "isConfirmed" : true,
-    "stages" : [
-      {
-        "endDate" : "2024-05-24T16:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-05-24T15:00:00Z",
-        "title" : "practice2"
-      },
-      {
-        "endDate" : "2024-05-24T12:30:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-05-24T11:30:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-05-25T15:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-05-25T14:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-05-25T11:30:00Z",
-        "id" : "practice3",
-        "startDate" : "2024-05-25T10:30:00Z",
-        "title" : "practice3"
-      },
-      {
-        "endDate" : "2024-05-26T15:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-05-26T13:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-05-24T11:30:00Z",
-    "title" : "GRAND PRIX DE MONACO"
-  },
-  {
-    "endDate" : "2024-06-09T20:00:00Z",
-    "id" : "GRAND PRIX DU CANADA",
-    "isConfirmed" : true,
-    "stages" : [
-      {
-        "endDate" : "2024-06-07T22:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-06-07T21:00:00Z",
-        "title" : "practice2"
-      },
-      {
-        "endDate" : "2024-06-07T18:30:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-06-07T17:30:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-06-08T21:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-06-08T20:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-06-08T17:30:00Z",
-        "id" : "practice3",
-        "startDate" : "2024-06-08T16:30:00Z",
-        "title" : "practice3"
-      },
-      {
-        "endDate" : "2024-06-09T20:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-06-09T18:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-06-07T17:30:00Z",
-    "title" : "GRAND PRIX DU CANADA"
-  },
-  {
-    "endDate" : "2024-06-23T15:00:00Z",
-    "id" : "GRAN PREMIO DE ESPAÑA",
-    "isConfirmed" : true,
-    "stages" : [
-      {
-        "endDate" : "2024-06-21T16:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-06-21T15:00:00Z",
-        "title" : "practice2"
-      },
-      {
-        "endDate" : "2024-06-21T12:30:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-06-21T11:30:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-06-22T15:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-06-22T14:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-06-22T11:30:00Z",
-        "id" : "practice3",
-        "startDate" : "2024-06-22T10:30:00Z",
-        "title" : "practice3"
-      },
-      {
-        "endDate" : "2024-06-23T15:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-06-23T13:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-06-21T11:30:00Z",
-    "title" : "GRAN PREMIO DE ESPAÑA"
-  },
-  {
-    "endDate" : "2024-06-30T22:00:00Z",
-    "id" : "AUSTRIAN GRAND PRIX",
-    "isConfirmed" : false,
-    "stages" : [
-      {
-        "endDate" : "2024-06-28T22:00:00Z",
-        "id" : "sprintShootout",
-        "startDate" : "2024-06-27T22:00:00Z",
-        "title" : "sprintShootout"
-      },
-      {
-        "endDate" : "2024-06-28T22:00:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-06-27T22:00:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-06-29T22:00:00Z",
-        "id" : "sprintRace",
-        "startDate" : "2024-06-28T22:00:00Z",
-        "title" : "sprintRace"
-      },
-      {
-        "endDate" : "2024-06-29T22:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-06-28T22:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-06-30T22:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-06-29T22:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-06-27T22:00:00Z",
-    "title" : "AUSTRIAN GRAND PRIX"
-  },
-  {
-    "endDate" : "2024-07-07T16:00:00Z",
-    "id" : "BRITISH GRAND PRIX",
-    "isConfirmed" : true,
-    "stages" : [
-      {
-        "endDate" : "2024-07-05T16:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-07-05T15:00:00Z",
-        "title" : "practice2"
-      },
-      {
-        "endDate" : "2024-07-05T12:30:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-07-05T11:30:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-07-06T15:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-07-06T14:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-07-06T11:30:00Z",
-        "id" : "practice3",
-        "startDate" : "2024-07-06T10:30:00Z",
-        "title" : "practice3"
-      },
-      {
-        "endDate" : "2024-07-07T16:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-07-07T14:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-07-05T11:30:00Z",
-    "title" : "BRITISH GRAND PRIX"
-  },
-  {
-    "endDate" : "2024-07-21T15:00:00Z",
-    "id" : "HUNGARIAN GRAND PRIX",
-    "isConfirmed" : true,
-    "stages" : [
-      {
-        "endDate" : "2024-07-19T16:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-07-19T15:00:00Z",
-        "title" : "practice2"
-      },
-      {
-        "endDate" : "2024-07-19T12:30:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-07-19T11:30:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-07-20T15:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-07-20T14:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-07-20T11:30:00Z",
-        "id" : "practice3",
-        "startDate" : "2024-07-20T10:30:00Z",
-        "title" : "practice3"
-      },
-      {
-        "endDate" : "2024-07-21T15:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-07-21T13:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-07-19T11:30:00Z",
-    "title" : "HUNGARIAN GRAND PRIX"
-  },
-  {
-    "endDate" : "2024-07-28T15:00:00Z",
-    "id" : "BELGIAN GRAND PRIX",
-    "isConfirmed" : true,
-    "stages" : [
-      {
-        "endDate" : "2024-07-26T16:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-07-26T15:00:00Z",
-        "title" : "practice2"
-      },
-      {
-        "endDate" : "2024-07-26T12:30:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-07-26T11:30:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-07-27T15:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-07-27T14:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-07-27T11:30:00Z",
-        "id" : "practice3",
-        "startDate" : "2024-07-27T10:30:00Z",
-        "title" : "practice3"
-      },
-      {
-        "endDate" : "2024-07-28T15:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-07-28T13:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-07-26T11:30:00Z",
-    "title" : "BELGIAN GRAND PRIX"
-  },
-  {
-    "endDate" : "2024-08-25T15:00:00Z",
-    "id" : "DUTCH GRAND PRIX",
-    "isConfirmed" : true,
-    "stages" : [
-      {
-        "endDate" : "2024-08-23T15:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-08-23T14:00:00Z",
-        "title" : "practice2"
-      },
-      {
-        "endDate" : "2024-08-23T11:30:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-08-23T10:30:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-08-24T14:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-08-24T13:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-08-24T10:30:00Z",
-        "id" : "practice3",
-        "startDate" : "2024-08-24T09:30:00Z",
-        "title" : "practice3"
-      },
-      {
-        "endDate" : "2024-08-25T15:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-08-25T13:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-08-23T10:30:00Z",
-    "title" : "DUTCH GRAND PRIX"
-  },
-  {
-    "endDate" : "2024-09-01T15:00:00Z",
-    "id" : "GRAN PREMIO D’ITALIA",
-    "isConfirmed" : true,
-    "stages" : [
-      {
-        "endDate" : "2024-08-30T16:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-08-30T15:00:00Z",
-        "title" : "practice2"
+        "title" : "Race"
       },
       {
         "endDate" : "2024-08-30T12:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-08-30T11:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-08-31T15:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-08-31T14:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-08-30T16:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-08-30T15:00:00Z",
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-08-31T11:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-08-31T10:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-08-31T15:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-08-31T14:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-09-01T15:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-09-01T13:00:00Z",
-        "title" : "race"
+        "title" : "Race"
       }
     ],
-    "startDate" : "2024-08-30T11:30:00Z",
-    "title" : "GRAN PREMIO D’ITALIA"
+    "startDate" : "2024-05-17T11:30:00Z",
+    "title" : "Italy"
+  },
+  {
+    "endDate" : "2024-05-26T15:00:00Z",
+    "id" : "Monaco",
+    "isConfirmed" : true,
+    "stages" : [
+      {
+        "endDate" : "2024-05-24T12:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-05-24T11:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-05-24T16:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-05-24T15:00:00Z",
+        "title" : "Practice 2"
+      },
+      {
+        "endDate" : "2024-05-25T11:30:00Z",
+        "id" : "Practice 3",
+        "startDate" : "2024-05-25T10:30:00Z",
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-05-25T15:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-05-25T14:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-05-26T15:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-05-26T13:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-05-24T11:30:00Z",
+    "title" : "Monaco"
+  },
+  {
+    "endDate" : "2024-06-09T20:00:00Z",
+    "id" : "Canada",
+    "isConfirmed" : true,
+    "stages" : [
+      {
+        "endDate" : "2024-06-07T18:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-06-07T17:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-06-07T22:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-06-07T21:00:00Z",
+        "title" : "Practice 2"
+      },
+      {
+        "endDate" : "2024-06-08T17:30:00Z",
+        "id" : "Practice 3",
+        "startDate" : "2024-06-08T16:30:00Z",
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-06-08T21:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-06-08T20:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-06-09T20:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-06-09T18:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-06-07T17:30:00Z",
+    "title" : "Canada"
+  },
+  {
+    "endDate" : "2024-06-23T15:00:00Z",
+    "id" : "Spain",
+    "isConfirmed" : true,
+    "stages" : [
+      {
+        "endDate" : "2024-06-21T12:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-06-21T11:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-06-21T16:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-06-21T15:00:00Z",
+        "title" : "Practice 2"
+      },
+      {
+        "endDate" : "2024-06-22T11:30:00Z",
+        "id" : "Practice 3",
+        "startDate" : "2024-06-22T10:30:00Z",
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-06-22T15:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-06-22T14:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-06-23T15:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-06-23T13:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-06-21T11:30:00Z",
+    "title" : "Spain"
+  },
+  {
+    "endDate" : "2024-06-30T15:00:00Z",
+    "id" : "Austria",
+    "isConfirmed" : true,
+    "stages" : [
+      {
+        "endDate" : "2024-06-28T11:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-06-28T10:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-06-29T11:00:00Z",
+        "id" : "Sprint Race",
+        "startDate" : "2024-06-29T10:00:00Z",
+        "title" : "Sprint Race"
+      },
+      {
+        "endDate" : "2024-06-29T15:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-06-29T14:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-06-30T15:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-06-30T13:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-06-28T10:30:00Z",
+    "title" : "Austria"
+  },
+  {
+    "endDate" : "2024-07-07T16:00:00Z",
+    "id" : "United Kingdom",
+    "isConfirmed" : true,
+    "stages" : [
+      {
+        "endDate" : "2024-07-05T12:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-07-05T11:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-07-05T16:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-07-05T15:00:00Z",
+        "title" : "Practice 2"
+      },
+      {
+        "endDate" : "2024-07-06T11:30:00Z",
+        "id" : "Practice 3",
+        "startDate" : "2024-07-06T10:30:00Z",
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-07-06T15:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-07-06T14:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-07-07T16:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-07-07T14:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-07-05T11:30:00Z",
+    "title" : "United Kingdom"
+  },
+  {
+    "endDate" : "2024-07-21T15:00:00Z",
+    "id" : "Hungary",
+    "isConfirmed" : true,
+    "stages" : [
+      {
+        "endDate" : "2024-07-19T12:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-07-19T11:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-07-19T16:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-07-19T15:00:00Z",
+        "title" : "Practice 2"
+      },
+      {
+        "endDate" : "2024-07-20T11:30:00Z",
+        "id" : "Practice 3",
+        "startDate" : "2024-07-20T10:30:00Z",
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-07-20T15:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-07-20T14:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-07-21T15:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-07-21T13:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-07-19T11:30:00Z",
+    "title" : "Hungary"
+  },
+  {
+    "endDate" : "2024-07-28T15:00:00Z",
+    "id" : "Belgium",
+    "isConfirmed" : true,
+    "stages" : [
+      {
+        "endDate" : "2024-07-26T12:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-07-26T11:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-07-26T16:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-07-26T15:00:00Z",
+        "title" : "Practice 2"
+      },
+      {
+        "endDate" : "2024-07-27T11:30:00Z",
+        "id" : "Practice 3",
+        "startDate" : "2024-07-27T10:30:00Z",
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-07-27T15:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-07-27T14:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-07-28T15:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-07-28T13:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-07-26T11:30:00Z",
+    "title" : "Belgium"
+  },
+  {
+    "endDate" : "2024-08-25T15:00:00Z",
+    "id" : "Netherlands",
+    "isConfirmed" : true,
+    "stages" : [
+      {
+        "endDate" : "2024-08-23T11:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-08-23T10:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-08-23T15:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-08-23T14:00:00Z",
+        "title" : "Practice 2"
+      },
+      {
+        "endDate" : "2024-08-24T10:30:00Z",
+        "id" : "Practice 3",
+        "startDate" : "2024-08-24T09:30:00Z",
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-08-24T14:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-08-24T13:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-08-25T15:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-08-25T13:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-08-23T10:30:00Z",
+    "title" : "Netherlands"
   },
   {
     "endDate" : "2024-09-15T13:00:00Z",
-    "id" : "AZERBAIJAN GRAND PRIX",
+    "id" : "Azerbaijan",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-09-13T14:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-09-13T13:00:00Z",
-        "title" : "practice2"
-      },
-      {
         "endDate" : "2024-09-13T10:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-09-13T09:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-09-14T13:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-09-14T12:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-09-13T14:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-09-13T13:00:00Z",
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-09-14T09:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-09-14T08:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-09-14T13:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-09-14T12:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-09-15T13:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-09-15T11:00:00Z",
-        "title" : "race"
+        "title" : "Race"
       }
     ],
     "startDate" : "2024-09-13T09:30:00Z",
-    "title" : "AZERBAIJAN GRAND PRIX"
+    "title" : "Azerbaijan"
   },
   {
     "endDate" : "2024-09-22T14:00:00Z",
-    "id" : "SINGAPORE GRAND PRIX",
+    "id" : "Singapore",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-09-20T14:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-09-20T13:00:00Z",
-        "title" : "practice2"
-      },
-      {
         "endDate" : "2024-09-20T10:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-09-20T09:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-09-21T14:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-09-21T13:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-09-20T14:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-09-20T13:00:00Z",
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-09-21T10:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-09-21T09:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-09-21T14:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-09-21T13:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-09-22T14:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-09-22T12:00:00Z",
-        "title" : "race"
+        "title" : "Race"
       }
     ],
     "startDate" : "2024-09-20T09:30:00Z",
-    "title" : "SINGAPORE GRAND PRIX"
+    "title" : "Singapore"
   },
   {
-    "endDate" : "2024-10-20T22:00:00Z",
-    "id" : "UNITED STATES GRAND PRIX",
-    "isConfirmed" : false,
+    "endDate" : "2024-10-20T21:00:00Z",
+    "id" : "United States",
+    "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-10-18T22:00:00Z",
-        "id" : "sprintShootout",
-        "startDate" : "2024-10-17T22:00:00Z",
-        "title" : "sprintShootout"
+        "endDate" : "2024-05-03T17:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-05-03T16:30:00Z",
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-10-18T22:00:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-10-17T22:00:00Z",
-        "title" : "practice1"
+        "endDate" : "2024-05-04T17:00:00Z",
+        "id" : "Sprint Race",
+        "startDate" : "2024-05-04T16:00:00Z",
+        "title" : "Sprint Race"
       },
       {
-        "endDate" : "2024-10-19T22:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-10-18T22:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-05-04T21:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-05-04T20:00:00Z",
+        "title" : "Qualifying"
       },
       {
-        "endDate" : "2024-10-19T22:00:00Z",
-        "id" : "sprintRace",
-        "startDate" : "2024-10-18T22:00:00Z",
-        "title" : "sprintRace"
+        "endDate" : "2024-05-05T22:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-05-05T20:00:00Z",
+        "title" : "Race"
       },
       {
-        "endDate" : "2024-10-20T22:00:00Z",
-        "id" : "race",
+        "endDate" : "2024-10-18T18:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-10-18T17:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-10-19T19:00:00Z",
+        "id" : "Sprint Race",
+        "startDate" : "2024-10-19T18:00:00Z",
+        "title" : "Sprint Race"
+      },
+      {
+        "endDate" : "2024-10-19T23:00:00Z",
+        "id" : "Qualifying",
         "startDate" : "2024-10-19T22:00:00Z",
-        "title" : "race"
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-10-20T21:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-10-20T19:00:00Z",
+        "title" : "Race"
+      },
+      {
+        "endDate" : "2024-11-22T03:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-11-22T02:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-11-22T07:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-11-22T06:00:00Z",
+        "title" : "Practice 2"
+      },
+      {
+        "endDate" : "2024-11-23T03:30:00Z",
+        "id" : "Practice 3",
+        "startDate" : "2024-11-23T02:30:00Z",
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-11-23T07:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-11-23T06:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-11-24T08:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-11-24T06:00:00Z",
+        "title" : "Race"
       }
     ],
-    "startDate" : "2024-10-17T22:00:00Z",
-    "title" : "UNITED STATES GRAND PRIX"
+    "startDate" : "2024-10-18T17:30:00Z",
+    "title" : "United States"
   },
   {
     "endDate" : "2024-10-27T22:00:00Z",
-    "id" : "GRAN PREMIO DE LA CIUDAD DE MÉXICO",
+    "id" : "Mexico",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-10-25T23:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-10-25T22:00:00Z",
-        "title" : "practice2"
-      },
-      {
         "endDate" : "2024-10-25T19:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-10-25T18:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-10-26T22:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-10-26T21:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-10-25T23:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-10-25T22:00:00Z",
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-10-26T18:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-10-26T17:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-10-26T22:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-10-26T21:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-10-27T22:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-10-27T20:00:00Z",
-        "title" : "race"
+        "title" : "Race"
       }
     ],
     "startDate" : "2024-10-25T18:30:00Z",
-    "title" : "GRAN PREMIO DE LA CIUDAD DE MÉXICO"
+    "title" : "Mexico"
   },
   {
-    "endDate" : "2024-11-03T23:00:00Z",
-    "id" : "GRANDE PRÊMIO DE SÃO PAULO",
-    "isConfirmed" : false,
-    "stages" : [
-      {
-        "endDate" : "2024-11-01T23:00:00Z",
-        "id" : "sprintShootout",
-        "startDate" : "2024-10-31T23:00:00Z",
-        "title" : "sprintShootout"
-      },
-      {
-        "endDate" : "2024-11-01T23:00:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-10-31T23:00:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-11-02T23:00:00Z",
-        "id" : "sprintRace",
-        "startDate" : "2024-11-01T23:00:00Z",
-        "title" : "sprintRace"
-      },
-      {
-        "endDate" : "2024-11-02T23:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-11-01T23:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-11-03T23:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-11-02T23:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-10-31T23:00:00Z",
-    "title" : "GRANDE PRÊMIO DE SÃO PAULO"
-  },
-  {
-    "endDate" : "2024-11-23T23:00:00Z",
-    "id" : "LAS VEGAS GRAND PRIX",
-    "isConfirmed" : false,
-    "stages" : [
-      {
-        "endDate" : "2024-11-21T23:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-11-20T23:00:00Z",
-        "title" : "practice2"
-      },
-      {
-        "endDate" : "2024-11-21T23:00:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-11-20T23:00:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-11-22T23:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-11-21T23:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-11-22T23:00:00Z",
-        "id" : "practice3",
-        "startDate" : "2024-11-21T23:00:00Z",
-        "title" : "practice3"
-      },
-      {
-        "endDate" : "2024-11-23T23:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-11-22T23:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-11-20T23:00:00Z",
-    "title" : "LAS VEGAS GRAND PRIX"
-  },
-  {
-    "endDate" : "2024-12-01T23:00:00Z",
-    "id" : "QATAR GRAND PRIX",
-    "isConfirmed" : false,
-    "stages" : [
-      {
-        "endDate" : "2024-11-29T23:00:00Z",
-        "id" : "sprintShootout",
-        "startDate" : "2024-11-28T23:00:00Z",
-        "title" : "sprintShootout"
-      },
-      {
-        "endDate" : "2024-11-29T23:00:00Z",
-        "id" : "practice1",
-        "startDate" : "2024-11-28T23:00:00Z",
-        "title" : "practice1"
-      },
-      {
-        "endDate" : "2024-11-30T23:00:00Z",
-        "id" : "sprintRace",
-        "startDate" : "2024-11-29T23:00:00Z",
-        "title" : "sprintRace"
-      },
-      {
-        "endDate" : "2024-11-30T23:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-11-29T23:00:00Z",
-        "title" : "qualifying"
-      },
-      {
-        "endDate" : "2024-12-01T23:00:00Z",
-        "id" : "race",
-        "startDate" : "2024-11-30T23:00:00Z",
-        "title" : "race"
-      }
-    ],
-    "startDate" : "2024-11-28T23:00:00Z",
-    "title" : "QATAR GRAND PRIX"
-  },
-  {
-    "endDate" : "2024-12-08T15:00:00Z",
-    "id" : "ABU DHABI GRAND PRIX",
+    "endDate" : "2024-11-03T19:00:00Z",
+    "id" : "Brazil",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-12-06T14:00:00Z",
-        "id" : "practice2",
-        "startDate" : "2024-12-06T13:00:00Z",
-        "title" : "practice2"
+        "endDate" : "2024-11-01T15:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-11-01T14:30:00Z",
+        "title" : "Practice 1"
       },
+      {
+        "endDate" : "2024-11-02T15:00:00Z",
+        "id" : "Sprint Race",
+        "startDate" : "2024-11-02T14:00:00Z",
+        "title" : "Sprint Race"
+      },
+      {
+        "endDate" : "2024-11-02T19:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-11-02T18:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-11-03T19:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-11-03T17:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-11-01T14:30:00Z",
+    "title" : "Brazil"
+  },
+  {
+    "endDate" : "2024-12-01T19:00:00Z",
+    "id" : "Qatar",
+    "isConfirmed" : true,
+    "stages" : [
+      {
+        "endDate" : "2024-11-29T14:30:00Z",
+        "id" : "Practice 1",
+        "startDate" : "2024-11-29T13:30:00Z",
+        "title" : "Practice 1"
+      },
+      {
+        "endDate" : "2024-11-30T14:00:00Z",
+        "id" : "Sprint Race",
+        "startDate" : "2024-11-30T13:00:00Z",
+        "title" : "Sprint Race"
+      },
+      {
+        "endDate" : "2024-11-30T18:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-11-30T17:00:00Z",
+        "title" : "Qualifying"
+      },
+      {
+        "endDate" : "2024-12-01T19:00:00Z",
+        "id" : "Race",
+        "startDate" : "2024-12-01T17:00:00Z",
+        "title" : "Race"
+      }
+    ],
+    "startDate" : "2024-11-29T13:30:00Z",
+    "title" : "Qatar"
+  },
+  {
+    "endDate" : "2024-12-08T15:00:00Z",
+    "id" : "United Arab Emirates",
+    "isConfirmed" : true,
+    "stages" : [
       {
         "endDate" : "2024-12-06T10:30:00Z",
-        "id" : "practice1",
+        "id" : "Practice 1",
         "startDate" : "2024-12-06T09:30:00Z",
-        "title" : "practice1"
+        "title" : "Practice 1"
       },
       {
-        "endDate" : "2024-12-07T15:00:00Z",
-        "id" : "qualifying",
-        "startDate" : "2024-12-07T14:00:00Z",
-        "title" : "qualifying"
+        "endDate" : "2024-12-06T14:00:00Z",
+        "id" : "Practice 2",
+        "startDate" : "2024-12-06T13:00:00Z",
+        "title" : "Practice 2"
       },
       {
         "endDate" : "2024-12-07T11:30:00Z",
-        "id" : "practice3",
+        "id" : "Practice 3",
         "startDate" : "2024-12-07T10:30:00Z",
-        "title" : "practice3"
+        "title" : "Practice 3"
+      },
+      {
+        "endDate" : "2024-12-07T15:00:00Z",
+        "id" : "Qualifying",
+        "startDate" : "2024-12-07T14:00:00Z",
+        "title" : "Qualifying"
       },
       {
         "endDate" : "2024-12-08T15:00:00Z",
-        "id" : "race",
+        "id" : "Race",
         "startDate" : "2024-12-08T13:00:00Z",
-        "title" : "race"
+        "title" : "Race"
       }
     ],
     "startDate" : "2024-12-06T09:30:00Z",
-    "title" : "ABU DHABI GRAND PRIX"
+    "title" : "United Arab Emirates"
   }
 ]

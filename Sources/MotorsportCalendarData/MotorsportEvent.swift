@@ -15,7 +15,7 @@ public struct MotorsportEvent: Identifiable, Codable {
     public let stages: [MotorsportEventStage]
     public let isConfirmed: Bool
 
-    package init(
+    public init(
         id: String,
         title: String,
         startDate: Date,
