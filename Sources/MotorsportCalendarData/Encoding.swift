@@ -23,3 +23,6 @@ extension JSONDecoder {
         return decoder
     }()
 }
+
+extension Series: CodingKeyRepresentable {
+}

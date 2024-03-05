@@ -8,19 +8,9 @@
 import Foundation
 
 public struct MotorsportCalendarInfo: Codable {
-    public package(set) var updates: Updates
+    public package(set) var updates: [Series: Date]
 
-    package init(updates: Updates) {
+    package init(updates: [Series: Date]) {
         self.updates = updates
-    }
-
-    public struct Updates: Codable {
-        public package(set) var formula1: Date
-        public package(set) var wrc: Date
-
-        package init(formula1: Date, wrc: Date) {
-            self.formula1 = formula1
-            self.wrc = wrc
-        }
     }
 }
