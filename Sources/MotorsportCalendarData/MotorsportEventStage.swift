@@ -11,7 +11,7 @@ public struct MotorsportEventStage: Identifiable, Codable {
     public let id: String
     public let title: String
     public let startDate: Date
-    public let endDate: Date
+    public package(set) var endDate: Date
 
     public init(
         id: String,

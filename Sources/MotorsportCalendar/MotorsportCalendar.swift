@@ -23,20 +23,21 @@ struct MotorsportCalendar: AsyncParsableCommand {
 
         let providers: [any CalendarProvider] = [
             Formula1CalendarProvider(outputURL: outputURL, calendarURL: formula1CalendarURL),
-            WRCCalendarProvider(outputURL: outputURL),
+//            WRCCalendarProvider(outputURL: outputURL),
+            WRC2CalendarProvider(outputURL: outputURL),
         ]
 
         let year = Calendar.current.component(.year, from: .now)
-        let updatedSeries = await withTaskGroup(of: (Series, Bool).self, returning: Set<Series>.self) { group in
+        let updatedSeries = try await withThrowingTaskGroup(of: (Series, Bool).self, returning: Set<Series>.self) { group in
             for provider in providers {
                 group.addTask {
-                    let didUpdate = (try? await provider.run(year: year)) == true
+                    let didUpdate = (try await provider.run(year: year)) == true
                     return (provider.series, didUpdate)
                 }
             }
 
             var updatedSeries: Set<Series> = []
-            for await (series, didUpdate) in group {
+            for try await (series, didUpdate) in group {
                 if didUpdate {
                     updatedSeries.insert(series)
                 }
