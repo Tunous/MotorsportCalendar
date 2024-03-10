@@ -43,7 +43,6 @@ struct Formula1CalendarProvider: CalendarProvider {
         let finalEvents = sortedEvents.map { name, sessions -> MotorsportEvent in
             let stages = sessions.map {
                 MotorsportEventStage(
-                    id: $0.sessionType.rawValue,
                     title: $0.sessionType.rawValue,
                     startDate: $0.startDate,
                     endDate: $0.endDate
@@ -52,7 +51,6 @@ struct Formula1CalendarProvider: CalendarProvider {
             let startDate = sessions.first(where: { $0.sessionType == .practice1 })!.startDate
             let endDate = sessions.first(where: { $0.sessionType == .race })!.endDate
             return MotorsportEvent(
-                id: name,
                 title: name,
                 startDate: startDate,
                 endDate: endDate,

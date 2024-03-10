@@ -7,8 +7,7 @@
 
 import Foundation
 
-public struct MotorsportEvent: Identifiable, Codable {
-    public let id: String
+public struct MotorsportEvent: Codable {
     public let title: String
     public let startDate: Date
     public let endDate: Date
@@ -16,14 +15,12 @@ public struct MotorsportEvent: Identifiable, Codable {
     public let isConfirmed: Bool
 
     public init(
-        id: String,
         title: String,
         startDate: Date,
         endDate: Date,
         stages: [MotorsportEventStage],
         isConfirmed: Bool
     ) {
-        self.id = id
         self.title = title
         self.startDate = startDate
         self.endDate = endDate

@@ -84,7 +84,6 @@ struct WRC2CalendarProvider: CalendarProvider {
                 let title = stageCode.isEmpty ? stageName : stageCode + " " + stageName
                 stages.append(
                     MotorsportEventStage(
-                        id: pathComponent + title,
                         title: stageCode.isEmpty ? stageName : stageCode + " " + stageName,
                         startDate: stageStartDate,
                         endDate: stageStartDate
@@ -104,7 +103,6 @@ struct WRC2CalendarProvider: CalendarProvider {
                 stages[stages.count - 1].endDate = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: stages[stages.count - 1].startDate)!
             }
             return MotorsportEvent(
-                id: String(pathComponent),
                 title: name.replacingOccurrences(of: year.description, with: "").trimmingCharacters(in: .whitespaces),
                 startDate: stages.first?.startDate ?? startDate,
                 endDate: stages.last?.endDate ?? endDate,

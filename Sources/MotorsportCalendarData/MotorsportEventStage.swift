@@ -7,19 +7,16 @@
 
 import Foundation
 
-public struct MotorsportEventStage: Identifiable, Codable {
-    public let id: String
+public struct MotorsportEventStage: Codable {
     public let title: String
     public let startDate: Date
     public package(set) var endDate: Date
 
     public init(
-        id: String,
         title: String,
         startDate: Date,
         endDate: Date
     ) {
-        self.id = id
         self.title = title
         self.startDate = startDate
         self.endDate = endDate

@@ -53,7 +53,6 @@ struct WRCCalendarProvider: CalendarProvider {
                 let object = try decoder.decode(ScheduleResponse.self, from: data)
                 stages = object.content.map { element in
                     MotorsportEventStage(
-                        id: element.id,
                         title: element.title,
                         startDate: element.availableOn,
                         endDate: element.availableTill
@@ -65,7 +64,6 @@ struct WRCCalendarProvider: CalendarProvider {
             let isConfirmed = stages?.isEmpty == false || event.endDate < .now
             events.append(
                 MotorsportEvent(
-                    id: event.id,
                     title: event.title,
                     startDate: event.startDate,
                     endDate: event.endDate,
