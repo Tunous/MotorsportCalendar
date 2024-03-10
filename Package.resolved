@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "icalendarparser",
+      "identity" : "icalswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/dmail-me/iCalendarParser",
+      "location" : "https://github.com/chan614/iCalSwift",
       "state" : {
-        "revision" : "f87378ca7b2d59533c9562324b17a8caf20f26a2",
-        "version" : "0.2.0"
+        "revision" : "b2e1161d186fcd78b36875bee0d02df3e9e193c0",
+        "version" : "1.2.0"
       }
     },
     {

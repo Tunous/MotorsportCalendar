@@ -1,6 +1,5 @@
 import ArgumentParser
 import Foundation
-import iCalendarParser
 import MotorsportCalendarData
 
 @main

@@ -7,7 +7,7 @@
 
 import Foundation
 import MotorsportCalendarData
-import iCalendarParser
+import ICalSwift
 import ArgumentParser
 
 struct Formula1CalendarProvider: CalendarProvider {
@@ -29,12 +29,12 @@ struct Formula1CalendarProvider: CalendarProvider {
         guard let string = String(data: data, encoding: .utf8) else {
             throw ValidationError("Malformed calendar data")
         }
-        let parser = ICParser()
-        guard let calendar = parser.calendar(from: string) ?? parser.calendar(from: string.replacingOccurrences(of: "\n", with: "\r\n")) else {
+        let parser = ICalParser()
+        guard let calendar = parser.parseCalendar(ics: string.replacingOccurrences(of: "\r\n", with: "\n")) else {
             throw ValidationError("Malformed calendar data")
         }
         let events = calendar.events.compactMap { event -> Event? in
-            guard let startDate = event.dtStart?.date else { return nil }
+            guard let startDate = event.dtstart?.date else { return nil }
             guard Calendar.current.component(.year, from: startDate) == year else { return nil }
             return Event(event: event)
         }
@@ -77,12 +77,12 @@ fileprivate struct Event: Encodable {
         case hasConfirmedDates
     }
 
-    init?(event: ICEvent) {
+    init?(event: ICalEvent) {
         guard
             let summary = event.summary,
             let sessionType = SessionType(summary: summary),
-            let startDate = event.dtStart,
-            let endDate = event.dtEnd,
+            let startDate = event.dtstart,
+            let endDate = event.dtend,
             let description = event.location
         else {
             return nil
@@ -90,7 +90,7 @@ fileprivate struct Event: Encodable {
         self.sessionType = sessionType
         self.startDate = startDate.date
         self.endDate = endDate.date
-        self.name = description
+        self.name = EventName(string: summary).name
         self.hasConfirmedDates = !summary.hasSuffix("(TBC)")
     }
 }
