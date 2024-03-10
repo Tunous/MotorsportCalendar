@@ -180,7 +180,7 @@
       }
     ],
     "startDate" : "2024-01-24T15:31:00Z",
-    "title" : "92. Rallye Automobile Monte-Carlo 2024"
+    "title" : "92. Rallye Automobile Monte-Carlo"
   },
   {
     "endDate" : "2024-02-18T22:59:59Z",
@@ -363,7 +363,7 @@
       }
     ],
     "startDate" : "2024-02-15T08:01:00Z",
-    "title" : "71. Rally Sweden 2024"
+    "title" : "71. Rally Sweden"
   },
   {
     "endDate" : "2024-03-31T21:59:59Z",
@@ -546,7 +546,7 @@
       }
     ],
     "startDate" : "2024-03-27T07:01:00Z",
-    "title" : "72. Safari Rally Kenya 2024"
+    "title" : "72. Safari Rally Kenya"
   },
   {
     "endDate" : "2024-04-21T21:59:59Z",
@@ -753,7 +753,7 @@
       }
     ],
     "startDate" : "2024-04-18T07:01:00Z",
-    "title" : "Croatia Rally 2024"
+    "title" : "Croatia Rally"
   },
   {
     "endDate" : "2024-05-12T21:59:59Z",
@@ -966,7 +966,7 @@
       }
     ],
     "startDate" : "2024-05-09T07:01:00Z",
-    "title" : "57. Vodafone Rally de Portugal 2024"
+    "title" : "57. Vodafone Rally de Portugal"
   },
   {
     "endDate" : "2024-06-02T21:59:59Z",
@@ -1155,7 +1155,7 @@
       }
     ],
     "startDate" : "2024-05-31T06:01:00Z",
-    "title" : "21. Rally Italia Sardegna 2024"
+    "title" : "21. Rally Italia Sardegna"
   },
   {
     "endDate" : "2024-06-29T22:00:00Z",
@@ -1165,7 +1165,7 @@
 
     ],
     "startDate" : "2024-06-26T22:00:00Z",
-    "title" : "80. ORLEN Rally Poland 2024"
+    "title" : "80. ORLEN Rally Poland"
   },
   {
     "endDate" : "2024-07-20T22:00:00Z",
@@ -1175,7 +1175,7 @@
 
     ],
     "startDate" : "2024-07-17T22:00:00Z",
-    "title" : "Tet Rally Latvia 2024"
+    "title" : "Tet Rally Latvia"
   },
   {
     "endDate" : "2024-08-04T21:59:59Z",
@@ -1352,7 +1352,7 @@
       }
     ],
     "startDate" : "2024-08-01T07:01:00Z",
-    "title" : "73. Secto Rally Finland 2024"
+    "title" : "73. Secto Rally Finland"
   },
   {
     "endDate" : "2024-09-07T22:00:00Z",
@@ -1362,7 +1362,7 @@
 
     ],
     "startDate" : "2024-09-04T22:00:00Z",
-    "title" : "68. EKO Acropolis Rally Greece 2024"
+    "title" : "68. EKO Acropolis Rally Greece"
   },
   {
     "endDate" : "2024-09-28T22:00:00Z",
@@ -1372,7 +1372,7 @@
 
     ],
     "startDate" : "2024-09-25T22:00:00Z",
-    "title" : "Rally Chile BIOBÍO 2024"
+    "title" : "Rally Chile BIOBÍO"
   },
   {
     "endDate" : "2024-10-19T22:00:00Z",
@@ -1382,7 +1382,7 @@
 
     ],
     "startDate" : "2024-10-16T22:00:00Z",
-    "title" : "2. Central European Rally 2024"
+    "title" : "2. Central European Rally"
   },
   {
     "endDate" : "2024-11-23T23:00:00Z",
@@ -1392,6 +1392,6 @@
 
     ],
     "startDate" : "2024-11-20T23:00:00Z",
-    "title" : "FORUM8 Rally Japan 2024"
+    "title" : "FORUM8 Rally Japan"
   }
 ]

@@ -105,7 +105,7 @@ struct WRC2CalendarProvider: CalendarProvider {
             }
             return MotorsportEvent(
                 id: String(pathComponent),
-                title: name,
+                title: name.replacingOccurrences(of: year.description, with: "").trimmingCharacters(in: .whitespaces),
                 startDate: stages.first?.startDate ?? startDate,
                 endDate: stages.last?.endDate ?? endDate,
                 stages: stages,
