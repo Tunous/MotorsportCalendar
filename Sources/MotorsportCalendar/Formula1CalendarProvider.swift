@@ -83,14 +83,14 @@ fileprivate struct Event: Encodable {
             let sessionType = SessionType(summary: summary),
             let startDate = event.dtstart,
             let endDate = event.dtend,
-            let description = event.location
+            let location = event.location
         else {
             return nil
         }
         self.sessionType = sessionType
         self.startDate = startDate.date
         self.endDate = endDate.date
-        self.name = EventName(string: summary).name
+        self.name = EventName(summary: summary, location: location).name
         self.hasConfirmedDates = !summary.hasSuffix("(TBC)")
     }
 }
@@ -127,10 +127,54 @@ fileprivate enum SessionType: String, Encodable {
 fileprivate struct EventName {
     let name: String
 
-    init(string: String) {
-        name = String(string.drop(while: { $0 != "1" })
-            .dropFirst(2)
-            .prefix(while: { $0 != "-" })
-            .dropLast(6))
+    init(summary: String, location: String) {
+        let namePrefix: String
+        switch location.lowercased() {
+        case "saudi arabia":
+            namePrefix = "Saudi Arabian"
+        case "australia":
+            namePrefix = "Australian"
+        case "japan":
+            namePrefix = "Japanese"
+        case "china":
+            namePrefix = "Chinese"
+        case "united states":
+            if summary.localizedStandardContains("miami") {
+                namePrefix = "Miami"
+            } else if summary.localizedStandardContains("las vegas") {
+                namePrefix = "Las Vegas"
+            } else {
+                namePrefix = "United States"
+            }
+        case "italy":
+            if summary.localizedStandardContains("romagna") {
+                namePrefix = "Emilia Romagna"
+            } else {
+                namePrefix = "Italian"
+            }
+        case "canada":
+            namePrefix = "Canadian"
+        case "spain":
+            namePrefix = "Spanish"
+        case "austria":
+            namePrefix = "Austrian"
+        case "united kingdom":
+            namePrefix = "British"
+        case "hungary":
+            namePrefix = "Hungarian"
+        case "belgium":
+            namePrefix = "Belgian"
+        case "netherlands":
+            namePrefix = "Dutch"
+        case "mexico":
+            namePrefix = "Mexico City"
+        case "brazil":
+            namePrefix = "São Paulo"
+        case "united arab emirates":
+            namePrefix = "Abu Dhabi"
+        default:
+            namePrefix = location
+        }
+        name = namePrefix + " Grand Prix"
     }
 }

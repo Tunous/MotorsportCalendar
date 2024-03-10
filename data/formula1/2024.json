@@ -30,7 +30,7 @@
       }
     ],
     "startDate" : "2024-02-29T11:30:00Z",
-    "title" : "GULF AIR BAHRAIN GRAND PRIX"
+    "title" : "Bahrain Grand Prix"
   },
   {
     "endDate" : "2024-03-09T19:00:00Z",
@@ -58,7 +58,7 @@
       }
     ],
     "startDate" : "2024-03-07T13:30:00Z",
-    "title" : "STC SAUDI ARABIAN GRAND PRIX"
+    "title" : "Saudi Arabian Grand Prix"
   },
   {
     "endDate" : "2024-03-24T06:00:00Z",
@@ -91,7 +91,7 @@
       }
     ],
     "startDate" : "2024-03-22T01:30:00Z",
-    "title" : "ROLEX AUSTRALIAN GRAND PRIX"
+    "title" : "Australian Grand Prix"
   },
   {
     "endDate" : "2024-04-07T07:00:00Z",
@@ -124,7 +124,7 @@
       }
     ],
     "startDate" : "2024-04-05T02:30:00Z",
-    "title" : "MSC CRUISES JAPANESE GRAND PRIX"
+    "title" : "Japanese Grand Prix"
   },
   {
     "endDate" : "2024-04-21T09:00:00Z",
@@ -152,7 +152,7 @@
       }
     ],
     "startDate" : "2024-04-19T03:30:00Z",
-    "title" : "LENOVO CHINESE GRAND PRIX"
+    "title" : "Chinese Grand Prix"
   },
   {
     "endDate" : "2024-05-05T22:00:00Z",
@@ -180,7 +180,7 @@
       }
     ],
     "startDate" : "2024-05-03T16:30:00Z",
-    "title" : "CRYPTO.COM MIAMI GRAND PRIX"
+    "title" : "Miami Grand Prix"
   },
   {
     "endDate" : "2024-05-19T15:00:00Z",
@@ -213,7 +213,7 @@
       }
     ],
     "startDate" : "2024-05-17T11:30:00Z",
-    "title" : "GRAN PREMIO DELL'"
+    "title" : "Emilia Romagna Grand Prix"
   },
   {
     "endDate" : "2024-05-26T15:00:00Z",
@@ -246,7 +246,7 @@
       }
     ],
     "startDate" : "2024-05-24T11:30:00Z",
-    "title" : "GRAND PRIX DE MONACO"
+    "title" : "Monaco Grand Prix"
   },
   {
     "endDate" : "2024-06-09T20:00:00Z",
@@ -279,7 +279,7 @@
       }
     ],
     "startDate" : "2024-06-07T17:30:00Z",
-    "title" : "GRAND PRIX DU CANADA"
+    "title" : "Canadian Grand Prix"
   },
   {
     "endDate" : "2024-06-23T15:00:00Z",
@@ -312,7 +312,7 @@
       }
     ],
     "startDate" : "2024-06-21T11:30:00Z",
-    "title" : "ARAMCO GRAN PREMIO DE ESPAÑA"
+    "title" : "Spanish Grand Prix"
   },
   {
     "endDate" : "2024-06-30T15:00:00Z",
@@ -340,7 +340,7 @@
       }
     ],
     "startDate" : "2024-06-28T10:30:00Z",
-    "title" : "QATAR AIRWAYS AUSTRIAN GRAND PRIX"
+    "title" : "Austrian Grand Prix"
   },
   {
     "endDate" : "2024-07-07T16:00:00Z",
@@ -373,7 +373,7 @@
       }
     ],
     "startDate" : "2024-07-05T11:30:00Z",
-    "title" : "QATAR AIRWAYS BRITISH GRAND PRIX"
+    "title" : "British Grand Prix"
   },
   {
     "endDate" : "2024-07-21T15:00:00Z",
@@ -406,7 +406,7 @@
       }
     ],
     "startDate" : "2024-07-19T11:30:00Z",
-    "title" : "HUNGARIAN GRAND PRIX"
+    "title" : "Hungarian Grand Prix"
   },
   {
     "endDate" : "2024-07-28T15:00:00Z",
@@ -439,7 +439,7 @@
       }
     ],
     "startDate" : "2024-07-26T11:30:00Z",
-    "title" : "ROLEX BELGIAN GRAND PRIX"
+    "title" : "Belgian Grand Prix"
   },
   {
     "endDate" : "2024-08-25T15:00:00Z",
@@ -472,7 +472,7 @@
       }
     ],
     "startDate" : "2024-08-23T10:30:00Z",
-    "title" : "HEINEKEN DUTCH GRAND PRIX"
+    "title" : "Dutch Grand Prix"
   },
   {
     "endDate" : "2024-09-01T15:00:00Z",
@@ -505,7 +505,7 @@
       }
     ],
     "startDate" : "2024-08-30T11:30:00Z",
-    "title" : "PIRELLI GRAN PREMIO D’ITALIA"
+    "title" : "Italian Grand Prix"
   },
   {
     "endDate" : "2024-09-15T13:00:00Z",
@@ -538,7 +538,7 @@
       }
     ],
     "startDate" : "2024-09-13T09:30:00Z",
-    "title" : "QATAR AIRWAYS AZERBAIJAN GRAND PRIX"
+    "title" : "Azerbaijan Grand Prix"
   },
   {
     "endDate" : "2024-09-22T14:00:00Z",
@@ -571,7 +571,7 @@
       }
     ],
     "startDate" : "2024-09-20T09:30:00Z",
-    "title" : "SINGAPORE AIRLINES SINGAPORE GRAND PRIX"
+    "title" : "Singapore Grand Prix"
   },
   {
     "endDate" : "2024-10-20T21:00:00Z",
@@ -599,7 +599,7 @@
       }
     ],
     "startDate" : "2024-10-18T17:30:00Z",
-    "title" : "PIRELLI UNITED STATES GRAND PRIX"
+    "title" : "United States Grand Prix"
   },
   {
     "endDate" : "2024-10-27T22:00:00Z",
@@ -632,7 +632,7 @@
       }
     ],
     "startDate" : "2024-10-25T18:30:00Z",
-    "title" : "GRAN PREMIO DE LA CIUDAD DE MÉXICO"
+    "title" : "Mexico City Grand Prix"
   },
   {
     "endDate" : "2024-11-03T19:00:00Z",
@@ -660,7 +660,7 @@
       }
     ],
     "startDate" : "2024-11-01T14:30:00Z",
-    "title" : "LENOVO GRANDE PRÊMIO DE SÃO PAULO"
+    "title" : "São Paulo Grand Prix"
   },
   {
     "endDate" : "2024-11-24T08:00:00Z",
@@ -693,7 +693,7 @@
       }
     ],
     "startDate" : "2024-11-22T02:30:00Z",
-    "title" : "HEINEKEN SILVER LAS VEGAS GRAND PRIX"
+    "title" : "Las Vegas Grand Prix"
   },
   {
     "endDate" : "2024-12-01T19:00:00Z",
@@ -721,7 +721,7 @@
       }
     ],
     "startDate" : "2024-11-29T13:30:00Z",
-    "title" : "QATAR AIRWAYS QATAR GRAND PRIX"
+    "title" : "Qatar Grand Prix"
   },
   {
     "endDate" : "2024-12-08T15:00:00Z",
@@ -754,6 +754,6 @@
       }
     ],
     "startDate" : "2024-12-06T09:30:00Z",
-    "title" : "ETIHAD AIRWAYS ABU DHABI GRAND PRIX"
+    "title" : "Abu Dhabi Grand Prix"
   }
 ]
