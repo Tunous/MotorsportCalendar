@@ -42,6 +42,13 @@ struct WRC2CalendarProvider: CalendarProvider {
 
             let pathComponent = path.split(separator: "/").last!
             let eventURL = URL(string: "https://www.ewrc-results.com/timetable/\(pathComponent)/")!
+            let timezoneCookie = HTTPCookie(properties: [
+                .path: "/",
+                .name: "timezone",
+                .value: "Europe/Warsaw",
+                .domain: "www.ewrc-results.com",
+            ])!
+            HTTPCookieStorage.shared.setCookies([timezoneCookie], for: eventURL, mainDocumentURL: nil)
 
             let eventHtml = try String(contentsOf: eventURL)
             let eventDocument = try SwiftSoup.parse(eventHtml, "https://www.ewrc-results.com")
@@ -60,14 +67,17 @@ struct WRC2CalendarProvider: CalendarProvider {
                 } else {
                     newDate = stageStartDate
                 }
-                let stageTimeText = try stageNode.select(".harm-time").text()
-                if stageTimeText == "?" {
+                let stageTimeNode = try stageNode.select(".harm-time").first()
+                let stageTimeText = try stageTimeNode?.nextElementSibling()?.text() ?? stageTimeNode?.text() ?? ""
+                let stageTime = stageTimeText.split(separator: ":")
+                guard
+                    stageTime.count >= 2,
+                    let hour = Int(stageTime[0].drop(while: { !$0.isNumber })),
+                    let minute = Int(stageTime[1].prefix(while: { $0.isNumber }))
+                else {
                     stages = []
                     break
                 }
-                let stageTime = stageTimeText.split(separator: ":")
-                let hour = Int(stageTime[0])!
-                let minute = Int(stageTime[1])!
 
                 stageStartDate = Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: newDate)!
 
