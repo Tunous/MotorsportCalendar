@@ -311,151 +311,151 @@
     "stages" : [
       {
         "endDate" : "2024-03-27T22:59:59Z",
-        "startDate" : "2024-03-27T07:01:00Z",
+        "startDate" : "2024-03-27T08:01:00Z",
         "title" : "Shakedown (Loldia)"
       },
       {
-        "endDate" : "2024-03-28T11:04:59Z",
-        "startDate" : "2024-03-28T09:26:00Z",
+        "endDate" : "2024-03-28T12:04:59Z",
+        "startDate" : "2024-03-28T10:26:00Z",
         "title" : "Start - Kenyatta International Conference Centre"
       },
       {
         "endDate" : "2024-03-28T22:59:59Z",
-        "startDate" : "2024-03-28T11:05:00Z",
+        "startDate" : "2024-03-28T12:05:00Z",
         "title" : "SS1 Super Special Kasarani"
       },
       {
-        "endDate" : "2024-03-29T05:14:59Z",
-        "startDate" : "2024-03-29T04:15:00Z",
+        "endDate" : "2024-03-29T06:14:59Z",
+        "startDate" : "2024-03-29T05:15:00Z",
         "title" : "Service A - WSTI Naivasha - 15 mins"
       },
       {
-        "endDate" : "2024-03-29T06:32:59Z",
-        "startDate" : "2024-03-29T05:15:00Z",
+        "endDate" : "2024-03-29T07:32:59Z",
+        "startDate" : "2024-03-29T06:15:00Z",
         "title" : "SS2 Loldia 1"
       },
       {
-        "endDate" : "2024-03-29T07:25:59Z",
-        "startDate" : "2024-03-29T06:33:00Z",
+        "endDate" : "2024-03-29T08:25:59Z",
+        "startDate" : "2024-03-29T07:33:00Z",
         "title" : "SS3 Geothermal 1"
       },
       {
-        "endDate" : "2024-03-29T09:22:59Z",
-        "startDate" : "2024-03-29T07:26:00Z",
+        "endDate" : "2024-03-29T10:22:59Z",
+        "startDate" : "2024-03-29T08:26:00Z",
         "title" : "SS4 Kedong 1"
       },
       {
-        "endDate" : "2024-03-29T10:47:59Z",
-        "startDate" : "2024-03-29T09:23:00Z",
+        "endDate" : "2024-03-29T11:47:59Z",
+        "startDate" : "2024-03-29T10:23:00Z",
         "title" : "Service B - WSTI Naivasha - 40 mins"
       },
       {
-        "endDate" : "2024-03-29T12:05:59Z",
-        "startDate" : "2024-03-29T10:48:00Z",
+        "endDate" : "2024-03-29T13:05:59Z",
+        "startDate" : "2024-03-29T11:48:00Z",
         "title" : "SS5 Loldia 2"
       },
       {
-        "endDate" : "2024-03-29T12:58:59Z",
-        "startDate" : "2024-03-29T12:06:00Z",
+        "endDate" : "2024-03-29T13:58:59Z",
+        "startDate" : "2024-03-29T13:06:00Z",
         "title" : "SS6 Geothermal 2"
       },
       {
-        "endDate" : "2024-03-29T14:35:59Z",
-        "startDate" : "2024-03-29T12:59:00Z",
+        "endDate" : "2024-03-29T15:35:59Z",
+        "startDate" : "2024-03-29T13:59:00Z",
         "title" : "SS7 Kedong 2"
       },
       {
         "endDate" : "2024-03-29T22:59:59Z",
-        "startDate" : "2024-03-29T14:36:00Z",
+        "startDate" : "2024-03-29T15:36:00Z",
         "title" : "Flexi service C - WSTI Naivasha - 45 mins"
       },
       {
-        "endDate" : "2024-03-30T06:04:59Z",
-        "startDate" : "2024-03-30T05:01:00Z",
+        "endDate" : "2024-03-30T07:04:59Z",
+        "startDate" : "2024-03-30T06:01:00Z",
         "title" : "SS8 Soysambu 1"
       },
       {
-        "endDate" : "2024-03-30T07:02:59Z",
-        "startDate" : "2024-03-30T06:05:00Z",
+        "endDate" : "2024-03-30T08:02:59Z",
+        "startDate" : "2024-03-30T07:05:00Z",
         "title" : "SS9 Elmenteita 1"
       },
       {
-        "endDate" : "2024-03-30T09:27:59Z",
-        "startDate" : "2024-03-30T07:03:00Z",
+        "endDate" : "2024-03-30T10:27:59Z",
+        "startDate" : "2024-03-30T08:03:00Z",
         "title" : "SS10 Sleeping Warrior 1"
       },
       {
-        "endDate" : "2024-03-30T11:33:59Z",
-        "startDate" : "2024-03-30T09:28:00Z",
+        "endDate" : "2024-03-30T12:33:59Z",
+        "startDate" : "2024-03-30T10:28:00Z",
         "title" : "Service D - WSTI Naivasha - 40 mins"
       },
       {
-        "endDate" : "2024-03-30T12:34:59Z",
-        "startDate" : "2024-03-30T11:34:00Z",
+        "endDate" : "2024-03-30T13:34:59Z",
+        "startDate" : "2024-03-30T12:34:00Z",
         "title" : "SS11 Soysambu 2"
       },
       {
-        "endDate" : "2024-03-30T13:32:59Z",
-        "startDate" : "2024-03-30T12:35:00Z",
+        "endDate" : "2024-03-30T14:32:59Z",
+        "startDate" : "2024-03-30T13:35:00Z",
         "title" : "SS12 Elmenteita 2"
       },
       {
-        "endDate" : "2024-03-30T15:47:59Z",
-        "startDate" : "2024-03-30T13:33:00Z",
+        "endDate" : "2024-03-30T16:47:59Z",
+        "startDate" : "2024-03-30T14:33:00Z",
         "title" : "SS13 Sleeping Warrior 2"
       },
       {
         "endDate" : "2024-03-30T22:59:59Z",
-        "startDate" : "2024-03-30T15:48:00Z",
+        "startDate" : "2024-03-30T16:48:00Z",
         "title" : "Flexi service E - WSTI Naivasha - 45 mins"
       },
       {
-        "endDate" : "2024-03-31T03:56:59Z",
-        "startDate" : "2024-03-31T03:02:00Z",
+        "endDate" : "2024-03-31T04:56:59Z",
+        "startDate" : "2024-03-31T04:02:00Z",
         "title" : "SS14 Malewa 1"
       },
       {
-        "endDate" : "2024-03-31T05:04:59Z",
-        "startDate" : "2024-03-31T03:57:00Z",
+        "endDate" : "2024-03-31T06:04:59Z",
+        "startDate" : "2024-03-31T04:57:00Z",
         "title" : "SS15 Oserian 1"
       },
       {
-        "endDate" : "2024-03-31T06:17:59Z",
-        "startDate" : "2024-03-31T05:05:00Z",
+        "endDate" : "2024-03-31T07:17:59Z",
+        "startDate" : "2024-03-31T06:05:00Z",
         "title" : "SS16 Hell's Gate 1"
       },
       {
-        "endDate" : "2024-03-31T07:19:59Z",
-        "startDate" : "2024-03-31T06:18:00Z",
+        "endDate" : "2024-03-31T08:19:59Z",
+        "startDate" : "2024-03-31T07:18:00Z",
         "title" : "Service F - WSTI Naivasha - 15 mins"
       },
       {
-        "endDate" : "2024-03-31T08:09:59Z",
-        "startDate" : "2024-03-31T07:20:00Z",
+        "endDate" : "2024-03-31T09:09:59Z",
+        "startDate" : "2024-03-31T08:20:00Z",
         "title" : "SS17 Malewa 2"
       },
       {
-        "endDate" : "2024-03-31T09:17:59Z",
-        "startDate" : "2024-03-31T08:10:00Z",
+        "endDate" : "2024-03-31T10:17:59Z",
+        "startDate" : "2024-03-31T09:10:00Z",
         "title" : "SS18 Oserian 2"
       },
       {
-        "endDate" : "2024-03-31T10:14:59Z",
-        "startDate" : "2024-03-31T09:18:00Z",
+        "endDate" : "2024-03-31T11:14:59Z",
+        "startDate" : "2024-03-31T10:18:00Z",
         "title" : "Regroup - 40 mins"
       },
       {
-        "endDate" : "2024-03-31T11:14:59Z",
-        "startDate" : "2024-03-31T10:15:00Z",
+        "endDate" : "2024-03-31T12:14:59Z",
+        "startDate" : "2024-03-31T11:15:00Z",
         "title" : "SS19 Hell's Gate 2[Power Stage]"
       },
       {
         "endDate" : "2024-03-31T21:59:59Z",
-        "startDate" : "2024-03-31T11:15:00Z",
+        "startDate" : "2024-03-31T12:15:00Z",
         "title" : "Podium"
       }
     ],
-    "startDate" : "2024-03-27T07:01:00Z",
+    "startDate" : "2024-03-27T08:01:00Z",
     "title" : "72. Safari Rally Kenya"
   },
   {
@@ -968,12 +968,141 @@
     "title" : "21. Rally Italia Sardegna"
   },
   {
-    "endDate" : "2024-06-29T22:00:00Z",
-    "isConfirmed" : false,
+    "endDate" : "2024-06-30T21:59:59Z",
+    "isConfirmed" : true,
     "stages" : [
-
+      {
+        "endDate" : "2024-06-27T14:59:59Z",
+        "startDate" : "2024-06-27T08:00:00Z",
+        "title" : "Shakedown (Lubiewo)"
+      },
+      {
+        "endDate" : "2024-06-27T17:04:59Z",
+        "startDate" : "2024-06-27T15:00:00Z",
+        "title" : "Start - Mikołajki Main Square"
+      },
+      {
+        "endDate" : "2024-06-27T21:59:59Z",
+        "startDate" : "2024-06-27T17:05:00Z",
+        "title" : "SS1 Mikołajki Arena 1"
+      },
+      {
+        "endDate" : "2024-06-28T08:19:59Z",
+        "startDate" : "2024-06-28T06:45:00Z",
+        "title" : "SS2 Stańczyki 1"
+      },
+      {
+        "endDate" : "2024-06-28T09:09:59Z",
+        "startDate" : "2024-06-28T08:20:00Z",
+        "title" : "SS3 Wieliczki 1"
+      },
+      {
+        "endDate" : "2024-06-28T12:04:59Z",
+        "startDate" : "2024-06-28T09:10:00Z",
+        "title" : "SS4 Olecko 1"
+      },
+      {
+        "endDate" : "2024-06-28T13:39:59Z",
+        "startDate" : "2024-06-28T12:05:00Z",
+        "title" : "SS5 Stańczyki 2"
+      },
+      {
+        "endDate" : "2024-06-28T14:29:59Z",
+        "startDate" : "2024-06-28T13:40:00Z",
+        "title" : "SS6 Wieliczki 2"
+      },
+      {
+        "endDate" : "2024-06-28T16:59:59Z",
+        "startDate" : "2024-06-28T14:30:00Z",
+        "title" : "SS7 Olecko 2"
+      },
+      {
+        "endDate" : "2024-06-28T17:29:59Z",
+        "startDate" : "2024-06-28T17:00:00Z",
+        "title" : "SS8 Mikołajki Arena 2"
+      },
+      {
+        "endDate" : "2024-06-28T21:59:59Z",
+        "startDate" : "2024-06-28T17:30:00Z",
+        "title" : "Service - Mikołajki"
+      },
+      {
+        "endDate" : "2024-06-29T07:44:59Z",
+        "startDate" : "2024-06-29T06:30:00Z",
+        "title" : "SS9 Świętajno 1"
+      },
+      {
+        "endDate" : "2024-06-29T08:34:59Z",
+        "startDate" : "2024-06-29T07:45:00Z",
+        "title" : "SS10 Gołdap 1"
+      },
+      {
+        "endDate" : "2024-06-29T11:24:59Z",
+        "startDate" : "2024-06-29T08:35:00Z",
+        "title" : "SS11 Czarne 1"
+      },
+      {
+        "endDate" : "2024-06-29T11:59:59Z",
+        "startDate" : "2024-06-29T11:25:00Z",
+        "title" : "SS12 Mikołajki Arena 3"
+      },
+      {
+        "endDate" : "2024-06-29T13:59:59Z",
+        "startDate" : "2024-06-29T12:00:00Z",
+        "title" : "Service - Mikołajki"
+      },
+      {
+        "endDate" : "2024-06-29T15:14:59Z",
+        "startDate" : "2024-06-29T14:00:00Z",
+        "title" : "SS13 Świętajno 2"
+      },
+      {
+        "endDate" : "2024-06-29T16:04:59Z",
+        "startDate" : "2024-06-29T15:15:00Z",
+        "title" : "SS14 Gołdap 2"
+      },
+      {
+        "endDate" : "2024-06-29T18:54:59Z",
+        "startDate" : "2024-06-29T16:05:00Z",
+        "title" : "SS15 Czarne 2"
+      },
+      {
+        "endDate" : "2024-06-29T21:59:59Z",
+        "startDate" : "2024-06-29T18:55:00Z",
+        "title" : "Service - Mikołajki"
+      },
+      {
+        "endDate" : "2024-06-30T08:04:59Z",
+        "startDate" : "2024-06-30T07:00:00Z",
+        "title" : "SS16 Gmina Mrągowo 1"
+      },
+      {
+        "endDate" : "2024-06-30T08:29:59Z",
+        "startDate" : "2024-06-30T08:05:00Z",
+        "title" : "SS17 Mikołajki 1"
+      },
+      {
+        "endDate" : "2024-06-30T10:19:59Z",
+        "startDate" : "2024-06-30T08:30:00Z",
+        "title" : "Regroup - Mikołajki Arena"
+      },
+      {
+        "endDate" : "2024-06-30T12:14:59Z",
+        "startDate" : "2024-06-30T10:20:00Z",
+        "title" : "SS18 Gmina Mrągowo 2"
+      },
+      {
+        "endDate" : "2024-06-30T12:34:59Z",
+        "startDate" : "2024-06-30T12:15:00Z",
+        "title" : "SS19 Mikołajki 2[Power Stage]"
+      },
+      {
+        "endDate" : "2024-06-30T21:59:59Z",
+        "startDate" : "2024-06-30T12:35:00Z",
+        "title" : "Finish - Mikołajki Arena"
+      }
     ],
-    "startDate" : "2024-06-26T22:00:00Z",
+    "startDate" : "2024-06-27T08:00:00Z",
     "title" : "80. ORLEN Rally Poland"
   },
   {
