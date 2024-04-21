@@ -20,16 +20,21 @@ struct WRCCalendarProvider: CalendarProvider {
     func events(year: Int) async throws -> [MotorsportEvent] {
         let url = URL(string: "https://www.ewrc-results.com/season/2024/1-wrc/")!
 
+        var calendar = Calendar.current
+        calendar.timeZone = .gmt
         let dateParser = Date.VerbatimFormatStyle.init(
             format: "\(day: .defaultDigits). \(month: .defaultDigits). \(year: .defaultDigits)",
-            timeZone: .current,
-            calendar: .current
+            timeZone: .gmt,
+            calendar: calendar
         ).parseStrategy
 
         let html = try String(contentsOf: url)
         let document = try SwiftSoup.parse(html, "https://www.ewrc-results.com")
         let eventNodes = try document.select("div.season-event")
-        let events = try eventNodes.map { node in
+
+        let existingEvents = await load(year: year) ?? []
+
+        let events = try eventNodes.compactMap { node -> MotorsportEvent? in
             let nameNode = try node.select("div.season-event-name > a")
             let name = try nameNode.text()
             let path = try nameNode.attr("href")
@@ -40,12 +45,16 @@ struct WRCCalendarProvider: CalendarProvider {
             let endDateText = datesText[1].trimmingCharacters(in: .whitespaces)
             let endDate = try dateParser.parse(endDateText)
 
+            if endDate < .now {
+                return nil
+            }
+
             let pathComponent = path.split(separator: "/").last!
             let eventURL = URL(string: "https://www.ewrc-results.com/timetable/\(pathComponent)/")!
             let timezoneCookie = HTTPCookie(properties: [
                 .path: "/",
                 .name: "timezone",
-                .value: "Europe/Warsaw",
+                .value: "UTC",
                 .domain: "www.ewrc-results.com",
             ])!
             HTTPCookieStorage.shared.setCookies([timezoneCookie], for: eventURL, mainDocumentURL: nil)
@@ -79,9 +88,8 @@ struct WRCCalendarProvider: CalendarProvider {
                     break
                 }
 
-                stageStartDate = Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: newDate)!
+                stageStartDate = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: newDate)!
 
-                let title = stageCode.isEmpty ? stageName : stageCode + " " + stageName
                 stages.append(
                     MotorsportEventStage(
                         title: stageCode.isEmpty ? stageName : stageCode + " " + stageName,
@@ -93,14 +101,14 @@ struct WRCCalendarProvider: CalendarProvider {
 
             for index in stages.indices.dropLast() {
                 let nextStage = stages[index + 1]
-                if Calendar.current.isDate(stages[index].startDate, inSameDayAs: nextStage.startDate) {
+                if calendar.isDate(stages[index].startDate, inSameDayAs: nextStage.startDate) {
                     stages[index].endDate = nextStage.startDate.addingTimeInterval(-1)
                 } else {
-                    stages[index].endDate = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: stages[index].startDate)!
+                    stages[index].endDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: stages[index].startDate)!
                 }
             }
             if !stages.isEmpty {
-                stages[stages.count - 1].endDate = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: stages[stages.count - 1].startDate)!
+                stages[stages.count - 1].endDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: stages[stages.count - 1].startDate)!
             }
             return MotorsportEvent(
                 title: name.replacingOccurrences(of: year.description, with: "").trimmingCharacters(in: .whitespaces),
@@ -109,6 +117,10 @@ struct WRCCalendarProvider: CalendarProvider {
                 stages: stages,
                 isConfirmed: !stages.isEmpty
             )
+        }
+        if let firstEventDate = events.first?.startDate {
+            let missedEvents = existingEvents.prefix(while: { $0.startDate < firstEventDate })
+            return missedEvents + events
         }
         return events
     }
