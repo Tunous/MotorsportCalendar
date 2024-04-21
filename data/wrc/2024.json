@@ -311,151 +311,151 @@
     "stages" : [
       {
         "endDate" : "2024-03-27T22:59:59Z",
-        "startDate" : "2024-03-27T08:01:00Z",
+        "startDate" : "2024-03-27T09:01:00Z",
         "title" : "Shakedown (Loldia)"
       },
       {
-        "endDate" : "2024-03-28T12:04:59Z",
-        "startDate" : "2024-03-28T10:26:00Z",
+        "endDate" : "2024-03-28T13:04:59Z",
+        "startDate" : "2024-03-28T11:26:00Z",
         "title" : "Start - Kenyatta International Conference Centre"
       },
       {
         "endDate" : "2024-03-28T22:59:59Z",
-        "startDate" : "2024-03-28T12:05:00Z",
+        "startDate" : "2024-03-28T13:05:00Z",
         "title" : "SS1 Super Special Kasarani"
       },
       {
-        "endDate" : "2024-03-29T06:14:59Z",
-        "startDate" : "2024-03-29T05:15:00Z",
+        "endDate" : "2024-03-29T07:14:59Z",
+        "startDate" : "2024-03-29T06:15:00Z",
         "title" : "Service A - WSTI Naivasha - 15 mins"
       },
       {
-        "endDate" : "2024-03-29T07:32:59Z",
-        "startDate" : "2024-03-29T06:15:00Z",
+        "endDate" : "2024-03-29T08:32:59Z",
+        "startDate" : "2024-03-29T07:15:00Z",
         "title" : "SS2 Loldia 1"
       },
       {
-        "endDate" : "2024-03-29T08:25:59Z",
-        "startDate" : "2024-03-29T07:33:00Z",
+        "endDate" : "2024-03-29T09:25:59Z",
+        "startDate" : "2024-03-29T08:33:00Z",
         "title" : "SS3 Geothermal 1"
       },
       {
-        "endDate" : "2024-03-29T10:22:59Z",
-        "startDate" : "2024-03-29T08:26:00Z",
+        "endDate" : "2024-03-29T11:22:59Z",
+        "startDate" : "2024-03-29T09:26:00Z",
         "title" : "SS4 Kedong 1"
       },
       {
-        "endDate" : "2024-03-29T11:47:59Z",
-        "startDate" : "2024-03-29T10:23:00Z",
+        "endDate" : "2024-03-29T12:47:59Z",
+        "startDate" : "2024-03-29T11:23:00Z",
         "title" : "Service B - WSTI Naivasha - 40 mins"
       },
       {
-        "endDate" : "2024-03-29T13:05:59Z",
-        "startDate" : "2024-03-29T11:48:00Z",
+        "endDate" : "2024-03-29T14:05:59Z",
+        "startDate" : "2024-03-29T12:48:00Z",
         "title" : "SS5 Loldia 2"
       },
       {
-        "endDate" : "2024-03-29T13:58:59Z",
-        "startDate" : "2024-03-29T13:06:00Z",
+        "endDate" : "2024-03-29T14:58:59Z",
+        "startDate" : "2024-03-29T14:06:00Z",
         "title" : "SS6 Geothermal 2"
       },
       {
-        "endDate" : "2024-03-29T15:35:59Z",
-        "startDate" : "2024-03-29T13:59:00Z",
+        "endDate" : "2024-03-29T16:35:59Z",
+        "startDate" : "2024-03-29T14:59:00Z",
         "title" : "SS7 Kedong 2"
       },
       {
         "endDate" : "2024-03-29T22:59:59Z",
-        "startDate" : "2024-03-29T15:36:00Z",
+        "startDate" : "2024-03-29T16:36:00Z",
         "title" : "Flexi service C - WSTI Naivasha - 45 mins"
       },
       {
-        "endDate" : "2024-03-30T07:04:59Z",
-        "startDate" : "2024-03-30T06:01:00Z",
+        "endDate" : "2024-03-30T08:04:59Z",
+        "startDate" : "2024-03-30T07:01:00Z",
         "title" : "SS8 Soysambu 1"
       },
       {
-        "endDate" : "2024-03-30T08:02:59Z",
-        "startDate" : "2024-03-30T07:05:00Z",
+        "endDate" : "2024-03-30T09:02:59Z",
+        "startDate" : "2024-03-30T08:05:00Z",
         "title" : "SS9 Elmenteita 1"
       },
       {
-        "endDate" : "2024-03-30T10:27:59Z",
-        "startDate" : "2024-03-30T08:03:00Z",
+        "endDate" : "2024-03-30T11:27:59Z",
+        "startDate" : "2024-03-30T09:03:00Z",
         "title" : "SS10 Sleeping Warrior 1"
       },
       {
-        "endDate" : "2024-03-30T12:33:59Z",
-        "startDate" : "2024-03-30T10:28:00Z",
+        "endDate" : "2024-03-30T13:33:59Z",
+        "startDate" : "2024-03-30T11:28:00Z",
         "title" : "Service D - WSTI Naivasha - 40 mins"
       },
       {
-        "endDate" : "2024-03-30T13:34:59Z",
-        "startDate" : "2024-03-30T12:34:00Z",
+        "endDate" : "2024-03-30T14:34:59Z",
+        "startDate" : "2024-03-30T13:34:00Z",
         "title" : "SS11 Soysambu 2"
       },
       {
-        "endDate" : "2024-03-30T14:32:59Z",
-        "startDate" : "2024-03-30T13:35:00Z",
+        "endDate" : "2024-03-30T15:32:59Z",
+        "startDate" : "2024-03-30T14:35:00Z",
         "title" : "SS12 Elmenteita 2"
       },
       {
-        "endDate" : "2024-03-30T16:47:59Z",
-        "startDate" : "2024-03-30T14:33:00Z",
+        "endDate" : "2024-03-30T17:47:59Z",
+        "startDate" : "2024-03-30T15:33:00Z",
         "title" : "SS13 Sleeping Warrior 2"
       },
       {
         "endDate" : "2024-03-30T22:59:59Z",
-        "startDate" : "2024-03-30T16:48:00Z",
+        "startDate" : "2024-03-30T17:48:00Z",
         "title" : "Flexi service E - WSTI Naivasha - 45 mins"
       },
       {
-        "endDate" : "2024-03-31T04:56:59Z",
-        "startDate" : "2024-03-31T04:02:00Z",
+        "endDate" : "2024-03-31T05:56:59Z",
+        "startDate" : "2024-03-31T05:02:00Z",
         "title" : "SS14 Malewa 1"
       },
       {
-        "endDate" : "2024-03-31T06:04:59Z",
-        "startDate" : "2024-03-31T04:57:00Z",
+        "endDate" : "2024-03-31T07:04:59Z",
+        "startDate" : "2024-03-31T05:57:00Z",
         "title" : "SS15 Oserian 1"
       },
       {
-        "endDate" : "2024-03-31T07:17:59Z",
-        "startDate" : "2024-03-31T06:05:00Z",
+        "endDate" : "2024-03-31T08:17:59Z",
+        "startDate" : "2024-03-31T07:05:00Z",
         "title" : "SS16 Hell's Gate 1"
       },
       {
-        "endDate" : "2024-03-31T08:19:59Z",
-        "startDate" : "2024-03-31T07:18:00Z",
+        "endDate" : "2024-03-31T09:19:59Z",
+        "startDate" : "2024-03-31T08:18:00Z",
         "title" : "Service F - WSTI Naivasha - 15 mins"
       },
       {
-        "endDate" : "2024-03-31T09:09:59Z",
-        "startDate" : "2024-03-31T08:20:00Z",
+        "endDate" : "2024-03-31T10:09:59Z",
+        "startDate" : "2024-03-31T09:20:00Z",
         "title" : "SS17 Malewa 2"
       },
       {
-        "endDate" : "2024-03-31T10:17:59Z",
-        "startDate" : "2024-03-31T09:10:00Z",
+        "endDate" : "2024-03-31T11:17:59Z",
+        "startDate" : "2024-03-31T10:10:00Z",
         "title" : "SS18 Oserian 2"
       },
       {
-        "endDate" : "2024-03-31T11:14:59Z",
-        "startDate" : "2024-03-31T10:18:00Z",
+        "endDate" : "2024-03-31T12:14:59Z",
+        "startDate" : "2024-03-31T11:18:00Z",
         "title" : "Regroup - 40 mins"
       },
       {
-        "endDate" : "2024-03-31T12:14:59Z",
-        "startDate" : "2024-03-31T11:15:00Z",
+        "endDate" : "2024-03-31T13:14:59Z",
+        "startDate" : "2024-03-31T12:15:00Z",
         "title" : "SS19 Hell's Gate 2[Power Stage]"
       },
       {
         "endDate" : "2024-03-31T21:59:59Z",
-        "startDate" : "2024-03-31T12:15:00Z",
+        "startDate" : "2024-03-31T13:15:00Z",
         "title" : "Podium"
       }
     ],
-    "startDate" : "2024-03-27T08:01:00Z",
+    "startDate" : "2024-03-27T09:01:00Z",
     "title" : "72. Safari Rally Kenya"
   },
   {
@@ -488,14 +488,14 @@
         "title" : "SS3 Ravna Gora - Skrad 1"
       },
       {
-        "endDate" : "2024-04-19T10:26:59Z",
+        "endDate" : "2024-04-19T10:31:59Z",
         "startDate" : "2024-04-19T09:47:00Z",
         "title" : "SS4 Platak 1"
       },
       {
         "endDate" : "2024-04-19T12:01:59Z",
-        "startDate" : "2024-04-19T10:27:00Z",
-        "title" : "Regroup - Rijeka 'Korzo' - 75 mins"
+        "startDate" : "2024-04-19T10:32:00Z",
+        "title" : "Regroup - Rijeka 'Korzo' - 45 mins"
       },
       {
         "endDate" : "2024-04-19T12:44:59Z",
@@ -816,7 +816,7 @@
       {
         "endDate" : "2024-05-31T11:29:59Z",
         "startDate" : "2024-05-31T06:01:00Z",
-        "title" : "Shakedown (Olmedo)"
+        "title" : "Shakedown (Ittiri)"
       },
       {
         "endDate" : "2024-05-31T12:32:59Z",
@@ -839,54 +839,54 @@
         "title" : "Regroup - Castelsardo - 40 mins"
       },
       {
-        "endDate" : "2024-05-31T16:32:59Z",
+        "endDate" : "2024-05-31T16:34:59Z",
         "startDate" : "2024-05-31T15:33:00Z",
         "title" : "SS3 Osilo - Tergu 2"
       },
       {
-        "endDate" : "2024-05-31T18:22:59Z",
-        "startDate" : "2024-05-31T16:33:00Z",
+        "endDate" : "2024-05-31T18:24:59Z",
+        "startDate" : "2024-05-31T16:35:00Z",
         "title" : "SS4 Sedini - Castelsardo 2"
       },
       {
         "endDate" : "2024-05-31T21:59:59Z",
-        "startDate" : "2024-05-31T18:23:00Z",
+        "startDate" : "2024-05-31T18:25:00Z",
         "title" : "Flexi service A - Alghero - 45 mins"
       },
       {
-        "endDate" : "2024-06-01T06:46:59Z",
-        "startDate" : "2024-06-01T05:26:00Z",
+        "endDate" : "2024-06-01T06:48:59Z",
+        "startDate" : "2024-06-01T05:41:00Z",
         "title" : "SS5 Tempio Pausania 1"
       },
       {
-        "endDate" : "2024-06-01T08:02:59Z",
-        "startDate" : "2024-06-01T06:47:00Z",
+        "endDate" : "2024-06-01T08:07:59Z",
+        "startDate" : "2024-06-01T06:49:00Z",
         "title" : "SS6 Tula 1"
       },
       {
-        "endDate" : "2024-06-01T08:25:59Z",
-        "startDate" : "2024-06-01T08:03:00Z",
-        "title" : "Regroup - Tempio Pausania - 15 mins"
+        "endDate" : "2024-06-01T08:40:59Z",
+        "startDate" : "2024-06-01T08:08:00Z",
+        "title" : "Regroup - Tempio Pausania - 25 mins"
       },
       {
-        "endDate" : "2024-06-01T09:46:59Z",
-        "startDate" : "2024-06-01T08:26:00Z",
+        "endDate" : "2024-06-01T09:48:59Z",
+        "startDate" : "2024-06-01T08:41:00Z",
         "title" : "SS7 Tempio Pausania 2"
       },
       {
-        "endDate" : "2024-06-01T11:15:59Z",
-        "startDate" : "2024-06-01T09:47:00Z",
+        "endDate" : "2024-06-01T11:16:59Z",
+        "startDate" : "2024-06-01T09:49:00Z",
         "title" : "SS8 Tula 2"
       },
       {
-        "endDate" : "2024-06-01T11:30:59Z",
-        "startDate" : "2024-06-01T11:16:00Z",
+        "endDate" : "2024-06-01T11:31:59Z",
+        "startDate" : "2024-06-01T11:17:00Z",
         "title" : "Regroup - Pattada - 15 mins"
       },
       {
         "endDate" : "2024-06-01T12:04:59Z",
-        "startDate" : "2024-06-01T11:31:00Z",
-        "title" : "Tyre fitting zone B - Pattada - 15 mins"
+        "startDate" : "2024-06-01T11:32:00Z",
+        "title" : "Tyre fitting zone - Pattada - 15 mins"
       },
       {
         "endDate" : "2024-06-01T13:04:59Z",
@@ -894,14 +894,14 @@
         "title" : "SS9 Monte Lerno - Monti di Ala 1"
       },
       {
-        "endDate" : "2024-06-01T13:59:59Z",
+        "endDate" : "2024-06-01T13:44:59Z",
         "startDate" : "2024-06-01T13:05:00Z",
         "title" : "SS10 Coiluna - Loelle 1"
       },
       {
         "endDate" : "2024-06-01T15:04:59Z",
-        "startDate" : "2024-06-01T14:00:00Z",
-        "title" : "Regroup - Pattada - Nuraghe Lerno - 50 mins"
+        "startDate" : "2024-06-01T13:45:00Z",
+        "title" : "Regroup - Buddusò - 50 mins"
       },
       {
         "endDate" : "2024-06-01T16:04:59Z",
@@ -916,17 +916,17 @@
       {
         "endDate" : "2024-06-01T21:59:59Z",
         "startDate" : "2024-06-01T18:37:00Z",
-        "title" : "Flexi service C - Alghero - 45 mins"
+        "title" : "Flexi service B - Alghero - 45 mins"
       },
       {
-        "endDate" : "2024-06-02T06:20:59Z",
-        "startDate" : "2024-06-02T05:55:00Z",
+        "endDate" : "2024-06-02T06:25:59Z",
+        "startDate" : "2024-06-02T06:00:00Z",
         "title" : "SS13 Cala Flumini 1"
       },
       {
         "endDate" : "2024-06-02T07:04:59Z",
-        "startDate" : "2024-06-02T06:21:00Z",
-        "title" : "Regroup - Palmadula - 35 mins"
+        "startDate" : "2024-06-02T06:26:00Z",
+        "title" : "Regroup - Palmadula - 30 mins"
       },
       {
         "endDate" : "2024-06-02T07:58:59Z",
@@ -934,19 +934,19 @@
         "title" : "SS14 Sassari - Argentiera 1"
       },
       {
-        "endDate" : "2024-06-02T08:54:59Z",
+        "endDate" : "2024-06-02T08:59:59Z",
         "startDate" : "2024-06-02T07:59:00Z",
-        "title" : "Regroup - Porto Torres - 20 mins"
+        "title" : "Regroup - Porto Torres - 25 mins"
       },
       {
-        "endDate" : "2024-06-02T09:20:59Z",
-        "startDate" : "2024-06-02T08:55:00Z",
+        "endDate" : "2024-06-02T09:25:59Z",
+        "startDate" : "2024-06-02T09:00:00Z",
         "title" : "SS15 Cala Flumini 2"
       },
       {
         "endDate" : "2024-06-02T10:14:59Z",
-        "startDate" : "2024-06-02T09:21:00Z",
-        "title" : "Regroup - Palmadula - 45 mins"
+        "startDate" : "2024-06-02T09:26:00Z",
+        "title" : "Regroup - Palmadula - 40 mins"
       },
       {
         "endDate" : "2024-06-02T11:14:59Z",
