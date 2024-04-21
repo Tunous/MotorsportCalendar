@@ -23,7 +23,7 @@ struct MotorsportCalendar: AsyncParsableCommand {
         let providers: [any CalendarProvider] = [
             Formula1CalendarProvider(outputURL: outputURL, calendarURL: formula1CalendarURL),
 //            WRCCalendarProvider(outputURL: outputURL),
-            WRC2CalendarProvider(outputURL: outputURL),
+            WRCCalendarProvider(outputURL: outputURL),
         ]
 
         let year = Calendar.current.component(.year, from: .now)

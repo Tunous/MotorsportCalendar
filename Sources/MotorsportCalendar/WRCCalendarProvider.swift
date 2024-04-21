@@ -1,15 +1,15 @@
 //
 //  WRCCalendarProvider.swift
+//  
 //
-//
-//  Created by Łukasz Rutkowski on 05/03/2024.
+//  Created by Łukasz Rutkowski on 09/03/2024.
 //
 
 import Foundation
 import MotorsportCalendarData
+import SwiftSoup
 
 struct WRCCalendarProvider: CalendarProvider {
-
     let outputURL: URL
     let series: Series = .wrc
 
@@ -18,96 +18,98 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     func events(year: Int) async throws -> [MotorsportEvent] {
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = "api.wrc.com"
-        components.path = "/content/filters/calendar"
-        components.queryItems = [
-            URLQueryItem(name: "championship", value: "wrc"),
-            URLQueryItem(name: "year", value: "\(year)")
-        ]
-        let request = URLRequest(url: components.url!)
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let url = URL(string: "https://www.ewrc-results.com/season/2024/1-wrc/")!
 
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .millisecondsSince1970
-        let object = try decoder.decode(CalendarResponse.self, from: data)
+        let dateParser = Date.VerbatimFormatStyle.init(
+            format: "\(day: .defaultDigits). \(month: .defaultDigits). \(year: .defaultDigits)",
+            timeZone: .current,
+            calendar: .current
+        ).parseStrategy
 
-        var continueFetchingStages = true
-        var events: [MotorsportEvent] = []
-        for event in object.content {
-            let stages: [MotorsportEventStage]?
-            if continueFetchingStages {
-                print("[\(Self.self)] Getting stages of \(event.title)")
-                var components = URLComponents()
-                components.scheme = "https"
-                components.host = "api.rally.tv"
-                components.path = "/content/filters/schedule"
-                components.queryItems = [
-                    URLQueryItem(name: "byListingTime", value: "\(Int(event.startDate.timeIntervalSince1970 * 1000))~\(Int(event.endDate.timeIntervalSince1970 * 1000))"),
-                    URLQueryItem(name: "seriesUid", value: event.id)
-                ]
-                let request = URLRequest(url: components.url!)
-                let (data, _) = try await URLSession.shared.data(for: request)
+        let html = try String(contentsOf: url)
+        let document = try SwiftSoup.parse(html, "https://www.ewrc-results.com")
+        let eventNodes = try document.select("div.season-event")
+        let events = try eventNodes.map { node in
+            let nameNode = try node.select("div.season-event-name > a")
+            let name = try nameNode.text()
+            let path = try nameNode.attr("href")
+            let datesText = try node.select("div.event-info").text().prefix(while: { $0 != "," }).split(separator: "–")
 
-                let object = try decoder.decode(ScheduleResponse.self, from: data)
-                stages = object.content.map { element in
-                    MotorsportEventStage(
-                        title: element.title,
-                        startDate: element.availableOn,
-                        endDate: element.availableTill
-                    )
+            let startDateText = datesText[0].trimmingCharacters(in: .whitespaces) + " \(year)"
+            let startDate = try dateParser.parse(startDateText)
+            let endDateText = datesText[1].trimmingCharacters(in: .whitespaces)
+            let endDate = try dateParser.parse(endDateText)
+
+            let pathComponent = path.split(separator: "/").last!
+            let eventURL = URL(string: "https://www.ewrc-results.com/timetable/\(pathComponent)/")!
+            let timezoneCookie = HTTPCookie(properties: [
+                .path: "/",
+                .name: "timezone",
+                .value: "Europe/Warsaw",
+                .domain: "www.ewrc-results.com",
+            ])!
+            HTTPCookieStorage.shared.setCookies([timezoneCookie], for: eventURL, mainDocumentURL: nil)
+
+            let eventHtml = try String(contentsOf: eventURL)
+            let eventDocument = try SwiftSoup.parse(eventHtml, "https://www.ewrc-results.com")
+
+            var stageStartDate = Date.distantPast
+            var stages: [MotorsportEventStage] = []
+            let stagesTable = try eventDocument.select("div.mt-3")[0].children()
+            for stageNode in stagesTable {
+                guard !stageNode.children().isEmpty() else { continue }
+                let stageCode = try stageNode.select(".harm-ss").text()
+                let stageName = try stageNode.select(".harm-stage").text()
+                let stageDateText = try stageNode.select(".harm-date").text().drop(while: { !$0.isWhitespace }).dropFirst()
+                let newDate: Date
+                if !stageDateText.isEmpty {
+                    newDate = try dateParser.parse("\(stageDateText) \(year)")
+                } else {
+                    newDate = stageStartDate
                 }
-            } else {
-                stages = nil
-            }
-            let isConfirmed = stages?.isEmpty == false || event.endDate < .now
-            events.append(
-                MotorsportEvent(
-                    title: event.title,
-                    startDate: event.startDate,
-                    endDate: event.endDate,
-                    stages: stages ?? [],
-                    isConfirmed: isConfirmed
+                let stageTimeNode = try stageNode.select(".harm-time").first()
+                let stageTimeText = try stageTimeNode?.nextElementSibling()?.text() ?? stageTimeNode?.text() ?? ""
+                let stageTime = stageTimeText.split(separator: ":")
+                guard
+                    stageTime.count >= 2,
+                    let hour = Int(stageTime[0].drop(while: { !$0.isNumber })),
+                    let minute = Int(stageTime[1].prefix(while: { $0.isNumber }))
+                else {
+                    stages = []
+                    break
+                }
+
+                stageStartDate = Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: newDate)!
+
+                let title = stageCode.isEmpty ? stageName : stageCode + " " + stageName
+                stages.append(
+                    MotorsportEventStage(
+                        title: stageCode.isEmpty ? stageName : stageCode + " " + stageName,
+                        startDate: stageStartDate,
+                        endDate: stageStartDate
+                    )
                 )
+            }
+
+            for index in stages.indices.dropLast() {
+                let nextStage = stages[index + 1]
+                if Calendar.current.isDate(stages[index].startDate, inSameDayAs: nextStage.startDate) {
+                    stages[index].endDate = nextStage.startDate.addingTimeInterval(-1)
+                } else {
+                    stages[index].endDate = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: stages[index].startDate)!
+                }
+            }
+            if !stages.isEmpty {
+                stages[stages.count - 1].endDate = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: stages[stages.count - 1].startDate)!
+            }
+            return MotorsportEvent(
+                title: name.replacingOccurrences(of: year.description, with: "").trimmingCharacters(in: .whitespaces),
+                startDate: stages.first?.startDate ?? startDate,
+                endDate: stages.last?.endDate ?? endDate,
+                stages: stages,
+                isConfirmed: !stages.isEmpty
             )
-            continueFetchingStages = !isConfirmed
         }
         return events
-    }
-}
-
-fileprivate struct CalendarResponse: Decodable {
-    let content: [Content]
-
-    struct Content: Decodable, Identifiable, Hashable {
-        let title: String
-        let startDate: Date
-        let endDate: Date
-        let seriesUid: String
-        let images: [Image]
-
-        var id: String { seriesUid }
-
-        var dateInterval: DateInterval {
-            DateInterval(start: startDate, end: endDate)
-        }
-
-        struct Image: Decodable, Hashable {
-            let url: URL
-        }
-    }
-}
-
-fileprivate struct ScheduleResponse: Decodable {
-    let content: [Content]
-
-    struct Content: Decodable, Identifiable {
-        let uid: String
-        let title: String
-        let availableOn: Date
-        let availableTill: Date
-
-        var id: String { uid }
     }
 }
