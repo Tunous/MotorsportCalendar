@@ -40,6 +40,7 @@ struct Formula1CalendarProvider: CalendarProvider {
         }
         let groupedEvents = Dictionary(grouping: events, by: \.name)
         let sortedEvents = groupedEvents.sorted(using: KeyPathComparator(\.value.first?.startDate))
+
         let finalEvents = sortedEvents.map { name, sessions -> MotorsportEvent in
             let stages = sessions.map {
                 MotorsportEventStage(
@@ -57,6 +58,11 @@ struct Formula1CalendarProvider: CalendarProvider {
                 stages: stages.sorted(using: KeyPathComparator(\.startDate)),
                 isConfirmed: sessions.allSatisfy({ $0.hasConfirmedDates })
             )
+        }
+
+        if let existingEvents = await load(year: year), let firstEventDate = finalEvents.first?.startDate {
+            let missedEvents = existingEvents.prefix(while: { $0.startDate < firstEventDate })
+            return missedEvents + finalEvents
         }
 
         return finalEvents

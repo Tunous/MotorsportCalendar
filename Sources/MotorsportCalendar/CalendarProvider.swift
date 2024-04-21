@@ -36,4 +36,13 @@ extension CalendarProvider {
         print("[\(Self.self)] Updated calendar")
         return true
     }
+
+    func load(year: Int) async -> [MotorsportEvent]? {
+        let directory = outputURL.appending(path: series.rawValue)
+        let url = directory.appending(path: "\(year).json")
+        guard let storedEventsData = try? Data(contentsOf: url) else {
+            return nil
+        }
+        return try? JSONDecoder.motorsportCalendar.decode([MotorsportEvent].self, from: storedEventsData)
+    }
 }
