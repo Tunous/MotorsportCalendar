@@ -99,7 +99,7 @@ fileprivate enum SessionType: String, Encodable {
     case practice1 = "Practice 1"
     case practice2 = "Practice 2"
     case practice3 = "Practice 3"
-    case sprintShootout = "Sprint Shootout"
+    case sprintQualification = "Sprint Qualification"
     case sprintRace = "Sprint Race"
     case qualifying = "Qualifying"
     case race = "Race"
@@ -110,7 +110,8 @@ fileprivate enum SessionType: String, Encodable {
             "Practice 2": .practice2,
             "Practice 3": .practice3,
             "Qualifying": .qualifying,
-            "Sprint Shootout": .sprintShootout,
+            "Sprint Shootout": .sprintQualification,
+            "Sprint Qualification": .sprintQualification,
             "Sprint Race": .sprintRace,
             "Race": .race,
         ]
