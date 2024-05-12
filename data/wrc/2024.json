@@ -973,7 +973,7 @@
     "stages" : [
       {
         "endDate" : "2024-06-27T14:59:59Z",
-        "startDate" : "2024-06-27T08:00:00Z",
+        "startDate" : "2024-06-27T08:01:00Z",
         "title" : "Shakedown (Lubiewo)"
       },
       {
@@ -997,9 +997,19 @@
         "title" : "SS3 Wieliczki 1"
       },
       {
-        "endDate" : "2024-06-28T12:04:59Z",
+        "endDate" : "2024-06-28T09:59:59Z",
         "startDate" : "2024-06-28T09:10:00Z",
         "title" : "SS4 Olecko 1"
+      },
+      {
+        "endDate" : "2024-06-28T10:39:59Z",
+        "startDate" : "2024-06-28T10:00:00Z",
+        "title" : "Regroup - Olecko - 40 mins"
+      },
+      {
+        "endDate" : "2024-06-28T12:04:59Z",
+        "startDate" : "2024-06-28T10:40:00Z",
+        "title" : "Tyre fitting zone - Olecko - 15 mins"
       },
       {
         "endDate" : "2024-06-28T13:39:59Z",
@@ -1012,9 +1022,14 @@
         "title" : "SS6 Wieliczki 2"
       },
       {
-        "endDate" : "2024-06-28T16:59:59Z",
+        "endDate" : "2024-06-28T16:26:59Z",
         "startDate" : "2024-06-28T14:30:00Z",
         "title" : "SS7 Olecko 2"
+      },
+      {
+        "endDate" : "2024-06-28T16:59:59Z",
+        "startDate" : "2024-06-28T16:27:00Z",
+        "title" : "Regroup - Mikołajki - 30 mins"
       },
       {
         "endDate" : "2024-06-28T17:29:59Z",
@@ -1024,7 +1039,7 @@
       {
         "endDate" : "2024-06-28T23:59:59Z",
         "startDate" : "2024-06-28T17:30:00Z",
-        "title" : "Service - Mikołajki"
+        "title" : "Flexi service A - Mikołajki, Hotel Gołębiewski - 45 mins"
       },
       {
         "endDate" : "2024-06-29T07:44:59Z",
@@ -1042,14 +1057,19 @@
         "title" : "SS11 Czarne 1"
       },
       {
-        "endDate" : "2024-06-29T11:59:59Z",
+        "endDate" : "2024-06-29T11:44:59Z",
         "startDate" : "2024-06-29T11:25:00Z",
         "title" : "SS12 Mikołajki Arena 3"
       },
       {
+        "endDate" : "2024-06-29T11:59:59Z",
+        "startDate" : "2024-06-29T11:45:00Z",
+        "title" : "Regroup - Mikołajki - 15 mins"
+      },
+      {
         "endDate" : "2024-06-29T13:59:59Z",
         "startDate" : "2024-06-29T12:00:00Z",
-        "title" : "Service - Mikołajki"
+        "title" : "Service B - Mikołajki, Hotel Gołębiewski - 40 mins"
       },
       {
         "endDate" : "2024-06-29T15:14:59Z",
@@ -1069,7 +1089,7 @@
       {
         "endDate" : "2024-06-29T23:59:59Z",
         "startDate" : "2024-06-29T18:55:00Z",
-        "title" : "Service - Mikołajki"
+        "title" : "Flexi service C - Mikołajki, Hotel Gołębiewski - 45 mins"
       },
       {
         "endDate" : "2024-06-30T08:04:59Z",
@@ -1084,12 +1104,17 @@
       {
         "endDate" : "2024-06-30T10:19:59Z",
         "startDate" : "2024-06-30T08:30:00Z",
-        "title" : "Regroup - Mikołajki Arena"
+        "title" : "Regroup - Mikołajki - 50 mins"
+      },
+      {
+        "endDate" : "2024-06-30T11:19:59Z",
+        "startDate" : "2024-06-30T10:20:00Z",
+        "title" : "SS18 Gmina Mrągowo 2"
       },
       {
         "endDate" : "2024-06-30T12:14:59Z",
-        "startDate" : "2024-06-30T10:20:00Z",
-        "title" : "SS18 Gmina Mrągowo 2"
+        "startDate" : "2024-06-30T11:20:00Z",
+        "title" : "Regroup - Mikołajki - 45 mins"
       },
       {
         "endDate" : "2024-06-30T12:34:59Z",
@@ -1097,12 +1122,17 @@
         "title" : "SS19 Mikołajki 2[Power Stage]"
       },
       {
-        "endDate" : "2024-06-30T23:59:59Z",
+        "endDate" : "2024-06-30T13:14:59Z",
         "startDate" : "2024-06-30T12:35:00Z",
         "title" : "Finish - Mikołajki Arena"
+      },
+      {
+        "endDate" : "2024-06-30T23:59:59Z",
+        "startDate" : "2024-06-30T13:15:00Z",
+        "title" : "Podium - Mikołajki Arena"
       }
     ],
-    "startDate" : "2024-06-27T08:00:00Z",
+    "startDate" : "2024-06-27T08:01:00Z",
     "title" : "80. ORLEN Rally Poland"
   },
   {
@@ -1263,13 +1293,152 @@
     "title" : "73. Secto Rally Finland"
   },
   {
-    "endDate" : "2024-09-08T00:00:00Z",
-    "isConfirmed" : false,
+    "endDate" : "2024-09-08T23:59:59Z",
+    "isConfirmed" : true,
     "stages" : [
-
+      {
+        "endDate" : "2024-09-05T15:59:59Z",
+        "startDate" : "2024-09-05T06:01:00Z",
+        "title" : "Shakedown"
+      },
+      {
+        "endDate" : "2024-09-05T23:59:59Z",
+        "startDate" : "2024-09-05T16:00:00Z",
+        "title" : "Start - Lamia"
+      },
+      {
+        "endDate" : "2024-09-06T06:08:59Z",
+        "startDate" : "2024-09-06T04:58:00Z",
+        "title" : "SS1 Ano Pavliani 1"
+      },
+      {
+        "endDate" : "2024-09-06T08:16:59Z",
+        "startDate" : "2024-09-06T06:09:00Z",
+        "title" : "SS2 Dafni 1"
+      },
+      {
+        "endDate" : "2024-09-06T09:41:59Z",
+        "startDate" : "2024-09-06T08:17:00Z",
+        "title" : "SS3 Tarzan 1"
+      },
+      {
+        "endDate" : "2024-09-06T10:15:59Z",
+        "startDate" : "2024-09-06T09:42:00Z",
+        "title" : "Regroup - 34 mins"
+      },
+      {
+        "endDate" : "2024-09-06T11:28:59Z",
+        "startDate" : "2024-09-06T10:16:00Z",
+        "title" : "Flexi service A - Lamia - 30 mins"
+      },
+      {
+        "endDate" : "2024-09-06T12:39:59Z",
+        "startDate" : "2024-09-06T11:29:00Z",
+        "title" : "SS4 Ano Pavliani 2"
+      },
+      {
+        "endDate" : "2024-09-06T14:47:59Z",
+        "startDate" : "2024-09-06T12:40:00Z",
+        "title" : "SS5 Dafni 2"
+      },
+      {
+        "endDate" : "2024-09-06T16:22:59Z",
+        "startDate" : "2024-09-06T14:48:00Z",
+        "title" : "SS6 Tarzan 2"
+      },
+      {
+        "endDate" : "2024-09-06T23:59:59Z",
+        "startDate" : "2024-09-06T16:23:00Z",
+        "title" : "Flexi service B - Lamia - 45 mins"
+      },
+      {
+        "endDate" : "2024-09-07T06:36:59Z",
+        "startDate" : "2024-09-07T04:16:00Z",
+        "title" : "SS7 Rengini"
+      },
+      {
+        "endDate" : "2024-09-07T09:04:59Z",
+        "startDate" : "2024-09-07T06:37:00Z",
+        "title" : "SS8 Thiva"
+      },
+      {
+        "endDate" : "2024-09-07T09:52:59Z",
+        "startDate" : "2024-09-07T09:05:00Z",
+        "title" : "SS9 Aghii Theodori 1"
+      },
+      {
+        "endDate" : "2024-09-07T11:02:59Z",
+        "startDate" : "2024-09-07T09:53:00Z",
+        "title" : "Regroup - 70 mins"
+      },
+      {
+        "endDate" : "2024-09-07T12:03:59Z",
+        "startDate" : "2024-09-07T11:03:00Z",
+        "title" : "Tyre fitting zone - Loutraki - 15 mins"
+      },
+      {
+        "endDate" : "2024-09-07T13:04:59Z",
+        "startDate" : "2024-09-07T12:04:00Z",
+        "title" : "SS10 Loutraki"
+      },
+      {
+        "endDate" : "2024-09-07T16:19:59Z",
+        "startDate" : "2024-09-07T13:05:00Z",
+        "title" : "SS11 Aghii Theodori 2"
+      },
+      {
+        "endDate" : "2024-09-07T17:04:59Z",
+        "startDate" : "2024-09-07T16:20:00Z",
+        "title" : "Regroup - 42 mins"
+      },
+      {
+        "endDate" : "2024-09-07T23:59:59Z",
+        "startDate" : "2024-09-07T17:05:00Z",
+        "title" : "SS12 EKO SSS"
+      },
+      {
+        "endDate" : "2024-09-08T06:03:59Z",
+        "startDate" : "2024-09-08T03:00:00Z",
+        "title" : "Flexi service C - Lamia - 45 mins"
+      },
+      {
+        "endDate" : "2024-09-08T07:04:59Z",
+        "startDate" : "2024-09-08T06:04:00Z",
+        "title" : "SS13 Inohori"
+      },
+      {
+        "endDate" : "2024-09-08T08:19:59Z",
+        "startDate" : "2024-09-08T07:05:00Z",
+        "title" : "SS14 Eleftherohori 1"
+      },
+      {
+        "endDate" : "2024-09-08T09:14:59Z",
+        "startDate" : "2024-09-08T08:20:00Z",
+        "title" : "Regroup - 55 mins"
+      },
+      {
+        "endDate" : "2024-09-08T10:14:59Z",
+        "startDate" : "2024-09-08T09:15:00Z",
+        "title" : "Flexi service D - Lamia - 15 mins"
+      },
+      {
+        "endDate" : "2024-09-08T11:19:59Z",
+        "startDate" : "2024-09-08T10:15:00Z",
+        "title" : "SS15 Eleftherohori 2[Power Stage]"
+      },
+      {
+        "endDate" : "2024-09-08T12:39:59Z",
+        "startDate" : "2024-09-08T11:20:00Z",
+        "title" : "Finish"
+      },
+      {
+        "endDate" : "2024-09-08T23:59:59Z",
+        "startDate" : "2024-09-08T12:40:00Z",
+        "title" : "Podium"
+      }
     ],
-    "startDate" : "2024-09-05T00:00:00Z",
-    "title" : "68. EKO Acropolis Rally Greece"
+    "startDate" : "2024-09-05T06:01:00Z",
+    "title" : "68. EKO Acropolis Rally"
   },
   {
     "endDate" : "2024-09-29T00:00:00Z",

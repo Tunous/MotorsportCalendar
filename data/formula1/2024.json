@@ -693,7 +693,7 @@
     "title" : "São Paulo Grand Prix"
   },
   {
-    "endDate" : "2024-11-24T08:00:00Z",
+    "endDate" : "2024-11-24T07:59:00Z",
     "isConfirmed" : true,
     "stages" : [
       {
@@ -717,7 +717,7 @@
         "title" : "Qualifying"
       },
       {
-        "endDate" : "2024-11-24T08:00:00Z",
+        "endDate" : "2024-11-24T07:59:00Z",
         "startDate" : "2024-11-24T06:00:00Z",
         "title" : "Race"
       }
