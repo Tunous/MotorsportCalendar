@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Series: String, Codable, CaseIterable {
+public enum Series: String, Codable, CaseIterable, Hashable {
     case formula1
     case wrc
 }
