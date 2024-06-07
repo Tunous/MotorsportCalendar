@@ -1156,7 +1156,7 @@
       {
         "endDate" : "2024-07-31T23:59:59Z",
         "startDate" : "2024-07-31T16:00:00Z",
-        "title" : "Start - Jyväskylä Harbour"
+        "title" : "Start - Jyväskylä"
       },
       {
         "endDate" : "2024-08-01T16:39:59Z",
@@ -1184,9 +1184,14 @@
         "title" : "SS4 Myhinpää 1"
       },
       {
-        "endDate" : "2024-08-02T10:26:59Z",
+        "endDate" : "2024-08-02T09:51:59Z",
         "startDate" : "2024-08-02T09:05:00Z",
         "title" : "SS5 Ruuhimäki 1"
+      },
+      {
+        "endDate" : "2024-08-02T10:26:59Z",
+        "startDate" : "2024-08-02T09:52:00Z",
+        "title" : "Regroup - 35 mins"
       },
       {
         "endDate" : "2024-08-02T12:09:59Z",
@@ -1221,7 +1226,7 @@
       {
         "endDate" : "2024-08-02T23:59:59Z",
         "startDate" : "2024-08-02T17:40:00Z",
-        "title" : "Service C - Paviljonki - 45 mins"
+        "title" : "Flexi service C - Paviljonki - 45 mins"
       },
       {
         "endDate" : "2024-08-03T07:04:59Z",
@@ -1234,9 +1239,14 @@
         "title" : "SS12 Päijälä 1"
       },
       {
-        "endDate" : "2024-08-03T10:09:59Z",
+        "endDate" : "2024-08-03T09:49:59Z",
         "startDate" : "2024-08-03T08:05:00Z",
         "title" : "SS13 Ouninpohja 1"
+      },
+      {
+        "endDate" : "2024-08-03T10:09:59Z",
+        "startDate" : "2024-08-03T09:50:00Z",
+        "title" : "Regroup - 20 mins"
       },
       {
         "endDate" : "2024-08-03T12:34:59Z",
@@ -1261,7 +1271,7 @@
       {
         "endDate" : "2024-08-03T23:59:59Z",
         "startDate" : "2024-08-03T16:30:00Z",
-        "title" : "Service E - Paviljonki - 45 mins"
+        "title" : "Flexi service E - Paviljonki - 45 mins"
       },
       {
         "endDate" : "2024-08-04T07:04:59Z",
