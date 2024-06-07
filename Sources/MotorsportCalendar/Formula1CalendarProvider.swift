@@ -49,8 +49,8 @@ struct Formula1CalendarProvider: CalendarProvider {
                     endDate: $0.endDate
                 )
             }
-            let startDate = sessions.first(where: { $0.sessionType == .practice1 })!.startDate
-            let endDate = sessions.first(where: { $0.sessionType == .race })!.endDate
+            let startDate = sessions.min(by: { $0.startDate < $1.startDate })!.startDate
+            let endDate = sessions.max(by: { $0.endDate < $1.endDate })!.endDate
             return MotorsportEvent(
                 title: name,
                 startDate: startDate,
