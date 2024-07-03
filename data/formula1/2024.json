@@ -726,7 +726,7 @@
     "title" : "Las Vegas Grand Prix"
   },
   {
-    "endDate" : "2024-12-01T19:00:00Z",
+    "endDate" : "2024-12-01T18:00:00Z",
     "isConfirmed" : true,
     "stages" : [
       {
@@ -750,8 +750,8 @@
         "title" : "Qualifying"
       },
       {
-        "endDate" : "2024-12-01T19:00:00Z",
-        "startDate" : "2024-12-01T17:00:00Z",
+        "endDate" : "2024-12-01T18:00:00Z",
+        "startDate" : "2024-12-01T16:00:00Z",
         "title" : "Race"
       }
     ],
