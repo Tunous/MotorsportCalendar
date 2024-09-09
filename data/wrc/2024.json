@@ -1624,155 +1624,498 @@
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-09-26T22:59:59Z",
-        "startDate" : "2024-09-26T13:01:00Z",
+        "endDate" : "2024-09-26T21:59:59Z",
+        "startDate" : "2024-09-26T12:01:00Z",
         "title" : "Shakedown (Conuco)"
       },
       {
         "endDate" : "2024-09-26T23:59:59Z",
-        "startDate" : "2024-09-26T23:00:00Z",
+        "startDate" : "2024-09-26T22:00:00Z",
         "title" : "Start - Concepción Bicentenario"
       },
       {
-        "endDate" : "2024-09-27T13:29:59Z",
-        "startDate" : "2024-09-27T12:35:00Z",
+        "endDate" : "2024-09-27T12:29:59Z",
+        "startDate" : "2024-09-27T11:35:00Z",
         "title" : "SS1 Pulperia 1"
       },
       {
-        "endDate" : "2024-09-27T14:20:59Z",
-        "startDate" : "2024-09-27T13:30:00Z",
+        "endDate" : "2024-09-27T13:20:59Z",
+        "startDate" : "2024-09-27T12:30:00Z",
         "title" : "SS2 Rere 1"
       },
       {
-        "endDate" : "2024-09-27T16:20:59Z",
-        "startDate" : "2024-09-27T14:21:00Z",
+        "endDate" : "2024-09-27T15:20:59Z",
+        "startDate" : "2024-09-27T13:21:00Z",
         "title" : "SS3 San Rosendo 1"
       },
       {
-        "endDate" : "2024-09-27T17:10:59Z",
-        "startDate" : "2024-09-27T16:21:00Z",
+        "endDate" : "2024-09-27T16:10:59Z",
+        "startDate" : "2024-09-27T15:21:00Z",
         "title" : "Regroup - 50 mins"
       },
       {
-        "endDate" : "2024-09-27T18:45:59Z",
-        "startDate" : "2024-09-27T17:11:00Z",
+        "endDate" : "2024-09-27T17:45:59Z",
+        "startDate" : "2024-09-27T16:11:00Z",
         "title" : "Flexi service A - MDS Hotel Talcahuano - 30 mins"
       },
       {
-        "endDate" : "2024-09-27T19:40:59Z",
-        "startDate" : "2024-09-27T18:46:00Z",
+        "endDate" : "2024-09-27T18:40:59Z",
+        "startDate" : "2024-09-27T17:46:00Z",
         "title" : "SS4 Pulperia 2"
       },
       {
-        "endDate" : "2024-09-27T20:31:59Z",
-        "startDate" : "2024-09-27T19:41:00Z",
+        "endDate" : "2024-09-27T19:31:59Z",
+        "startDate" : "2024-09-27T18:41:00Z",
         "title" : "SS5 Rere 1"
       },
       {
-        "endDate" : "2024-09-27T22:51:59Z",
-        "startDate" : "2024-09-27T20:32:00Z",
+        "endDate" : "2024-09-27T21:51:59Z",
+        "startDate" : "2024-09-27T19:32:00Z",
         "title" : "SS6 San Rosendo 2"
       },
       {
         "endDate" : "2024-09-27T23:59:59Z",
-        "startDate" : "2024-09-27T22:52:00Z",
+        "startDate" : "2024-09-27T21:52:00Z",
         "title" : "Flexi service B - MDS Hotel Talcahuano - 45 mins"
       },
       {
-        "endDate" : "2024-09-28T14:00:59Z",
-        "startDate" : "2024-09-28T13:07:00Z",
+        "endDate" : "2024-09-28T13:00:59Z",
+        "startDate" : "2024-09-28T12:07:00Z",
         "title" : "SS7 Pelun 1"
       },
       {
-        "endDate" : "2024-09-28T15:04:59Z",
-        "startDate" : "2024-09-28T14:01:00Z",
+        "endDate" : "2024-09-28T14:04:59Z",
+        "startDate" : "2024-09-28T13:01:00Z",
         "title" : "SS8 Lota 1"
       },
       {
-        "endDate" : "2024-09-28T16:59:59Z",
-        "startDate" : "2024-09-28T15:05:00Z",
+        "endDate" : "2024-09-28T15:59:59Z",
+        "startDate" : "2024-09-28T14:05:00Z",
         "title" : "SS9 Maria las Cruces 1"
       },
       {
-        "endDate" : "2024-09-28T17:36:59Z",
-        "startDate" : "2024-09-28T17:00:00Z",
+        "endDate" : "2024-09-28T16:36:59Z",
+        "startDate" : "2024-09-28T16:00:00Z",
         "title" : "Regroup - 37 mins"
       },
       {
-        "endDate" : "2024-09-28T19:06:59Z",
-        "startDate" : "2024-09-28T17:37:00Z",
+        "endDate" : "2024-09-28T18:06:59Z",
+        "startDate" : "2024-09-28T16:37:00Z",
         "title" : "Flexi service C - MDS Hotel Talcahuano - 30 mins"
       },
       {
-        "endDate" : "2024-09-28T20:00:59Z",
-        "startDate" : "2024-09-28T19:07:00Z",
+        "endDate" : "2024-09-28T19:00:59Z",
+        "startDate" : "2024-09-28T18:07:00Z",
         "title" : "SS10 Pelun 2"
       },
       {
-        "endDate" : "2024-09-28T21:04:59Z",
-        "startDate" : "2024-09-28T20:01:00Z",
+        "endDate" : "2024-09-28T20:04:59Z",
+        "startDate" : "2024-09-28T19:01:00Z",
         "title" : "SS11 Lota 2"
       },
       {
-        "endDate" : "2024-09-28T23:09:59Z",
-        "startDate" : "2024-09-28T21:05:00Z",
+        "endDate" : "2024-09-28T22:09:59Z",
+        "startDate" : "2024-09-28T20:05:00Z",
         "title" : "SS12 Maria las Cruces 2"
       },
       {
         "endDate" : "2024-09-28T23:59:59Z",
-        "startDate" : "2024-09-28T23:10:00Z",
+        "startDate" : "2024-09-28T22:10:00Z",
         "title" : "Flexi service D - MDS Hotel Talcahuano - 45 mins"
       },
       {
-        "endDate" : "2024-09-29T13:34:59Z",
-        "startDate" : "2024-09-29T12:23:00Z",
+        "endDate" : "2024-09-29T12:34:59Z",
+        "startDate" : "2024-09-29T11:23:00Z",
         "title" : "SS13 Laraquete 1"
       },
       {
-        "endDate" : "2024-09-29T14:32:59Z",
-        "startDate" : "2024-09-29T13:35:00Z",
+        "endDate" : "2024-09-29T13:34:59Z",
+        "startDate" : "2024-09-29T12:35:00Z",
         "title" : "SS14 Bio Bio 1"
       },
       {
-        "endDate" : "2024-09-29T15:18:59Z",
-        "startDate" : "2024-09-29T14:33:00Z",
+        "endDate" : "2024-09-29T14:24:59Z",
+        "startDate" : "2024-09-29T13:35:00Z",
         "title" : "SS15 Laraquete 2"
       },
       {
-        "endDate" : "2024-09-29T17:04:59Z",
-        "startDate" : "2024-09-29T15:19:00Z",
-        "title" : "Regroup - Arauco - 60 mins"
+        "endDate" : "2024-09-29T16:14:59Z",
+        "startDate" : "2024-09-29T14:25:00Z",
+        "title" : "Regroup - Arauco - 64 mins"
       },
       {
-        "endDate" : "2024-09-29T19:29:59Z",
-        "startDate" : "2024-09-29T17:05:00Z",
-        "title" : "SS16 Wolf Powerstage Bio Bio 2[Power Stage]"
+        "endDate" : "2024-09-29T18:29:59Z",
+        "startDate" : "2024-09-29T16:15:00Z",
+        "title" : "SS16 Bio Bio 2[Power Stage]"
       },
       {
         "endDate" : "2024-09-29T23:59:59Z",
-        "startDate" : "2024-09-29T19:30:00Z",
+        "startDate" : "2024-09-29T18:30:00Z",
         "title" : "Podium"
       }
     ],
-    "startDate" : "2024-09-26T13:01:00Z",
+    "startDate" : "2024-09-26T12:01:00Z",
     "title" : "3. Rally Chile BIOBÍO"
   },
   {
-    "endDate" : "2024-10-20T00:00:00Z",
-    "isConfirmed" : false,
+    "endDate" : "2024-10-20T23:59:59Z",
+    "isConfirmed" : true,
     "stages" : [
-
+      {
+        "endDate" : "2024-10-17T11:59:59Z",
+        "startDate" : "2024-10-17T07:01:00Z",
+        "title" : "Shakedown (Točná)"
+      },
+      {
+        "endDate" : "2024-10-17T12:59:59Z",
+        "startDate" : "2024-10-17T12:00:00Z",
+        "title" : "Start - Hradčany"
+      },
+      {
+        "endDate" : "2024-10-17T15:24:59Z",
+        "startDate" : "2024-10-17T13:00:00Z",
+        "title" : "SS1 SSS Velká Chuchle"
+      },
+      {
+        "endDate" : "2024-10-17T16:25:59Z",
+        "startDate" : "2024-10-17T15:25:00Z",
+        "title" : "Regroup - Klatovy - 45 mins"
+      },
+      {
+        "endDate" : "2024-10-17T23:59:59Z",
+        "startDate" : "2024-10-17T16:26:00Z",
+        "title" : "SS2 Klatovy 1"
+      },
+      {
+        "endDate" : "2024-10-18T06:01:59Z",
+        "startDate" : "2024-10-18T05:00:00Z",
+        "title" : "Remote service - Janovice nad Úhlavou - 30 mins"
+      },
+      {
+        "endDate" : "2024-10-18T07:31:59Z",
+        "startDate" : "2024-10-18T06:02:00Z",
+        "title" : "SS3 Klatovy 2"
+      },
+      {
+        "endDate" : "2024-10-18T08:41:59Z",
+        "startDate" : "2024-10-18T07:32:00Z",
+        "title" : "SS4 Strašín 1"
+      },
+      {
+        "endDate" : "2024-10-18T11:10:59Z",
+        "startDate" : "2024-10-18T08:42:00Z",
+        "title" : "SS5 Šumavské Hoštice 1"
+      },
+      {
+        "endDate" : "2024-10-18T12:27:59Z",
+        "startDate" : "2024-10-18T11:11:00Z",
+        "title" : "SS6 Klatovy 3"
+      },
+      {
+        "endDate" : "2024-10-18T14:13:59Z",
+        "startDate" : "2024-10-18T12:28:00Z",
+        "title" : "Remote service - Janovice nad Úhlavou - 30 mins"
+      },
+      {
+        "endDate" : "2024-10-18T15:23:59Z",
+        "startDate" : "2024-10-18T14:14:00Z",
+        "title" : "SS7 Strašín 2"
+      },
+      {
+        "endDate" : "2024-10-18T18:03:59Z",
+        "startDate" : "2024-10-18T15:24:00Z",
+        "title" : "SS8 Šumavské Hoštice 2"
+      },
+      {
+        "endDate" : "2024-10-18T23:59:59Z",
+        "startDate" : "2024-10-18T18:04:00Z",
+        "title" : "Flexi service A - Karpfham - 45 mins"
+      },
+      {
+        "endDate" : "2024-10-19T05:57:59Z",
+        "startDate" : "2024-10-19T04:05:00Z",
+        "title" : "Service B - Karpfham - 15 mins"
+      },
+      {
+        "endDate" : "2024-10-19T07:04:59Z",
+        "startDate" : "2024-10-19T05:58:00Z",
+        "title" : "SS9 Granit und Wald 1"
+      },
+      {
+        "endDate" : "2024-10-19T08:33:59Z",
+        "startDate" : "2024-10-19T07:05:00Z",
+        "title" : "SS10 Beyond Borders 1"
+      },
+      {
+        "endDate" : "2024-10-19T10:09:59Z",
+        "startDate" : "2024-10-19T08:34:00Z",
+        "title" : "SS11 Schärdinger Innviertel 1"
+      },
+      {
+        "endDate" : "2024-10-19T12:27:59Z",
+        "startDate" : "2024-10-19T10:10:00Z",
+        "title" : "Service C - Karpfham - 40 mins"
+      },
+      {
+        "endDate" : "2024-10-19T13:34:59Z",
+        "startDate" : "2024-10-19T12:28:00Z",
+        "title" : "SS12 Granit und Wald 2"
+      },
+      {
+        "endDate" : "2024-10-19T15:03:59Z",
+        "startDate" : "2024-10-19T13:35:00Z",
+        "title" : "SS13 Beyond Borders 2"
+      },
+      {
+        "endDate" : "2024-10-19T16:06:59Z",
+        "startDate" : "2024-10-19T15:04:00Z",
+        "title" : "SS14 Schärdinger Innviertel 2"
+      },
+      {
+        "endDate" : "2024-10-19T23:59:59Z",
+        "startDate" : "2024-10-19T16:07:00Z",
+        "title" : "Flexi service D - Karpfham - 45 mins"
+      },
+      {
+        "endDate" : "2024-10-20T07:10:59Z",
+        "startDate" : "2024-10-20T05:05:00Z",
+        "title" : "Service E - Karpfham - 15 mins"
+      },
+      {
+        "endDate" : "2024-10-20T07:42:59Z",
+        "startDate" : "2024-10-20T07:11:00Z",
+        "title" : "SS15 Am Hochwald 1"
+      },
+      {
+        "endDate" : "2024-10-20T08:34:59Z",
+        "startDate" : "2024-10-20T07:43:00Z",
+        "title" : "Regroup - Waldkirchen - 25 mins"
+      },
+      {
+        "endDate" : "2024-10-20T09:32:59Z",
+        "startDate" : "2024-10-20T08:35:00Z",
+        "title" : "SS16 Passauer Land 1"
+      },
+      {
+        "endDate" : "2024-10-20T10:02:59Z",
+        "startDate" : "2024-10-20T09:33:00Z",
+        "title" : "SS17 Am Hochwald 2"
+      },
+      {
+        "endDate" : "2024-10-20T11:14:59Z",
+        "startDate" : "2024-10-20T10:03:00Z",
+        "title" : "Regroup - Waldkirchen - 45 mins"
+      },
+      {
+        "endDate" : "2024-10-20T13:29:59Z",
+        "startDate" : "2024-10-20T11:15:00Z",
+        "title" : "SS18 Passauer Land 2[Power Stage]"
+      },
+      {
+        "endDate" : "2024-10-20T23:59:59Z",
+        "startDate" : "2024-10-20T13:30:00Z",
+        "title" : "Podium - Passau"
+      }
     ],
-    "startDate" : "2024-10-17T00:00:00Z",
+    "startDate" : "2024-10-17T07:01:00Z",
     "title" : "2. Central European Rally"
   },
   {
-    "endDate" : "2024-11-24T00:00:00Z",
-    "isConfirmed" : false,
+    "endDate" : "2024-11-24T23:59:59Z",
+    "isConfirmed" : true,
     "stages" : [
-
+      {
+        "endDate" : "2024-11-21T09:51:59Z",
+        "startDate" : "2024-11-21T00:01:00Z",
+        "title" : "Shakedown (Kuragaike Park)"
+      },
+      {
+        "endDate" : "2024-11-21T10:04:59Z",
+        "startDate" : "2024-11-21T09:52:00Z",
+        "title" : "Start - Toyota Stadium"
+      },
+      {
+        "endDate" : "2024-11-21T23:59:59Z",
+        "startDate" : "2024-11-21T10:05:00Z",
+        "title" : "SS1 Toyota Stadium SSS 1"
+      },
+      {
+        "endDate" : "2024-11-22T22:43:59Z",
+        "startDate" : "2024-11-22T21:19:00Z",
+        "title" : "Service A - Toyota Stadium - 15 mins"
+      },
+      {
+        "endDate" : "2024-11-22T23:43:59Z",
+        "startDate" : "2024-11-22T22:44:00Z",
+        "title" : "SS2 Isegami's Tunnel 1"
+      },
+      {
+        "endDate" : "2024-11-22T01:11:59Z",
+        "startDate" : "2024-11-22T23:44:00Z",
+        "title" : "SS3 Inabu \/ Shitara 1"
+      },
+      {
+        "endDate" : "2024-11-22T03:06:59Z",
+        "startDate" : "2024-11-22T01:12:00Z",
+        "title" : "SS4 Shinshiro 1"
+      },
+      {
+        "endDate" : "2024-11-22T03:26:59Z",
+        "startDate" : "2024-11-22T03:07:00Z",
+        "title" : "Regroup - Inabu Donguri-no-Yu - 20 mins"
+      },
+      {
+        "endDate" : "2024-11-22T04:31:59Z",
+        "startDate" : "2024-11-22T03:27:00Z",
+        "title" : "Tyre fitting zone - Inabu Donguri Koubou - 15 mins"
+      },
+      {
+        "endDate" : "2024-11-22T05:31:59Z",
+        "startDate" : "2024-11-22T04:32:00Z",
+        "title" : "SS5 Isegami's Tunnel 2"
+      },
+      {
+        "endDate" : "2024-11-22T06:59:59Z",
+        "startDate" : "2024-11-22T05:32:00Z",
+        "title" : "SS6 Inabu \/ Shitara 2"
+      },
+      {
+        "endDate" : "2024-11-22T08:29:59Z",
+        "startDate" : "2024-11-22T07:00:00Z",
+        "title" : "SS7 Shinshiro 2"
+      },
+      {
+        "endDate" : "2024-11-22T09:34:59Z",
+        "startDate" : "2024-11-22T08:30:00Z",
+        "title" : "Regroup - Okazaki Chuo Sogo Park - 62 mins"
+      },
+      {
+        "endDate" : "2024-11-22T09:43:59Z",
+        "startDate" : "2024-11-22T09:35:00Z",
+        "title" : "SS8 Okazaki SSS 1"
+      },
+      {
+        "endDate" : "2024-11-22T10:43:59Z",
+        "startDate" : "2024-11-22T09:44:00Z",
+        "title" : "SS9 Okazaki SSS 2"
+      },
+      {
+        "endDate" : "2024-11-22T23:59:59Z",
+        "startDate" : "2024-11-22T10:44:00Z",
+        "title" : "Flexi service B - Toyota Stadium - 45 mins"
+      },
+      {
+        "endDate" : "2024-11-23T23:04:59Z",
+        "startDate" : "2024-11-23T21:19:00Z",
+        "title" : "Service C - Toyota Stadium - 15 mins"
+      },
+      {
+        "endDate" : "2024-11-23T00:02:59Z",
+        "startDate" : "2024-11-23T23:05:00Z",
+        "title" : "SS10 Mt. Kasagi 1"
+      },
+      {
+        "endDate" : "2024-11-23T01:15:59Z",
+        "startDate" : "2024-11-23T00:03:00Z",
+        "title" : "SS11 Nenoue Kougen 1"
+      },
+      {
+        "endDate" : "2024-11-23T02:20:59Z",
+        "startDate" : "2024-11-23T01:16:00Z",
+        "title" : "SS12 Ena 1"
+      },
+      {
+        "endDate" : "2024-11-23T03:03:59Z",
+        "startDate" : "2024-11-23T02:21:00Z",
+        "title" : "Regroup - Nakatsugawa Park - 43 mins"
+      },
+      {
+        "endDate" : "2024-11-23T04:04:59Z",
+        "startDate" : "2024-11-23T03:04:00Z",
+        "title" : "Tyre fitting zone - Nakatsugawa Park - 15 mins"
+      },
+      {
+        "endDate" : "2024-11-23T05:07:59Z",
+        "startDate" : "2024-11-23T04:05:00Z",
+        "title" : "SS13 Mt. Kasagi 2"
+      },
+      {
+        "endDate" : "2024-11-23T06:15:59Z",
+        "startDate" : "2024-11-23T05:08:00Z",
+        "title" : "SS14 Nenoue Kougen 2"
+      },
+      {
+        "endDate" : "2024-11-23T08:25:59Z",
+        "startDate" : "2024-11-23T06:16:00Z",
+        "title" : "SS15 Ena 2"
+      },
+      {
+        "endDate" : "2024-11-23T09:06:59Z",
+        "startDate" : "2024-11-23T08:26:00Z",
+        "title" : "Regroup - 41 mins"
+      },
+      {
+        "endDate" : "2024-11-23T10:04:59Z",
+        "startDate" : "2024-11-23T09:07:00Z",
+        "title" : "Flexi service D - Toyota Stadium - 45 mins"
+      },
+      {
+        "endDate" : "2024-11-23T23:59:59Z",
+        "startDate" : "2024-11-23T10:05:00Z",
+        "title" : "SS16 Toyota Stadium SSS 2"
+      },
+      {
+        "endDate" : "2024-11-24T22:38:59Z",
+        "startDate" : "2024-11-24T21:26:00Z",
+        "title" : "Service E - Toyota Stadium - 15 mins"
+      },
+      {
+        "endDate" : "2024-11-24T23:34:59Z",
+        "startDate" : "2024-11-24T22:39:00Z",
+        "title" : "SS17 Nukata 1"
+      },
+      {
+        "endDate" : "2024-11-24T00:37:59Z",
+        "startDate" : "2024-11-24T23:35:00Z",
+        "title" : "SS18 Lake Mikawako 1"
+      },
+      {
+        "endDate" : "2024-11-24T02:02:59Z",
+        "startDate" : "2024-11-24T00:38:00Z",
+        "title" : "SS19 Nukata 2"
+      },
+      {
+        "endDate" : "2024-11-24T02:48:59Z",
+        "startDate" : "2024-11-24T02:03:00Z",
+        "title" : "Regroup - 46 mins"
+      },
+      {
+        "endDate" : "2024-11-24T03:16:59Z",
+        "startDate" : "2024-11-24T02:49:00Z",
+        "title" : "Flexi service F - Toyota Stadium - 15 mins"
+      },
+      {
+        "endDate" : "2024-11-24T03:26:59Z",
+        "startDate" : "2024-11-24T03:17:00Z",
+        "title" : "SS20 Toyota Stadium SSS 3"
+      },
+      {
+        "endDate" : "2024-11-24T05:14:59Z",
+        "startDate" : "2024-11-24T03:27:00Z",
+        "title" : "Regroup - Toyota Stadium B1 Parking - 31 mins"
+      },
+      {
+        "endDate" : "2024-11-24T06:29:59Z",
+        "startDate" : "2024-11-24T05:15:00Z",
+        "title" : "SS21 Lake Mikawako 2[Power Stage]"
+      },
+      {
+        "endDate" : "2024-11-24T23:59:59Z",
+        "startDate" : "2024-11-24T06:30:00Z",
+        "title" : "Finish - Toyota Stadium"
+      }
     ],
-    "startDate" : "2024-11-21T00:00:00Z",
+    "startDate" : "2024-11-21T00:01:00Z",
     "title" : "FORUM8 Rally Japan"
   }
 ]
