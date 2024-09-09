@@ -8,7 +8,7 @@
 import Foundation
 import MotorsportCalendarData
 
-protocol CalendarProvider {
+protocol CalendarProvider: Sendable {
     var outputURL: URL { get }
     var series: Series { get }
 
