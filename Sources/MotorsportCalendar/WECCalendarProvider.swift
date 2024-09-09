@@ -62,18 +62,21 @@ struct WECCalendarProvider: CalendarProvider {
         let properties = Dictionary(propertyKeyValues, uniquingKeysWith: { lhs, rhs in lhs })
         let name = properties["name"] ?? ""
         var startDate = try Date.ISO8601FormatStyle.iso8601.parse(properties["startDate"] ?? "")
+        var endDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate)!
 
         let text = try workingElement.text()
-        var endDate = startDate
-        if let match = text.firstMatch(of: #/(?<hours>\d{2})h(?<minutes>\d{2})/#) {
-            let calendar = Calendar.current
-            let hours = Int(match.output.hours) ?? 0
-            endDate = calendar.date(byAdding: .hour, value: hours, to: endDate) ?? endDate
-            let minutes = Int(match.output.minutes) ?? 0
-            endDate = calendar.date(byAdding: .minute, value: minutes, to: endDate) ?? endDate
+
+        var subEvents = try children.map(getEvent(from:))
+        if !subEvents.isEmpty {
+            for index in 0..<(subEvents.count - 1) {
+                let nextEvent = subEvents[index + 1]
+                let dateBeforeNextSubEventStart = nextEvent.startDate.addingTimeInterval(-1)
+                let dayAfterStartDate = Calendar.current.date(byAdding: .day, value: 1, to: subEvents[index].startDate)!
+                subEvents[index].endDate = min(dayAfterStartDate, dateBeforeNextSubEventStart)
+            }
+            subEvents[subEvents.count - 1].endDate = Calendar.current.date(byAdding: .day, value: 1, to: subEvents[subEvents.count - 1].startDate)!
         }
 
-        let subEvents = try children.map(getEvent(from:))
         if let firstChild = subEvents.first {
             startDate = min(startDate, firstChild.startDate)
         }
@@ -94,7 +97,7 @@ fileprivate struct Event {
     let type: String
     let name: String
     let startDate: Date
-    let endDate: Date
+    var endDate: Date
     let subEvents: [Event]
 }
 
