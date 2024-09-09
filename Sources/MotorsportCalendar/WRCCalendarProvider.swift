@@ -22,7 +22,7 @@ struct WRCCalendarProvider: CalendarProvider {
 
         var calendar = Calendar.current
         calendar.timeZone = .gmt
-        let dateParser = Date.VerbatimFormatStyle.init(
+        let dateParser = Date.VerbatimFormatStyle(
             format: "\(day: .defaultDigits). \(month: .defaultDigits). \(year: .defaultDigits)",
             timeZone: .gmt,
             calendar: calendar
@@ -70,45 +70,57 @@ struct WRCCalendarProvider: CalendarProvider {
                 let stageCode = try stageNode.select(".harm-ss").text()
                 let stageName = try stageNode.select(".harm-stage").text()
                 let stageDateText = try stageNode.select(".harm-date").text().drop(while: { !$0.isWhitespace }).dropFirst()
-                let newDate: Date
                 if !stageDateText.isEmpty {
-                    newDate = try dateParser.parse("\(stageDateText) \(year)")
-                } else {
-                    newDate = stageStartDate
+                    stageStartDate = try dateParser.parse("\(stageDateText) \(year)")
                 }
-                let stageTimeNode = try stageNode.select(".harm-time").first()
-                let stageTimeText = try stageTimeNode?.nextElementSibling()?.text() ?? stageTimeNode?.text() ?? ""
-                let stageTime = stageTimeText.split(separator: ":")
-                guard
-                    stageTime.count >= 2,
-                    let hour = Int(stageTime[0].drop(while: { !$0.isNumber })),
-                    let minute = Int(stageTime[1].prefix(while: { $0.isNumber }))
-                else {
+
+                // 12:00 21. 11. UTC
+                // 12:00 UTC
+                func parseUTCDate() throws -> Date? {
+                    let stageTimeNode = try stageNode.select(".harm-time").first()
+                    let stageTimeText = try stageTimeNode?.nextElementSibling()?.text() ?? stageTimeNode?.text() ?? ""
+                    guard let stageTimeMatch = stageTimeText.firstMatch(of: #/(?<hour>\d+):(?<minute>\d+)\s*((?<day>\d+)\. (?<month>\d+)\.)?\s*UTC/#) else {
+                        return nil
+                    }
+                    let hour = Int(stageTimeMatch.output.hour)!
+                    let minute = Int(stageTimeMatch.output.minute)!
+                    let day = stageTimeMatch.output.day.map { Int($0)! }
+                    let month = stageTimeMatch.output.month.map { Int($0)! }
+                    if let day, let month {
+                        let date = try dateParser.parse("\(day). \(month). \(year)")
+                        return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: date)!
+                    }
+                    return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: stageStartDate)!
+                }
+
+                guard let date = try parseUTCDate() else {
                     stages = []
                     break
                 }
 
-                stageStartDate = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: newDate)!
+                stageStartDate = max(stageStartDate, date)
 
                 stages.append(
                     MotorsportEventStage(
                         title: stageCode.isEmpty ? stageName : stageCode + " " + stageName,
-                        startDate: stageStartDate,
-                        endDate: stageStartDate
+                        startDate: date,
+                        endDate: date
                     )
                 )
             }
 
+            let maxDurationInHours = 3
             for index in stages.indices.dropLast() {
                 let nextStage = stages[index + 1]
-                if calendar.isDate(stages[index].startDate, inSameDayAs: nextStage.startDate) {
-                    stages[index].endDate = nextStage.startDate.addingTimeInterval(-1)
+                let dateBeforeStartOfNextStage = nextStage.startDate.addingTimeInterval(-1)
+                if calendar.isDate(stages[index].startDate, inSameDayAs: nextStage.startDate) && DateInterval(start: stages[index].startDate, end: nextStage.startDate).duration < (60*60 * TimeInterval(maxDurationInHours)) {
+                    stages[index].endDate = dateBeforeStartOfNextStage
                 } else {
-                    stages[index].endDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: stages[index].startDate)!
+                    stages[index].endDate = min(calendar.date(byAdding: .hour, value: maxDurationInHours, to: stages[index].startDate)!, dateBeforeStartOfNextStage)
                 }
             }
             if !stages.isEmpty {
-                stages[stages.count - 1].endDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: stages[stages.count - 1].startDate)!
+                stages[stages.count - 1].endDate = calendar.date(byAdding: .hour, value: maxDurationInHours, to: stages[stages.count - 1].startDate)!
             }
             return MotorsportEvent(
                 title: name.replacingOccurrences(of: year.description, with: "").trimmingCharacters(in: .whitespaces),

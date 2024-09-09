@@ -1620,16 +1620,16 @@
     "title" : "68. EKO Acropolis Rally"
   },
   {
-    "endDate" : "2024-09-29T23:59:59Z",
+    "endDate" : "2024-09-29T21:30:00Z",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-09-26T21:59:59Z",
+        "endDate" : "2024-09-26T15:01:00Z",
         "startDate" : "2024-09-26T12:01:00Z",
         "title" : "Shakedown (Conuco)"
       },
       {
-        "endDate" : "2024-09-26T23:59:59Z",
+        "endDate" : "2024-09-27T01:00:00Z",
         "startDate" : "2024-09-26T22:00:00Z",
         "title" : "Start - Concepción Bicentenario"
       },
@@ -1674,7 +1674,7 @@
         "title" : "SS6 San Rosendo 2"
       },
       {
-        "endDate" : "2024-09-27T23:59:59Z",
+        "endDate" : "2024-09-28T00:52:00Z",
         "startDate" : "2024-09-27T21:52:00Z",
         "title" : "Flexi service B - MDS Hotel Talcahuano - 45 mins"
       },
@@ -1719,7 +1719,7 @@
         "title" : "SS12 Maria las Cruces 2"
       },
       {
-        "endDate" : "2024-09-28T23:59:59Z",
+        "endDate" : "2024-09-29T01:10:00Z",
         "startDate" : "2024-09-28T22:10:00Z",
         "title" : "Flexi service D - MDS Hotel Talcahuano - 45 mins"
       },
@@ -1749,7 +1749,7 @@
         "title" : "SS16 Bio Bio 2[Power Stage]"
       },
       {
-        "endDate" : "2024-09-29T23:59:59Z",
+        "endDate" : "2024-09-29T21:30:00Z",
         "startDate" : "2024-09-29T18:30:00Z",
         "title" : "Podium"
       }
@@ -1758,11 +1758,11 @@
     "title" : "3. Rally Chile BIOBÍO"
   },
   {
-    "endDate" : "2024-10-20T23:59:59Z",
+    "endDate" : "2024-10-20T16:30:00Z",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-10-17T11:59:59Z",
+        "endDate" : "2024-10-17T10:01:00Z",
         "startDate" : "2024-10-17T07:01:00Z",
         "title" : "Shakedown (Točná)"
       },
@@ -1782,7 +1782,7 @@
         "title" : "Regroup - Klatovy - 45 mins"
       },
       {
-        "endDate" : "2024-10-17T23:59:59Z",
+        "endDate" : "2024-10-17T19:26:00Z",
         "startDate" : "2024-10-17T16:26:00Z",
         "title" : "SS2 Klatovy 1"
       },
@@ -1827,7 +1827,7 @@
         "title" : "SS8 Šumavské Hoštice 2"
       },
       {
-        "endDate" : "2024-10-18T23:59:59Z",
+        "endDate" : "2024-10-18T21:04:00Z",
         "startDate" : "2024-10-18T18:04:00Z",
         "title" : "Flexi service A - Karpfham - 45 mins"
       },
@@ -1872,7 +1872,7 @@
         "title" : "SS14 Schärdinger Innviertel 2"
       },
       {
-        "endDate" : "2024-10-19T23:59:59Z",
+        "endDate" : "2024-10-19T19:07:00Z",
         "startDate" : "2024-10-19T16:07:00Z",
         "title" : "Flexi service D - Karpfham - 45 mins"
       },
@@ -1912,7 +1912,7 @@
         "title" : "SS18 Passauer Land 2[Power Stage]"
       },
       {
-        "endDate" : "2024-10-20T23:59:59Z",
+        "endDate" : "2024-10-20T16:30:00Z",
         "startDate" : "2024-10-20T13:30:00Z",
         "title" : "Podium - Passau"
       }
@@ -1921,11 +1921,11 @@
     "title" : "2. Central European Rally"
   },
   {
-    "endDate" : "2024-11-24T23:59:59Z",
+    "endDate" : "2024-11-24T09:30:00Z",
     "isConfirmed" : true,
     "stages" : [
       {
-        "endDate" : "2024-11-21T09:51:59Z",
+        "endDate" : "2024-11-21T03:01:00Z",
         "startDate" : "2024-11-21T00:01:00Z",
         "title" : "Shakedown (Kuragaike Park)"
       },
@@ -1935,23 +1935,23 @@
         "title" : "Start - Toyota Stadium"
       },
       {
-        "endDate" : "2024-11-21T23:59:59Z",
+        "endDate" : "2024-11-21T13:05:00Z",
         "startDate" : "2024-11-21T10:05:00Z",
         "title" : "SS1 Toyota Stadium SSS 1"
       },
       {
-        "endDate" : "2024-11-22T22:43:59Z",
-        "startDate" : "2024-11-22T21:19:00Z",
+        "endDate" : "2024-11-21T22:43:59Z",
+        "startDate" : "2024-11-21T21:19:00Z",
         "title" : "Service A - Toyota Stadium - 15 mins"
       },
       {
-        "endDate" : "2024-11-22T23:43:59Z",
-        "startDate" : "2024-11-22T22:44:00Z",
+        "endDate" : "2024-11-21T23:43:59Z",
+        "startDate" : "2024-11-21T22:44:00Z",
         "title" : "SS2 Isegami's Tunnel 1"
       },
       {
         "endDate" : "2024-11-22T01:11:59Z",
-        "startDate" : "2024-11-22T23:44:00Z",
+        "startDate" : "2024-11-21T23:44:00Z",
         "title" : "SS3 Inabu \/ Shitara 1"
       },
       {
@@ -2000,18 +2000,18 @@
         "title" : "SS9 Okazaki SSS 2"
       },
       {
-        "endDate" : "2024-11-22T23:59:59Z",
+        "endDate" : "2024-11-22T13:44:00Z",
         "startDate" : "2024-11-22T10:44:00Z",
         "title" : "Flexi service B - Toyota Stadium - 45 mins"
       },
       {
-        "endDate" : "2024-11-23T23:04:59Z",
-        "startDate" : "2024-11-23T21:19:00Z",
+        "endDate" : "2024-11-22T23:04:59Z",
+        "startDate" : "2024-11-22T21:19:00Z",
         "title" : "Service C - Toyota Stadium - 15 mins"
       },
       {
         "endDate" : "2024-11-23T00:02:59Z",
-        "startDate" : "2024-11-23T23:05:00Z",
+        "startDate" : "2024-11-22T23:05:00Z",
         "title" : "SS10 Mt. Kasagi 1"
       },
       {
@@ -2060,23 +2060,23 @@
         "title" : "Flexi service D - Toyota Stadium - 45 mins"
       },
       {
-        "endDate" : "2024-11-23T23:59:59Z",
+        "endDate" : "2024-11-23T13:05:00Z",
         "startDate" : "2024-11-23T10:05:00Z",
         "title" : "SS16 Toyota Stadium SSS 2"
       },
       {
-        "endDate" : "2024-11-24T22:38:59Z",
-        "startDate" : "2024-11-24T21:26:00Z",
+        "endDate" : "2024-11-23T22:38:59Z",
+        "startDate" : "2024-11-23T21:26:00Z",
         "title" : "Service E - Toyota Stadium - 15 mins"
       },
       {
-        "endDate" : "2024-11-24T23:34:59Z",
-        "startDate" : "2024-11-24T22:39:00Z",
+        "endDate" : "2024-11-23T23:34:59Z",
+        "startDate" : "2024-11-23T22:39:00Z",
         "title" : "SS17 Nukata 1"
       },
       {
         "endDate" : "2024-11-24T00:37:59Z",
-        "startDate" : "2024-11-24T23:35:00Z",
+        "startDate" : "2024-11-23T23:35:00Z",
         "title" : "SS18 Lake Mikawako 1"
       },
       {
@@ -2110,7 +2110,7 @@
         "title" : "SS21 Lake Mikawako 2[Power Stage]"
       },
       {
-        "endDate" : "2024-11-24T23:59:59Z",
+        "endDate" : "2024-11-24T09:30:00Z",
         "startDate" : "2024-11-24T06:30:00Z",
         "title" : "Finish - Toyota Stadium"
       }
