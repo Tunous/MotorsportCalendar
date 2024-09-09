@@ -109,6 +109,9 @@ extension Element {
         if tagName() == "img" && hasAttr("src") {
             return try attr("src")
         }
+        if try attr("itemprop") == "name" && hasAttr("title") {
+            return try attr("title")
+        }
         if hasAttr("content") {
             return try attr("content")
         }

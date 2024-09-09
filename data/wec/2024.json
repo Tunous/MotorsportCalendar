@@ -45,7 +45,7 @@
       }
     ],
     "startDate" : "2024-02-29T09:20:00Z",
-    "title" : "Qatar 1812 Km"
+    "title" : "Qatar Airways Qatar 1812 Km"
   },
   {
     "endDate" : "2024-04-22T11:00:00Z",
@@ -93,7 +93,7 @@
       }
     ],
     "startDate" : "2024-04-18T22:00:00Z",
-    "title" : "IMOLA"
+    "title" : "6 Hours of IMOLA"
   },
   {
     "endDate" : "2024-05-12T11:00:00Z",
@@ -141,7 +141,7 @@
       }
     ],
     "startDate" : "2024-05-08T22:00:00Z",
-    "title" : "Spa-Francorchamps"
+    "title" : "TotalEnergies 6 Hours of Spa-Francorchamps"
   },
   {
     "endDate" : "2024-06-16T14:00:00Z",
@@ -189,7 +189,7 @@
       }
     ],
     "startDate" : "2024-06-11T22:00:00Z",
-    "title" : "Le Mans"
+    "title" : "24 Hours of Le Mans"
   },
   {
     "endDate" : "2024-07-15T14:30:00Z",
@@ -237,7 +237,7 @@
       }
     ],
     "startDate" : "2024-07-11T22:00:00Z",
-    "title" : "SÃO PAULO"
+    "title" : "Rolex 6 Hours of SÃO PAULO"
   },
   {
     "endDate" : "2024-09-02T18:00:00Z",
@@ -333,7 +333,7 @@
       }
     ],
     "startDate" : "2024-09-12T22:00:00Z",
-    "title" : "Fuji"
+    "title" : "6 Hours of Fuji"
   },
   {
     "endDate" : "2024-11-03T11:00:00Z",
@@ -381,6 +381,6 @@
       }
     ],
     "startDate" : "2024-10-30T23:00:00Z",
-    "title" : "Bahrain"
+    "title" : "Bapco Energies 8 Hours of Bahrain"
   }
 ]
