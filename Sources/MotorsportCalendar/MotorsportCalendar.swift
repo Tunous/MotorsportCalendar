@@ -22,15 +22,15 @@ struct MotorsportCalendar: AsyncParsableCommand {
 
         let providers: [any CalendarProvider] = [
             Formula1CalendarProvider(outputURL: outputURL, calendarURL: formula1CalendarURL),
-//            WRCCalendarProvider(outputURL: outputURL),
             WRCCalendarProvider(outputURL: outputURL),
+            WECCalendarProvider(outputURL: outputURL),
         ]
 
         let year = Calendar.current.component(.year, from: .now)
         let updatedSeries = try await withThrowingTaskGroup(of: (Series, Bool).self, returning: Set<Series>.self) { group in
             for provider in providers {
                 group.addTask {
-                    let didUpdate = (try await provider.run(year: year)) == true
+                    let didUpdate = try await provider.run(year: year)
                     return (provider.series, didUpdate)
                 }
             }
@@ -49,11 +49,12 @@ struct MotorsportCalendar: AsyncParsableCommand {
             info.updates[series] = .now
         }
 
+        print()
         if !updatedSeries.isEmpty {
             let infoData = try JSONEncoder.motorsportCalendar.encode(info)
             let infoURL = outputURL.appending(path: "info.json")
             try infoData.write(to: infoURL)
-            print("Updated calendar")
+            print("Calendar updated")
         } else {
             print("Calendar unchanged")
         }

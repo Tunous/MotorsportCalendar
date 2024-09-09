@@ -17,8 +17,6 @@ protocol CalendarProvider {
 
 extension CalendarProvider {
     func run(year: Int) async throws -> Bool {
-        print("[\(Self.self)] Updating calendar…")
-
         let events = try await events(year: year)
         let eventsData = try JSONEncoder.motorsportCalendar.encode(events)
 
@@ -27,13 +25,13 @@ extension CalendarProvider {
         let storedEventsData = try? Data(contentsOf: url)
 
         if eventsData == storedEventsData {
-            print("[\(Self.self)] Calendar unchanged")
+            print("[\(series)] No changes")
             return false
         }
 
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         try eventsData.write(to: url)
-        print("[\(Self.self)] Updated calendar")
+        print("[\(series)] Updated")
         return true
     }
 
