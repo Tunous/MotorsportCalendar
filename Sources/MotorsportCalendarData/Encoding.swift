@@ -11,7 +11,7 @@ extension JSONEncoder {
     public static let motorsportCalendar: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.outputFormatting = [.sortedKeys]
         return encoder
     }()
 }
