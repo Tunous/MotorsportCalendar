@@ -24,6 +24,11 @@ let package = Package(
                 .target(name: "MotorsportCalendarData"),
             ]
         ),
-        .target(name: "MotorsportCalendarData"),
+        .target(
+            name: "MotorsportCalendarData",
+            resources: [
+                .copy("../../Data"),
+            ]
+        ),
     ]
 )
