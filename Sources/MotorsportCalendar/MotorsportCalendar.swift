@@ -16,6 +16,9 @@ struct MotorsportCalendar: AsyncParsableCommand {
     })
     var formula1CalendarURL: URL
 
+    @Option
+    var year: Int = Calendar.current.component(.year, from: .now)
+
     mutating func run() async throws {
         let outputPath = NSString(string: output).expandingTildeInPath
         let outputURL = URL(filePath: outputPath, directoryHint: .isDirectory)
@@ -26,10 +29,9 @@ struct MotorsportCalendar: AsyncParsableCommand {
             WECCalendarProvider(outputURL: outputURL),
         ]
 
-        let year = Calendar.current.component(.year, from: .now)
         let updatedSeries = try await withThrowingTaskGroup(of: (Series, Bool).self, returning: Set<Series>.self) { group in
             for provider in providers {
-                group.addTask {
+                group.addTask { [year] in
                     let didUpdate = try await provider.run(year: year)
                     return (provider.series, didUpdate)
                 }

@@ -18,7 +18,7 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     func events(year: Int) async throws -> [MotorsportEvent] {
-        let url = URL(string: "https://www.ewrc-results.com/season/2024/1-wrc/")!
+        let url = URL(string: "https://www.ewrc-results.com/season/\(year)/1-wrc/")!
 
         var calendar = Calendar.current
         calendar.timeZone = .gmt
