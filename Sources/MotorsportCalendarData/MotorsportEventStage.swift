@@ -7,10 +7,10 @@
 
 import Foundation
 
-public struct MotorsportEventStage: Codable {
-    public let title: String
-    public let startDate: Date
-    public package(set) var endDate: Date
+public struct MotorsportEventStage: Codable, Hashable, Sendable {
+    public var title: String
+    public var startDate: Date
+    public var endDate: Date
 
     public init(
         title: String,
