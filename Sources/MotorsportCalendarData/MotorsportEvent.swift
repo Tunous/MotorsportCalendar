@@ -7,12 +7,12 @@
 
 import Foundation
 
-public struct MotorsportEvent: Codable {
-    public let title: String
-    public let startDate: Date
-    public let endDate: Date
-    public let stages: [MotorsportEventStage]
-    public let isConfirmed: Bool
+public struct MotorsportEvent: Codable, Hashable, Sendable {
+    public var title: String
+    public var startDate: Date
+    public var endDate: Date
+    public var stages: [MotorsportEventStage]
+    public var isConfirmed: Bool
 
     public init(
         title: String,
