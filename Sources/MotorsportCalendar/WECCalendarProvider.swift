@@ -64,8 +64,6 @@ struct WECCalendarProvider: CalendarProvider {
         var startDate = try Date.ISO8601FormatStyle.iso8601.parse(properties["startDate"] ?? "")
         var endDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate)!
 
-        let text = try workingElement.text()
-
         var subEvents = try children.map(getEvent(from:))
         if !subEvents.isEmpty {
             for index in 0..<(subEvents.count - 1) {
