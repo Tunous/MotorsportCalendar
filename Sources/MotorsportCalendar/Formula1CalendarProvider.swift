@@ -42,12 +42,17 @@ struct Formula1CalendarProvider: CalendarProvider {
         let sortedEvents = groupedEvents.sorted(using: KeyPathComparator(\.value.first?.startDate))
 
         let finalEvents = sortedEvents.map { name, sessions -> MotorsportEvent in
-            let stages = sessions.map {
-                MotorsportEventStage(
-                    title: $0.sessionType.rawValue,
-                    startDate: $0.startDate,
-                    endDate: $0.endDate
-                )
+            let stages: [MotorsportEventStage]
+            if sessions.contains(where: { $0.sessionType == nil }) {
+                stages = []
+            } else {
+                stages = sessions.map {
+                    MotorsportEventStage(
+                        title: $0.sessionType!.rawValue,
+                        startDate: $0.startDate,
+                        endDate: $0.endDate
+                    )
+                }
             }
             let startDate = sessions.min(by: { $0.startDate < $1.startDate })!.startDate
             let endDate = sessions.max(by: { $0.endDate < $1.endDate })!.endDate
@@ -56,7 +61,7 @@ struct Formula1CalendarProvider: CalendarProvider {
                 startDate: startDate,
                 endDate: endDate,
                 stages: stages.sorted(using: KeyPathComparator(\.startDate)),
-                isConfirmed: sessions.allSatisfy({ $0.hasConfirmedDates })
+                isConfirmed: !stages.isEmpty && sessions.allSatisfy({ $0.hasConfirmedDates })
             )
         }
 
@@ -70,7 +75,7 @@ struct Formula1CalendarProvider: CalendarProvider {
 }
 
 fileprivate struct Event: Encodable {
-    let sessionType: SessionType
+    let sessionType: SessionType?
     let startDate: Date
     let endDate: Date
     let name: String
@@ -86,14 +91,13 @@ fileprivate struct Event: Encodable {
     init?(event: ICalEvent) {
         guard
             let summary = event.summary,
-            let sessionType = SessionType(summary: summary),
             let startDate = event.dtstart,
             let endDate = event.dtend,
             let location = event.location
         else {
             return nil
         }
-        self.sessionType = sessionType
+        self.sessionType = SessionType(summary: summary)
         self.startDate = startDate.date
         self.endDate = endDate.date
         self.name = EventName(summary: summary, location: location).name

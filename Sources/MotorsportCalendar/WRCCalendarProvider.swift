@@ -113,7 +113,9 @@ struct WRCCalendarProvider: CalendarProvider {
             for index in stages.indices.dropLast() {
                 let nextStage = stages[index + 1]
                 let dateBeforeStartOfNextStage = nextStage.startDate.addingTimeInterval(-1)
-                if calendar.isDate(stages[index].startDate, inSameDayAs: nextStage.startDate) && DateInterval(start: stages[index].startDate, end: nextStage.startDate).duration < (60*60 * TimeInterval(maxDurationInHours)) {
+                let areStagesInSameDay = calendar.isDate(stages[index].startDate, inSameDayAs: nextStage.startDate)
+
+                if areStagesInSameDay && nextStage.startDate > stages[index].startDate && DateInterval(start: stages[index].startDate, end: nextStage.startDate).duration < (60*60 * TimeInterval(maxDurationInHours)) {
                     stages[index].endDate = dateBeforeStartOfNextStage
                 } else {
                     stages[index].endDate = min(calendar.date(byAdding: .hour, value: maxDurationInHours, to: stages[index].startDate)!, dateBeforeStartOfNextStage)
