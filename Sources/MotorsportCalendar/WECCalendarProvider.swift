@@ -39,7 +39,7 @@ struct WECCalendarProvider: CalendarProvider {
                 startDate: event.startDate,
                 endDate: event.endDate,
                 stages: stages,
-                isConfirmed: true
+                isConfirmed: event.isConfirmed && event.subEvents.allSatisfy(\.isConfirmed)
             )
         }
 
@@ -70,7 +70,7 @@ struct WECCalendarProvider: CalendarProvider {
                 let nextEvent = subEvents[index + 1]
                 let dateBeforeNextSubEventStart = nextEvent.startDate.addingTimeInterval(-1)
                 let dayAfterStartDate = Calendar.current.date(byAdding: .day, value: 1, to: subEvents[index].startDate)!
-                subEvents[index].endDate = min(dayAfterStartDate, dateBeforeNextSubEventStart)
+                subEvents[index].endDate = max(min(dayAfterStartDate, dateBeforeNextSubEventStart), subEvents[index].startDate)
             }
             subEvents[subEvents.count - 1].endDate = Calendar.current.date(byAdding: .day, value: 1, to: subEvents[subEvents.count - 1].startDate)!
         }
@@ -81,12 +81,15 @@ struct WECCalendarProvider: CalendarProvider {
         if let lastChild = subEvents.last {
             endDate = max(endDate, lastChild.endDate)
         }
+        let text = (try? workingElement.text()) ?? ""
+        let isConfirmed = !text.hasSuffix("- TBC")
         return Event(
             type: type,
             name: name,
             startDate: startDate,
             endDate: endDate,
-            subEvents: subEvents
+            subEvents: subEvents,
+            isConfirmed: isConfirmed
         )
     }
 }
@@ -97,6 +100,7 @@ fileprivate struct Event {
     let startDate: Date
     var endDate: Date
     let subEvents: [Event]
+    let isConfirmed: Bool
 }
 
 extension Element {
