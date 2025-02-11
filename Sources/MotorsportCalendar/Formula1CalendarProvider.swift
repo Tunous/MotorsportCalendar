@@ -66,7 +66,10 @@ struct Formula1CalendarProvider: CalendarProvider {
         }
 
         if let existingEvents = await load(year: year), let firstEventDate = finalEvents.first?.startDate {
-            let missedEvents = existingEvents.prefix(while: { $0.startDate < firstEventDate })
+            let finalEventTitles = finalEvents.map(\.title)
+            let missedEvents = existingEvents.prefix(while: { existingEvent in
+                existingEvent.startDate < firstEventDate && !finalEventTitles.contains(existingEvent.title)
+            })
             return missedEvents + finalEvents
         }
 
