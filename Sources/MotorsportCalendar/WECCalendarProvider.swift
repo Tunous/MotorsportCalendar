@@ -29,14 +29,14 @@ struct WECCalendarProvider: CalendarProvider {
             let event = try getEvent(from: element)
             let stages = event.subEvents.map { subEvent in
                 return MotorsportEventStage(
-                    title: subEvent.name,
+                    title: subEvent.name.cleanup(),
                     startDate: subEvent.startDate,
                     endDate: subEvent.endDate,
                     isConfirmed: subEvent.isConfirmed
                 )
             }
             return MotorsportEvent(
-                title: event.name.trimmingCharacters(in: .whitespacesAndNewlines),
+                title: event.name.cleanup(),
                 startDate: event.startDate,
                 endDate: event.endDate,
                 stages: stages,
@@ -125,4 +125,10 @@ extension Element {
 enum SelectorQuery {
     static let topLevelItemScope = "[itemscope]:not([itemscope] [itemscope])"
     static let itemProp = "[itemprop]:not([itemscope])"
+}
+
+extension String {
+    func cleanup() -> String {
+        self.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "&amp;", with: "&")
+    }
 }
