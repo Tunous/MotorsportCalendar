@@ -31,7 +31,8 @@ struct WECCalendarProvider: CalendarProvider {
                 return MotorsportEventStage(
                     title: subEvent.name,
                     startDate: subEvent.startDate,
-                    endDate: subEvent.endDate
+                    endDate: subEvent.endDate,
+                    isConfirmed: subEvent.isConfirmed
                 )
             }
             return MotorsportEvent(
