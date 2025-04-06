@@ -45,10 +45,6 @@ struct WRCCalendarProvider: CalendarProvider {
             let endDateText = datesText[1].trimmingCharacters(in: .whitespaces)
             let endDate = try dateParser.parse(endDateText)
 
-            if endDate < .now {
-                return nil
-            }
-
             let pathComponent = path.split(separator: "/").last!
             let eventURL = URL(string: "https://www.ewrc-results.com/timetable/\(pathComponent)/")!
             let timezoneCookie = HTTPCookie(properties: [
