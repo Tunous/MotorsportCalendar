@@ -72,10 +72,12 @@ struct WRCCalendarProvider: CalendarProvider {
 
                 // 12:00 21. 11. UTC
                 // 12:00 UTC
+                // 12:00 21. 11.
+                // 12:00
                 func parseUTCDate() throws -> Date? {
                     let stageTimeNode = try stageNode.select(".harm-time").first()
                     let stageTimeText = try stageTimeNode?.nextElementSibling()?.text() ?? stageTimeNode?.text() ?? ""
-                    guard let stageTimeMatch = stageTimeText.firstMatch(of: #/(?<hour>\d+):(?<minute>\d+)\s*((?<day>\d+)\. (?<month>\d+)\.)?\s*UTC/#) else {
+                    guard let stageTimeMatch = stageTimeText.firstMatch(of: #/(?<hour>\d+):(?<minute>\d+)\s*((?<day>\d+)\. (?<month>\d+)\.)?\s*(UTC)?/#) else {
                         return nil
                     }
                     let hour = Int(stageTimeMatch.output.hour)!
