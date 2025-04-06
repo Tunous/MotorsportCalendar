@@ -44,7 +44,7 @@ struct WECCalendarProvider: CalendarProvider {
             )
         }
 
-        return events
+        return events.filter { Calendar.current.component(.year, from: $0.startDate) == year }
     }
 
     private func getEvent(from element: Element) throws -> Event {
