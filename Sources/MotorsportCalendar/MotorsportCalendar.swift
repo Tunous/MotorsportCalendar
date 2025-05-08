@@ -32,8 +32,13 @@ struct MotorsportCalendar: AsyncParsableCommand {
         let updatedSeries = try await withThrowingTaskGroup(of: (Series, Bool).self, returning: Set<Series>.self) { group in
             for provider in providers {
                 group.addTask { [year] in
-                    let didUpdate = try await provider.run(year: year)
-                    return (provider.series, didUpdate)
+                    do {
+                        let didUpdate = try await provider.run(year: year)
+                        return (provider.series, didUpdate)
+                    } catch {
+                        print("[\(provider.series)] Error:", error)
+                        throw error
+                    }
                 }
             }
 

@@ -18,117 +18,44 @@ struct WECCalendarProvider: CalendarProvider {
     }
 
     func events(year: Int) async throws -> [MotorsportEvent] {
-        let url = URL(string: "https://www.fiawec.com/en/season/about")!
-
+        let url = URL(string: "https://info.sportall.tv/program/FIA%20WEC/en/output_FIA%20WEC_1_\(year).html")!
         let html = try String(contentsOf: url, encoding: .utf8)
-        let document = try SwiftSoup.parse(html, "https://www.fiawec.com")
-
-        let elements = try document.select(SelectorQuery.topLevelItemScope)
-
-        let events = try elements.map { element in
-            let event = try getEvent(from: element)
-            let stages = event.subEvents.map { subEvent in
-                return MotorsportEventStage(
-                    title: subEvent.name.cleanup(),
-                    startDate: subEvent.startDate,
-                    endDate: subEvent.endDate,
-                    isConfirmed: subEvent.isConfirmed
-                )
+        let document = try SwiftSoup.parse(html, "https://info.sportall.tv")
+        let elements = try document.select("table.liveEventsTable")
+        var allEvents: [MotorsportEvent] = []
+        for element in elements {
+            let isConfirmedMapping = try extractConfirmedState(from: element)
+            let calendarURLString = try unwrap(element.select("a img").last()?.parent()?.attr("href"))
+            let calendarURL = URL(string: calendarURLString)
+            var events = try RacingICalParser.parse(calendarURL!, year: year)
+            if !events.isEmpty {
+                updateEventConfirmedState(&events[0], isConfirmedMapping: isConfirmedMapping)
             }
-            return MotorsportEvent(
-                title: event.name.cleanup(),
-                startDate: event.startDate,
-                endDate: event.endDate,
-                stages: stages,
-                isConfirmed: event.isConfirmed && event.subEvents.allSatisfy(\.isConfirmed)
-            )
-        }
 
-        return events.filter { Calendar.current.component(.year, from: $0.startDate) == year }
+            allEvents.append(contentsOf: events)
+        }
+        return allEvents
     }
 
-    private func getEvent(from element: Element) throws -> Event {
-        let workingElement = element.copy() as! Element
-        let children = try workingElement.children().select(SelectorQuery.topLevelItemScope).remove()
-
-        let type = try workingElement.attr("itemtype")
-        let attributes = try workingElement.select(SelectorQuery.itemProp)
-        let propertyKeyValues = try attributes
-            .filter { try !$0.attr("itemprop").isEmpty }
-            .map { property in
-                let key = try property.attr("itemprop")
-                let value = try property.itemPropValue()
-                return (key, value)
+    private func updateEventConfirmedState(_ event: inout MotorsportEvent, isConfirmedMapping: [String: Bool]) {
+        for index in event.stages.indices {
+            let stage = event.stages[index]
+            let isStageConfirmed = isConfirmedMapping[stage.title] ?? stage.isConfirmed
+            event.stages[index].isConfirmed = isStageConfirmed
+            if !isStageConfirmed {
+                event.isConfirmed = false
             }
-        let properties = Dictionary(propertyKeyValues, uniquingKeysWith: { lhs, rhs in lhs })
-        let name = properties["name"] ?? ""
-        var startDate = try Date.ISO8601FormatStyle.iso8601.parse(properties["startDate"] ?? "")
-        var endDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate)!
-
-        var subEvents = try children.map(getEvent(from:))
-        if !subEvents.isEmpty {
-            for index in 0..<(subEvents.count - 1) {
-                let nextEvent = subEvents[index + 1]
-                let dateBeforeNextSubEventStart = nextEvent.startDate.addingTimeInterval(-1)
-                let dayAfterStartDate = Calendar.current.date(byAdding: .day, value: 1, to: subEvents[index].startDate)!
-                subEvents[index].endDate = max(min(dayAfterStartDate, dateBeforeNextSubEventStart), subEvents[index].startDate)
-            }
-            subEvents[subEvents.count - 1].endDate = Calendar.current.date(byAdding: .day, value: 1, to: subEvents[subEvents.count - 1].startDate)!
         }
-
-        if let firstChild = subEvents.first {
-            startDate = min(startDate, firstChild.startDate)
-        }
-        if let lastChild = subEvents.last {
-            endDate = max(endDate, lastChild.endDate)
-        }
-        let text = (try? workingElement.text()) ?? ""
-        let isConfirmed = !text.hasSuffix("- TBC")
-        return Event(
-            type: type,
-            name: name,
-            startDate: startDate,
-            endDate: endDate,
-            subEvents: subEvents,
-            isConfirmed: isConfirmed
-        )
     }
-}
 
-fileprivate struct Event {
-    let type: String
-    let name: String
-    let startDate: Date
-    var endDate: Date
-    let subEvents: [Event]
-    let isConfirmed: Bool
-}
-
-extension Element {
-    func itemPropValue() throws -> String {
-        if tagName() == "a" && hasAttr("href") {
-            return try attr("href")
+    private func extractConfirmedState(from element: Element) throws -> [String: Bool] {
+        let sessions = try element.select("#sessions tr")
+        let isConfirmedMapping = try sessions.map { session in
+            let name = try session.child(0).text()
+            let timeText = try session.children().last()?.text()
+            let isConfirmed = timeText != "TBC"
+            return (name, isConfirmed)
         }
-        if tagName() == "img" && hasAttr("src") {
-            return try attr("src")
-        }
-        if try attr("itemprop") == "name" && hasAttr("title") {
-            return try attr("title")
-        }
-        if hasAttr("content") {
-            return try attr("content")
-        }
-        return try html()
-    }
-}
-
-enum SelectorQuery {
-    static let topLevelItemScope = "[itemscope]:not([itemscope] [itemscope])"
-    static let itemProp = "[itemprop]:not([itemscope])"
-}
-
-extension String {
-    func cleanup() -> String {
-        self.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "&amp;", with: "&")
+        return Dictionary(uniqueKeysWithValues: isConfirmedMapping)
     }
 }
