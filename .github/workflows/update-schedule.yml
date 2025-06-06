@@ -5,6 +5,9 @@ on:
     - cron: '0 16 * * 3'
   workflow_dispatch:
 
+env:
+  GH_TOKEN: ${{ github.token }}
+
 jobs:
   build:
     runs-on: macos-15
