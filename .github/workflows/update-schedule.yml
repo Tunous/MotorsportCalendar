@@ -32,7 +32,7 @@ jobs:
         fi
         
     - name: Commit changes
-      if: steps.check_changes.outputs.changed == 'true'
+      if: steps.changes.outputs.changed == 'true'
       run: |
         git checkout -b auto/update-schedule
         git add -A
@@ -40,6 +40,6 @@ jobs:
         git push origin auto/update-schedule --force
 
     - name: Create Pull Request
-      if: steps.check_changes.outputs.changed == 'true'
+      if: steps.changes.outputs.changed == 'true'
       run: |
         gh pr create --title "Update schedule"
