@@ -43,4 +43,14 @@ extension CalendarProvider {
         }
         return try? JSONDecoder.motorsportCalendar.decode([MotorsportEvent].self, from: storedEventsData)
     }
+
+    func onlyNotEndedEvents(_ updatedEvents: [MotorsportEvent], year: Int) async -> [MotorsportEvent] {
+        guard let existingEvents = await load(year: year) else {
+            return updatedEvents
+        }
+        var events: [MotorsportEvent] = []
+        events.append(contentsOf: existingEvents.prefix(while: { $0.endDate < .now }))
+        events.append(contentsOf: updatedEvents.drop(while: { $0.endDate < .now }))
+        return events
+    }
 }

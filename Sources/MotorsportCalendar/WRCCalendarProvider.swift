@@ -32,8 +32,6 @@ struct WRCCalendarProvider: CalendarProvider {
         let document = try SwiftSoup.parse(html, "https://www.ewrc-results.com")
         let eventNodes = try document.select("div.season-event")
 
-        let existingEvents = await load(year: year) ?? []
-
         let events = try eventNodes.compactMap { node -> MotorsportEvent? in
             let nameNode = try node.select("div.season-event-name > a")
             let name = try nameNode.text()
@@ -132,10 +130,6 @@ struct WRCCalendarProvider: CalendarProvider {
                 isConfirmed: !stages.isEmpty
             )
         }
-        if let firstEventDate = events.first?.startDate {
-            let missedEvents = existingEvents.prefix(while: { $0.startDate < firstEventDate })
-            return missedEvents + events
-        }
-        return events
+        return await onlyNotEndedEvents(events, year: year)
     }
 }

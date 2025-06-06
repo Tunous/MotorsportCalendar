@@ -25,16 +25,7 @@ struct Formula1CalendarProvider: CalendarProvider {
     }
 
     func events(year: Int) async throws -> [MotorsportEvent] {
-        let events = try RacingICalParser.parse(calendarURL, year: year)
-
-        if let firstEventDate = events.first?.startDate, let existingEvents = await load(year: year) {
-            let finalEventTitles = events.map(\.title)
-            let missedEvents = existingEvents.prefix(while: { existingEvent in
-                existingEvent.startDate < firstEventDate && !finalEventTitles.contains(existingEvent.title)
-            })
-            return missedEvents + events
-        }
-
-        return events
+        let updatedEvents = try RacingICalParser.parse(calendarURL, year: year)
+        return await onlyNotEndedEvents(updatedEvents, year: year)
     }
 }
