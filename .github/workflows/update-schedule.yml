@@ -1,0 +1,45 @@
+name: Update Schedule
+
+on:
+  schedule:
+    - cron: '0 16 * * 3'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+    
+    - name: Run command
+      run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }}
+    
+    - name: Check for changes
+      id: changes
+      run: |
+        if [[ -n "$(git status --porcelain)" ]]; then
+          echo "Changes detected"
+          echo "changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "No changes detected"
+          echo "changed=false" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Commit changes
+      if: steps.check_changes.outputs.changed == 'true'
+      run: |
+        git checkout -b auto/update-schedule
+        git add -A
+        git commit -m "Update schedule"
+        git push origin auto/update-schedule --force
+
+    - name: Create Pull Request
+      if: steps.check_changes.outputs.changed == 'true'
+      run: |
+        gh pr create --title "Update schedule"
