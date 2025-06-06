@@ -45,4 +45,4 @@ jobs:
     - name: Create Pull Request
       if: steps.changes.outputs.changed == 'true'
       run: |
-        gh pr create --title "Update schedule"
+        gh pr create --title "Update schedule" --body "Update schedule"
