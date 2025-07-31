@@ -2,7 +2,7 @@ name: Update Schedule
 
 on:
   schedule:
-    - cron: '0 16 * * 3'
+    - cron: '0 15 * * 3'
   workflow_dispatch:
 
 env:
@@ -11,7 +11,7 @@ env:
 jobs:
   build:
     runs-on: macos-15
-    
+
     steps:
     - uses: actions/checkout@v4
 
@@ -19,10 +19,10 @@ jobs:
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-    
+
     - name: Run command
       run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }}
-    
+
     - name: Check for changes
       id: changes
       run: |
@@ -33,7 +33,7 @@ jobs:
           echo "No changes detected"
           echo "changed=false" >> $GITHUB_OUTPUT
         fi
-        
+
     - name: Commit changes
       if: steps.changes.outputs.changed == 'true'
       run: |
@@ -45,4 +45,11 @@ jobs:
     - name: Create Pull Request
       if: steps.changes.outputs.changed == 'true'
       run: |
-        gh pr create --title "Update schedule" --body "Update schedule"
+        changes="# Changes\n\n"
+        for file in $(git --no-pager diff HEAD~1 HEAD --name-only); do
+          changes+="<details><summary>$file</summary>\n\n\`\`\`diff\n"
+          changes+=$(diff -u <(git --no-pager show HEAD~1:$file | jq) <(git --no-pager show HEAD:$file | jq))
+          changes+="\n\`\`\`\n</details>\n\n"
+        done
+
+        gh pr create --title "Update schedule" --body "$changes"
