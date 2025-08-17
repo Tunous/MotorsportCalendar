@@ -9,7 +9,7 @@ env:
   GH_TOKEN: ${{ github.token }}
 
 jobs:
-  build:
+  update_schedule:
     runs-on: macos-15
 
     steps:
@@ -20,7 +20,7 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Run command
+    - name: Update schedule
       run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }}
 
     - name: Check for changes
@@ -52,4 +52,4 @@ jobs:
           changes+="\n\`\`\`\n</details>\n\n"
         done
 
-        gh pr create --title "Update schedule" --body "$changes"
+        echo "$changes" | gh pr create --title "Update schedule" --body-file -
