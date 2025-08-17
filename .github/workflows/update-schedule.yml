@@ -44,4 +44,4 @@ jobs:
 
     - name: Create Pull Request
       if: steps.changes.outputs.changed == 'true'
-      run: ./Scripts/create_changes_pr.command
+      run: ./Scripts/create_changes_pr.sh
