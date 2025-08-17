@@ -5,4 +5,5 @@ for file in $(git --no-pager diff HEAD~1 HEAD --name-only); do
   changes+="\n\`\`\`\n</details>\n\n"
 done
 
-echo "$changes" | gh pr create --title "Update schedule" --body-file -
+echo "$changes" > /tmp/changes.md
+gh pr create --title "Update schedule" --body-file /tmp/changes.md
