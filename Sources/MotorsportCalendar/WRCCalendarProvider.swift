@@ -92,11 +92,13 @@ struct WRCCalendarProvider: CalendarProvider {
 
                 stageStartDate = max(stageStartDate, date)
 
+                let title = stageCode.isEmpty ? stageName : stageCode + " " + stageName
                 stages.append(
                     MotorsportEventStage(
-                        title: stageCode.isEmpty ? stageName : stageCode + " " + stageName,
+                        title: title,
                         startDate: date,
-                        endDate: date
+                        endDate: date,
+                        isSignificant: isSignificant(title: title)
                     )
                 )
             }
@@ -127,5 +129,9 @@ struct WRCCalendarProvider: CalendarProvider {
             )
         }
         return await onlyNotEndedEvents(events, year: year)
+    }
+
+    private func isSignificant(title: String) -> Bool {
+        return title.firstMatch(of: /((\bSS\d+\b)|(\bShakedown\b)|(\bPodium\b))/) != nil
     }
 }

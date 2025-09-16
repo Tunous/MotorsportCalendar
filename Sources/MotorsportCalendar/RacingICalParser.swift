@@ -29,7 +29,8 @@ enum RacingICalParser {
                 MotorsportEventStage(
                     title: $0.stageName,
                     startDate: $0.startDate,
-                    endDate: $0.endDate
+                    endDate: $0.endDate,
+                    isSignificant: !$0.stageName.localizedCaseInsensitiveContains("practice")
                 )
             }
             let startDate = sessions.min(by: { $0.startDate < $1.startDate })!.startDate

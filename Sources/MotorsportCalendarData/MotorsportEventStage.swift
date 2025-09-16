@@ -12,17 +12,20 @@ public struct MotorsportEventStage: Codable, Hashable, Sendable {
     public var startDate: Date
     public var endDate: Date
     public var isConfirmed: Bool
+    public var isSignificant: Bool
 
     public init(
         title: String,
         startDate: Date,
         endDate: Date,
-        isConfirmed: Bool = true
+        isConfirmed: Bool = true,
+        isSignificant: Bool = true,
     ) {
         self.title = title
         self.startDate = startDate
         self.endDate = endDate
         self.isConfirmed = isConfirmed
+        self.isSignificant = isSignificant
     }
 
     public init(from decoder: any Decoder) throws {
@@ -31,5 +34,6 @@ public struct MotorsportEventStage: Codable, Hashable, Sendable {
         self.startDate = try container.decode(Date.self, forKey: .startDate)
         self.endDate = try container.decode(Date.self, forKey: .endDate)
         self.isConfirmed = try container.decodeIfPresent(Bool.self, forKey: .isConfirmed) ?? true
+        self.isSignificant = try container.decodeIfPresent(Bool.self, forKey: .isSignificant) ?? true
     }
 }
