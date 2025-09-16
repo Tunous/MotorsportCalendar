@@ -80,13 +80,9 @@ struct WRCCalendarProvider: CalendarProvider {
                     }
                     let hour = Int(stageTimeMatch.output.hour)!
                     let minute = Int(stageTimeMatch.output.minute)!
-                    let day = stageTimeMatch.output.day.map { Int($0)! }
-                    let month = stageTimeMatch.output.month.map { Int($0)! }
-                    if let day, let month {
-                        let date = try dateParser.parse("\(day). \(month). \(year)")
-                        return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: date)!
-                    }
-                    return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: stageStartDate)!
+                    let day = stageTimeMatch.output.day.map { Int($0)! } ?? calendar.component(.day, from: stageStartDate)
+                    let month = stageTimeMatch.output.month.map { Int($0)! } ?? calendar.component(.month, from: stageStartDate)
+                    return DateComponents(calendar: calendar, timeZone: .gmt, year: year, month: month, day: day, hour: hour, minute: minute, second: 0).date!
                 }
 
                 guard let date = try parseUTCDate() else {
