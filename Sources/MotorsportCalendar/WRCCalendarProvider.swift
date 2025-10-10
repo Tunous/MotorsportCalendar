@@ -18,8 +18,6 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     func events(year: Int) async throws -> [MotorsportEvent] {
-        let url = URL(string: "https://www.ewrc-results.com/season/\(year)/1-wrc/")!
-
         var calendar = Calendar.current
         calendar.timeZone = .gmt
         let dateParser = Date.VerbatimFormatStyle(
@@ -28,11 +26,12 @@ struct WRCCalendarProvider: CalendarProvider {
             calendar: calendar
         ).parseStrategy
 
-        let html = try String(contentsOf: url)
-        let document = try SwiftSoup.parse(html, "https://www.ewrc-results.com")
+        let url = URL(string: "https://www.ewrc-results.com/season/\(year)/1-wrc/")!
+        let document = try await getDocument(url: url)
         let eventNodes = try document.select("div.season-event")
 
-        let events = try eventNodes.compactMap { node -> MotorsportEvent? in
+        var events: [MotorsportEvent] = []
+        for node in eventNodes {
             let nameNode = try node.select("div.season-event-name > a")
             let name = try nameNode.text()
             let path = try nameNode.attr("href")
@@ -45,16 +44,9 @@ struct WRCCalendarProvider: CalendarProvider {
 
             let pathComponent = path.split(separator: "/").last!
             let eventURL = URL(string: "https://www.ewrc-results.com/timetable/\(pathComponent)/")!
-            let timezoneCookie = HTTPCookie(properties: [
-                .path: "/",
-                .name: "timezone",
-                .value: "UTC",
-                .domain: "www.ewrc-results.com",
-            ])!
-            HTTPCookieStorage.shared.setCookies([timezoneCookie], for: eventURL, mainDocumentURL: nil)
 
             let eventHtml = try String(contentsOf: eventURL)
-            let eventDocument = try SwiftSoup.parse(eventHtml, "https://www.ewrc-results.com")
+            let eventDocument = try await getDocument(url: eventURL)
 
             var stageStartDate = Date.distantPast
             var stages: [MotorsportEventStage] = []
@@ -120,18 +112,46 @@ struct WRCCalendarProvider: CalendarProvider {
             if !stages.isEmpty {
                 stages[stages.count - 1].endDate = calendar.date(byAdding: .hour, value: maxDurationInHours, to: stages[stages.count - 1].startDate)!
             }
-            return MotorsportEvent(
+            let event = MotorsportEvent(
                 title: name.replacingOccurrences(of: year.description, with: "").trimmingCharacters(in: .whitespaces),
                 startDate: stages.first?.startDate ?? startDate,
                 endDate: stages.last?.endDate ?? endDate,
                 stages: stages,
                 isConfirmed: !stages.isEmpty
             )
+            events.append(event)
         }
         return await onlyNotEndedEvents(events, year: year)
     }
 
     private func isSignificant(title: String) -> Bool {
         return title.firstMatch(of: /((\bSS\d+\b)|(\bShakedown\b)|(\bPodium\b))/) != nil
+    }
+
+    private func getDocument(url: URL) async throws -> Document {
+        setTimezoneCookie(for: url)
+
+        var request = URLRequest(url: url)
+        request.setValue("MotoWeekParser/1.0", forHTTPHeaderField: "User-Agent")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard
+            let httpResponse = response as? HTTPURLResponse,
+            httpResponse.statusCode == 200,
+            let html = String(data: data, encoding: .utf8)
+        else {
+            throw URLError(.badServerResponse)
+        }
+        return try SwiftSoup.parse(html, "https://www.ewrc-results.com")
+    }
+
+    private func setTimezoneCookie(for url: URL) {
+        let timezoneCookie = HTTPCookie(properties: [
+            .path: "/",
+            .name: "timezone",
+            .value: "UTC",
+            .domain: "www.ewrc-results.com",
+        ])!
+        HTTPCookieStorage.shared.setCookies([timezoneCookie], for: url, mainDocumentURL: nil)
     }
 }
