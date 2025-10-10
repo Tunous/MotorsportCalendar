@@ -8,6 +8,7 @@
 import Foundation
 import MotorsportCalendarData
 import SwiftSoup
+import RegexBuilder
 
 struct WRCCalendarProvider: CalendarProvider {
     let outputURL: URL
@@ -91,7 +92,28 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     private func isSignificant(title: String) -> Bool {
-        return title.firstMatch(of: /((\bSS\d+\b)|(\bShakedown\b)|(\bPodium\b))/) != nil
+        return title.firstMatch(of: Regex {
+            ChoiceOf {
+                Regex {
+                    Anchor.wordBoundary
+                    "SS"
+                    OneOrMore(.digit)
+                    Anchor.wordBoundary
+                }
+
+                Regex {
+                    Anchor.wordBoundary
+                    "Shakedown"
+                    Anchor.wordBoundary
+                }
+
+                Regex {
+                    Anchor.wordBoundary
+                    "Podium"
+                    Anchor.wordBoundary
+                }
+            }
+        }) != nil
     }
 
     private func getDocument(url: URL) async throws -> Document {
