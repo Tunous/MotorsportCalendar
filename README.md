@@ -8,4 +8,4 @@ Storage, API models and helper tools used by [MotoWeek] application.
 - `Sources/MotorsportCalendar`: Parser tool which converts data from various sources to format understood by the app.
 - `Sources/MotorsportCalendarData`: API models used to deal with data JSON files.
 
-[MotoWeek]: https://testflight.apple.com/join/GqtAtfQu
+[MotoWeek]: https://apps.apple.com/app/id6479216156
