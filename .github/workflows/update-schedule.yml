@@ -2,7 +2,7 @@ name: Update Schedule
 
 on:
   schedule:
-    - cron: '0 15 * * 3'
+    - cron: '0 15 * * 2'
   workflow_dispatch:
 
 env:
@@ -21,7 +21,7 @@ jobs:
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Update schedule
-      run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }}
+      run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }} --year 2026
 
     - name: Check for changes
       id: changes
