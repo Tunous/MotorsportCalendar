@@ -53,7 +53,7 @@ struct MotorsportCalendar: AsyncParsableCommand {
 
         var info = makeInfo(outputURL: outputURL)
         for series in updatedSeries {
-            info.updates[series] = .now
+            info.updatesByYear[year, default: [:]][series] = .now
         }
 
         print()
@@ -75,7 +75,7 @@ struct MotorsportCalendar: AsyncParsableCommand {
         } catch {
             let keyValues = Series.allCases.map { ($0, Date.now) }
             let updates = Dictionary(uniqueKeysWithValues: keyValues)
-            return .init(updates: updates)
+            return MotorsportCalendarInfo(updates: [year: updates])
         }
     }
 }
