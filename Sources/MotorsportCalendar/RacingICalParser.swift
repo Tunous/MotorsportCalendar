@@ -178,7 +178,11 @@ fileprivate struct EventName {
         case "canada":
             namePrefix = "Canadian"
         case "spain":
-            namePrefix = "Spanish"
+            if summary.localizedStandardContains("barcelona") {
+                namePrefix = "Barcelona-Catalunya"
+            } else {
+                namePrefix = "Spanish"
+            }
         case "austria":
             namePrefix = "Austrian"
         case "united kingdom":
