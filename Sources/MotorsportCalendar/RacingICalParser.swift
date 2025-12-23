@@ -25,9 +25,10 @@ enum RacingICalParser {
         }
         var groupedEvents = Dictionary(grouping: events, by: \.name)
         groupPreSeasonEventsByWeek(in: &groupedEvents)
+
         let sortedEvents = groupedEvents.sorted(using: KeyPathComparator(\.value.first?.startDate))
 
-        return sortedEvents.map { name, sessions -> MotorsportEvent in
+        return try sortedEvents.map { name, sessions -> MotorsportEvent in
             let stages = sessions.map {
                 MotorsportEventStage(
                     title: $0.stageName,
@@ -35,6 +36,10 @@ enum RacingICalParser {
                     endDate: $0.endDate,
                     isSignificant: !$0.stageName.localizedCaseInsensitiveContains("practice")
                 )
+            }
+            let titles = stages.map(\.title)
+            if titles.count != Set(titles).count {
+                throw CalendarParsingError.duplicateStages(eventName: name, stages: titles)
             }
             let startDate = sessions.min(by: { $0.startDate < $1.startDate })!.startDate
             let endDate = sessions.max(by: { $0.endDate < $1.endDate })!.endDate
@@ -64,13 +69,14 @@ enum RacingICalParser {
     }
 }
 
-struct MissingValueError: Error {
-    let description: String
+enum CalendarParsingError: Error {
+    case missingValue(description: String)
+    case duplicateStages(eventName: String, stages: [String])
 }
 
 func unwrap<T>(_ value: T?, function: StaticString = #function, line: UInt8 = #line) throws -> T {
     guard let value else {
-        throw MissingValueError(description: "\(function) at line \(line) value is nil")
+        throw CalendarParsingError.missingValue(description: "\(function) at line \(line) value is nil")
     }
     return value
 }
