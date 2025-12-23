@@ -9,6 +9,8 @@ import Foundation
 import MotorsportCalendarData
 import ICalSwift
 
+let preSeasonTestingName = "Pre-Season Testing"
+
 enum RacingICalParser {
     static func parse(_ url: URL, year: Int) throws -> [MotorsportEvent] {
         let string = try String(contentsOf: url)
@@ -21,7 +23,8 @@ enum RacingICalParser {
             guard Calendar.current.component(.year, from: startDate) == year else { return nil }
             return Event(event: event)
         }
-        let groupedEvents = Dictionary(grouping: events, by: \.name)
+        var groupedEvents = Dictionary(grouping: events, by: \.name)
+        groupPreSeasonEventsByWeek(in: &groupedEvents)
         let sortedEvents = groupedEvents.sorted(using: KeyPathComparator(\.value.first?.startDate))
 
         return sortedEvents.map { name, sessions -> MotorsportEvent in
@@ -43,6 +46,21 @@ enum RacingICalParser {
                 isConfirmed: !stages.isEmpty && sessions.allSatisfy({ $0.hasConfirmedDates })
             )
         }
+    }
+
+    private static func groupPreSeasonEventsByWeek(in events: inout [String: [Event]]) {
+        guard let preSeasonTestingEvents = events[preSeasonTestingName] else { return }
+        var index = 1
+        var week = 0
+        for event in preSeasonTestingEvents {
+            let eventWeek = Calendar.current.component(.weekOfYear, from: event.startDate)
+            if eventWeek != week && week > 0 {
+                index += 1
+            }
+            events["\(preSeasonTestingName) \(index)", default: []].append(event)
+            week = eventWeek
+        }
+        events.removeValue(forKey: preSeasonTestingName)
     }
 }
 
@@ -172,6 +190,9 @@ fileprivate struct EventName {
         case "united arab emirates":
             namePrefix = "Abu Dhabi"
         default:
+            if summary.localizedCaseInsensitiveContains("pre-season testing") {
+                return preSeasonTestingName
+            }
             namePrefix = location
         }
         return namePrefix + " Grand Prix"
