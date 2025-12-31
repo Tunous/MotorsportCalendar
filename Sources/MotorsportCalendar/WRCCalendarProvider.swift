@@ -9,6 +9,7 @@ import Foundation
 import MotorsportCalendarData
 import SwiftSoup
 import RegexBuilder
+import Algorithms
 
 struct WRCCalendarProvider: CalendarProvider {
     let outputURL: URL
@@ -20,67 +21,75 @@ struct WRCCalendarProvider: CalendarProvider {
 
     func events(year: Int) async throws -> [MotorsportEvent] {
         let dateParser = Date.VerbatimFormatStyle(
-            format: "\(day: .defaultDigits). \(month: .defaultDigits). \(year: .defaultDigits)",
+            format: "\(day: .defaultDigits).\(month: .defaultDigits).\(year: .defaultDigits)",
             timeZone: .gmt,
             calendar: .gmt
         ).parseStrategy
 
         let url = URL(string: "https://www.ewrc-results.com/season/\(year)/1-wrc/")!
         let document = try await getDocument(url: url)
-        let eventNodes = try document.select("div.season-event")
+        let interestingNodes = try document.getElementsMatchingOwnText(" \(year)$").chunks(ofCount: 2)
 
         var events: [MotorsportEvent] = []
-        for node in eventNodes {
-            let nameNode = try node.select("div.season-event-name > a")
+        for pair in interestingNodes {
+            let nameNode = pair.first!
+            let dateNode = pair.last!
             let name = try nameNode.text()
-            let path = try nameNode.attr("href")
-            let datesText = try node.select("div.event-info").text().prefix(while: { $0 != "," }).split(separator: "–")
+            let eventPath = try nameNode.attr("href")
+            let datesText = try dateNode.text().split(separator: "-")
 
-            let startDateText = datesText[0].trimmingCharacters(in: .whitespaces) + " \(year)"
+            let startDateText = String(datesText[0].replacing(" ", with: "") + "\(year)")
             let startDate = try dateParser.parse(startDateText)
-            let endDateText = datesText[1].trimmingCharacters(in: .whitespaces)
+            let endDateText = String(datesText[1].replacing(" ", with: ""))
             let endDate = try dateParser.parse(endDateText)
 
-            let pathComponent = path.split(separator: "/").last!
-            let eventURL = URL(string: "https://www.ewrc-results.com/timetable/\(pathComponent)/")!
-
-            let eventHtml = try String(contentsOf: eventURL)
-            let eventDocument = try await getDocument(url: eventURL)
+            let timetablePath = eventPath.replacing("final-results", with: "itinerary")
+            let eventURL = URL(string: "https://www.ewrc-results.com/\(timetablePath)")!
+            let eventDocument = try await getDocumentIgnoringBadResponse(url: eventURL)
 
             var stageStartDate = Date.distantPast
             var stages: [MotorsportEventStage] = []
-            let stagesTable = try eventDocument.select("div.mt-3")[0].children()
-            for stageNode in stagesTable {
-                guard !stageNode.children().isEmpty() else { continue }
-                let stageCode = try stageNode.select(".harm-ss").text()
-                let stageName = try stageNode.select(".harm-stage").text()
-                let stageDateText = try stageNode.select(".harm-date").text().drop(while: { !$0.isWhitespace }).dropFirst()
-                if !stageDateText.isEmpty {
-                    stageStartDate = try dateParser.parse("\(stageDateText) \(year)")
-                }
+            if let eventDocument {
+                let stageTimeNodes = try eventDocument.getElementsMatchingOwnText(#"\d\d:\d\d"#)
+                    .filter { $0.parents().contains(where: { $0.hasClass("md:block") }) }
+                    .filter { !$0.hasNextSibling() }
 
-                guard let date = try parseStageUTCDate(from: stageNode, startDate: stageStartDate, year: year) else {
-                    stages = []
-                    break
-                }
+                let timeZone = try extractEventTimeZone(from: eventDocument)
 
-                stageStartDate = max(stageStartDate, date)
+                for stageTimeNode in stageTimeNodes {
+                    let stageRowNode = stageTimeNode.parent()!
+                    let stageCode = try stageRowNode.child(0).text()
+                    let stageName = try stageRowNode.child(1).text()
+                    let dateText = try stageRowNode.child(3).text().drop(while: { !$0.isWhitespace }).replacing(" ", with: "")
+                    let timeText = try stageTimeNode.text()
 
-                let title = stageCode.isEmpty ? stageName : stageCode + " " + stageName
-                stages.append(
-                    MotorsportEventStage(
-                        title: title,
-                        startDate: date,
-                        endDate: date,
-                        isSignificant: isSignificant(title: title)
+                    if !dateText.isEmpty {
+                        stageStartDate = try dateParser.parse("\(dateText)\(year)")
+                    }
+
+                    guard let date = try parseStageDate(from: stageTimeNode, startDate: stageStartDate, year: year, timeZone: timeZone) else {
+                        stages = []
+                        break
+                    }
+
+                    stageStartDate = max(stageStartDate, date)
+
+                    let title = stageCode.isEmpty ? stageName : stageCode + " " + stageName
+                    stages.append(
+                        MotorsportEventStage(
+                            title: title,
+                            startDate: date,
+                            endDate: date,
+                            isSignificant: isSignificant(title: title)
+                        )
                     )
-                )
+                }
+
+                tweakDates(of: &stages)
             }
 
-            tweakDates(of: &stages)
-
             let event = MotorsportEvent(
-                title: name.replacingOccurrences(of: year.description, with: "").trimmingCharacters(in: .whitespaces),
+                title: name.replacing(year.description, with: "").trimmingCharacters(in: .whitespaces),
                 startDate: stages.first?.startDate ?? startDate,
                 endDate: stages.last?.endDate ?? endDate,
                 stages: stages,
@@ -133,6 +142,18 @@ struct WRCCalendarProvider: CalendarProvider {
         return try SwiftSoup.parse(html, "https://www.ewrc-results.com")
     }
 
+    private func getDocumentIgnoringBadResponse(url: URL) async throws -> Document? {
+        do {
+            return try await getDocument(url: url)
+        } catch {
+            if error as? URLError == URLError(.badServerResponse) {
+                return nil
+            } else {
+                throw error
+            }
+        }
+    }
+
     private func setTimezoneCookie(for url: URL) {
         let timezoneCookie = HTTPCookie(properties: [
             .path: "/",
@@ -147,10 +168,8 @@ struct WRCCalendarProvider: CalendarProvider {
     // 12:00 UTC
     // 12:00 21. 11.
     // 12:00
-    private func parseStageUTCDate(from stageNode: Element, startDate: Date, year: Int) throws -> Date? {
-        let stageTimeNode = try stageNode.select(".harm-time").first()
-        let stageTimeText = try stageTimeNode?.nextElementSibling()?.text() ?? stageTimeNode?.text() ?? ""
-        guard let stageTimeMatch = stageTimeText.firstMatch(of: #/(?<hour>\d+):(?<minute>\d+)\s*((?<day>\d+)\. (?<month>\d+)\.)?\s*(UTC)?/#) else {
+    private func parseStageDate(from node: Element, startDate: Date, year: Int, timeZone: TimeZone) throws -> Date? {
+        guard let stageTimeMatch = try node.text().firstMatch(of: #/(?<hour>\d+):(?<minute>\d+)\s*((?<day>\d+)\. (?<month>\d+)\.)?\s*(UTC)?/#) else {
             return nil
         }
         let calendar = Calendar.gmt
@@ -158,7 +177,7 @@ struct WRCCalendarProvider: CalendarProvider {
         let minute = Int(stageTimeMatch.output.minute)!
         let day = stageTimeMatch.output.day.map { Int($0)! } ?? calendar.component(.day, from: startDate)
         let month = stageTimeMatch.output.month.map { Int($0)! } ?? calendar.component(.month, from: startDate)
-        return DateComponents(calendar: calendar, timeZone: .gmt, year: year, month: month, day: day, hour: hour, minute: minute, second: 0).date!
+        return DateComponents(calendar: calendar, timeZone: timeZone, year: year, month: month, day: day, hour: hour, minute: minute, second: 0).date!
     }
 
     private func tweakDates(of stages: inout [MotorsportEventStage]) {
@@ -185,6 +204,20 @@ struct WRCCalendarProvider: CalendarProvider {
             // Set end time for last stage of event to max value
             stages[stages.count - 1].endDate = calendar.date(byAdding: .hour, value: maxDurationInHours, to: stages[stages.count - 1].startDate)!
         }
+    }
+
+    private func extractEventTimeZone(from document: Document) throws -> TimeZone {
+        let scriptWithTimeZone = try document.getElementsByTag("script")
+            .first(where: { try $0.html().contains("timezone") })
+        guard let scriptWithTimeZone else {
+            return .gmt
+        }
+        let html = try scriptWithTimeZone.html()
+        if let index = html.firstRange(of: #"\"timezone\":\""#)?.upperBound {
+            let timeZoneText = html[index...].prefix(while: { $0 != "\\"})
+            return TimeZone(identifier: String(timeZoneText)) ?? .gmt
+        }
+        return .gmt
     }
 }
 
