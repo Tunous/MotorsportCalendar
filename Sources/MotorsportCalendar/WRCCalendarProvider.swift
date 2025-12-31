@@ -59,7 +59,7 @@ struct WRCCalendarProvider: CalendarProvider {
                 for stageTimeNode in stageTimeNodes {
                     let stageRowNode = stageTimeNode.parent()!
                     let stageCode = try stageRowNode.child(0).text()
-                    let stageName = try stageRowNode.child(1).text()
+                    let stageName = try stageRowNode.child(1).text().replacing("Powerstage", with: " [Powerstage]")
                     let dateText = try stageRowNode.child(3).text().drop(while: { !$0.isWhitespace }).replacing(" ", with: "")
                     let timeText = try stageTimeNode.text()
 
