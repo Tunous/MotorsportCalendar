@@ -12,7 +12,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
         .package(url: "https://github.com/scinfu/SwiftSoup", from: "2.7.1"),
-        .package(url: "https://github.com/chan614/iCalSwift", from: "1.2.0")
+        .package(url: "https://github.com/chan614/iCalSwift", from: "1.2.0"),
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.0"),
     ],
     targets: [
         .executableTarget(
@@ -21,6 +22,7 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "SwiftSoup", package: "SwiftSoup"),
                 .product(name: "ICalSwift", package: "iCalSwift"),
+                .product(name: "Algorithms", package: "swift-algorithms"),
                 .target(name: "MotorsportCalendarData"),
             ]
         ),
