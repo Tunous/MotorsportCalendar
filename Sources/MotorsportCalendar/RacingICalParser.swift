@@ -26,7 +26,7 @@ enum RacingICalParser {
         var groupedEvents = Dictionary(grouping: events, by: \.name)
         groupPreSeasonEventsByWeek(in: &groupedEvents)
 
-        let sortedEvents = groupedEvents.sorted(using: KeyPathComparator(\.value.first?.startDate))
+        let sortedEvents = groupedEvents.sorted(using: KeyPathComparator(\.value.first))
 
         return try sortedEvents.map { name, sessions -> MotorsportEvent in
             let stages = sessions.map {
@@ -54,7 +54,7 @@ enum RacingICalParser {
     }
 
     private static func groupPreSeasonEventsByWeek(in events: inout [String: [Event]]) {
-        guard let preSeasonTestingEvents = events[preSeasonTestingName] else { return }
+        guard let preSeasonTestingEvents = events[preSeasonTestingName]?.sorted() else { return }
         var index = 1
         var week = 0
         for event in preSeasonTestingEvents {
@@ -81,7 +81,7 @@ func unwrap<T>(_ value: T?, function: StaticString = #function, line: UInt8 = #l
     return value
 }
 
-fileprivate struct Event {
+fileprivate struct Event: Comparable {
     let stageName: String
     let startDate: Date
     let endDate: Date
@@ -105,6 +105,10 @@ fileprivate struct Event {
             self.name = EventName.wec(summary: summary)
         }
         self.hasConfirmedDates = !summary.hasSuffix("(TBC)")
+    }
+
+    static func < (lhs: Event, rhs: Event) -> Bool {
+        lhs.startDate < rhs.startDate
     }
 }
 
