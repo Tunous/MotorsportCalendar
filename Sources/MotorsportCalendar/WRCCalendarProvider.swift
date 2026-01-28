@@ -59,7 +59,7 @@ struct WRCCalendarProvider: CalendarProvider {
                 for stageTimeNode in stageTimeNodes {
                     let stageRowNode = stageTimeNode.parent()!
                     let stageCode = try stageRowNode.child(0).text()
-                    let stageName = try stageRowNode.child(1).text().replacing("Powerstage", with: " [Powerstage]")
+                    let stageName = translate(try stageRowNode.child(1).text())
                     let dateText = try stageRowNode.child(3).text().drop(while: { !$0.isWhitespace }).replacing(" ", with: "")
 
                     if !dateText.isEmpty {
@@ -217,6 +217,16 @@ struct WRCCalendarProvider: CalendarProvider {
             return TimeZone(identifier: String(timeZoneText)) ?? .gmt
         }
         return .gmt
+    }
+
+    private func translate(_ text: String) -> String {
+        text.replacing("lg_harm_start", with: "Start")
+            .replacing("lg_regroup", with: "Regroup")
+            .replacing("lg_service", with: "Service")
+            .replacing("lg_flexi_service", with: "Flexi service")
+            .replacing("lg_harm_finish", with: "Finish")
+            .replacing("lg_podium", with: "Podium")
+            .replacing("Powerstage", with: " [Powerstage]")
     }
 }
 
