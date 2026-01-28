@@ -21,7 +21,7 @@ enum RacingICalParser {
         let events = calendar.events.compactMap { event -> Event? in
             guard let startDate = event.dtstart?.date else { return nil }
             guard Calendar.current.component(.year, from: startDate) == year else { return nil }
-            return Event(event: event)
+            return Event(event: event, year: year)
         }
         var groupedEvents = Dictionary(grouping: events, by: \.name)
         groupPreSeasonEventsByWeek(in: &groupedEvents)
@@ -88,7 +88,7 @@ fileprivate struct Event: Comparable {
     let name: String
     let hasConfirmedDates: Bool
 
-    init?(event: ICalEvent) {
+    init?(event: ICalEvent, year: Int) {
         guard
             let summary = event.summary,
             let startDate = event.dtstart,
@@ -102,7 +102,7 @@ fileprivate struct Event: Comparable {
         if let location = event.location {
             self.name = EventName.formula1(summary: summary, location: location)
         } else {
-            self.name = EventName.wec(summary: summary)
+            self.name = EventName.wec(summary: summary, year: year)
         }
         self.hasConfirmedDates = !summary.hasSuffix("(TBC)")
     }
@@ -146,10 +146,11 @@ fileprivate enum SessionType: String, Encodable {
 fileprivate struct EventName {
     let name: String
 
-    static func wec(summary: String) -> String{
+    static func wec(summary: String, year: Int) -> String{
         let raw = summary.split(separator: " - ").first.map { String($0) } ?? summary
-        if raw.hasSuffix(" 2025") {
-            return String(raw.dropLast(5))
+        let yearSuffix = " \(year)"
+        if raw.hasSuffix(yearSuffix) {
+            return String(raw.dropLast(yearSuffix.count))
         }
         return raw
     }
