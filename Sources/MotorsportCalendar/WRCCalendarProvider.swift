@@ -114,12 +114,6 @@ struct WRCCalendarProvider: CalendarProvider {
                     "Shakedown"
                     Anchor.wordBoundary
                 }
-
-                Regex {
-                    Anchor.wordBoundary
-                    "Podium"
-                    Anchor.wordBoundary
-                }
             }
         }) != nil
     }
