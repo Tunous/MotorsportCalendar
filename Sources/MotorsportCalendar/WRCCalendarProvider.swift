@@ -226,6 +226,8 @@ struct WRCCalendarProvider: CalendarProvider {
             .replacing("lg_flexi_service", with: "Flexi service")
             .replacing("lg_harm_finish", with: "Finish")
             .replacing("lg_podium", with: "Podium")
+            .replacing("lg_tyre_fitting_zone", with: "Tyre fitting zone")
+            .replacing("lg_remote_service", with: "Remote service")
             .replacing("Powerstage", with: " [Powerstage]")
     }
 }
