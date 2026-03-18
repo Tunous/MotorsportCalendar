@@ -48,7 +48,8 @@ enum RacingICalParser {
                 startDate: startDate,
                 endDate: endDate,
                 stages: stages.sorted(using: KeyPathComparator(\.startDate)),
-                isConfirmed: !stages.isEmpty && sessions.allSatisfy({ $0.hasConfirmedDates })
+                isConfirmed: !stages.isEmpty && sessions.allSatisfy({ $0.hasConfirmedDates }),
+                isCancelled: sessions.contains(where: { $0.isCancelled }),
             )
         }
     }
@@ -87,6 +88,7 @@ fileprivate struct Event: Comparable {
     let endDate: Date
     let name: String
     let hasConfirmedDates: Bool
+    let isCancelled: Bool
 
     init?(event: ICalEvent, year: Int) {
         guard
@@ -105,6 +107,7 @@ fileprivate struct Event: Comparable {
             self.name = EventName.wec(summary: summary, year: year)
         }
         self.hasConfirmedDates = !summary.hasSuffix("(TBC)")
+        self.isCancelled = summary.starts(with: "CALLED OFF")
     }
 
     static func < (lhs: Event, rhs: Event) -> Bool {

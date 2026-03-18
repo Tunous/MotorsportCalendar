@@ -41,10 +41,6 @@ public struct MotorsportCalendarInfo: Codable {
         try container.encode(rawUpdates, forKey: .updates)
     }
 
-    public func lastUpdateDate(forYear year: Int) -> Date? {
-        updatesByYear[year]?.values.max()
-    }
-
     enum CodingKeys: CodingKey {
         case updates
     }
