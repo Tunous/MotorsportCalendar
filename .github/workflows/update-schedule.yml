@@ -3,6 +3,7 @@ name: Update Schedule
 on:
   schedule:
     - cron: '0 15 * * 2'
+    - cron: '0 10 * * 5'
   workflow_dispatch:
 
 env:
