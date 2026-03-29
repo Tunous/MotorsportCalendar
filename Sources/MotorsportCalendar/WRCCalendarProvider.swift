@@ -126,18 +126,16 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     private func isSignificant(title: String) -> Bool {
+        if title.localizedCaseInsensitiveContains("shakedown") {
+            return true
+        }
+
         return title.firstMatch(of: Regex {
             ChoiceOf {
                 Regex {
                     Anchor.wordBoundary
                     "SS"
                     OneOrMore(.digit)
-                    Anchor.wordBoundary
-                }
-
-                Regex {
-                    Anchor.wordBoundary
-                    "Shakedown"
                     Anchor.wordBoundary
                 }
             }
@@ -232,6 +230,19 @@ struct WRCCalendarProvider: CalendarProvider {
                 return href
             }
         }
+
+        let scripts = try document.select("script")
+        for script in scripts {
+            let scriptContent = try script.html()
+
+            if let match = scriptContent.firstMatch(of: #/"label":"Itinerary","url":"(?<url>[^"]+)"/#) {
+                return String(match.output.url).replacingOccurrences(of: #"\/"#, with: "/")
+            }
+
+            if let match = scriptContent.firstMatch(of: #/"text":"Itinerary","link":"(?<url>[^"]+)"/#) {
+                return String(match.output.url).replacingOccurrences(of: #"\/"#, with: "/")
+            }
+        }
         return nil
     }
 
@@ -247,7 +258,8 @@ struct WRCCalendarProvider: CalendarProvider {
             return (extractedYear, month, day)
         }
 
-        if let concatMatch = normalized.firstMatch(of: #/(?<month>[A-Za-z]+)\s+(?<year>\d{4})(?<day>\d{2})\b/#),
+        // Handles malformed headers like "Saturday, April 202611" => April 11, 2026
+        if let concatMatch = normalized.firstMatch(of: #/(?<month>[A-Za-z]+)\s+(?<year>\d{4})(?<day>\d{1,2})\b/#),
            let month = monthNumber(from: String(concatMatch.output.month)),
            let year = Int(concatMatch.output.year),
            let day = Int(concatMatch.output.day),
@@ -255,7 +267,7 @@ struct WRCCalendarProvider: CalendarProvider {
             return (year, month, day)
         }
 
-        if let monthDayYear = normalized.firstMatch(of: #/(?<month>[A-Za-z]+)\s+(?<day>\d{1,2})(?:,?\s*(?<year>\d{4}))?/#),
+        if let monthDayYear = normalized.firstMatch(of: #/(?<month>[A-Za-z]+)\s+(?<day>\d{1,2})(?!\d)(?:,?\s*(?<year>\d{4}))?/#),
            let month = monthNumber(from: String(monthDayYear.output.month)),
            let day = Int(monthDayYear.output.day),
            (1...31).contains(day) {
@@ -263,7 +275,7 @@ struct WRCCalendarProvider: CalendarProvider {
             return (year, month, day)
         }
 
-        if let dayMonthYear = normalized.firstMatch(of: #/(?<day>\d{1,2})\s+(?<month>[A-Za-z]+)(?:\s+(?<year>\d{4}))?/#),
+        if let dayMonthYear = normalized.firstMatch(of: #/(?<day>\d{1,2})(?!\d)\s+(?<month>[A-Za-z]+)(?:\s+(?<year>\d{4}))?/#),
            let month = monthNumber(from: String(dayMonthYear.output.month)),
            let day = Int(dayMonthYear.output.day),
            (1...31).contains(day) {
