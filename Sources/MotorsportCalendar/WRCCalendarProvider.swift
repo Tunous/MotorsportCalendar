@@ -158,15 +158,37 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     private func getDocumentIgnoringBadResponse(url: URL, baseURL: URL) async throws -> Document? {
-        do {
-            return try await getDocument(url: url, baseURL: baseURL)
-        } catch {
-            if error as? URLError == URLError(.badServerResponse) {
-                return nil
-            } else {
-                throw error
+        let retryDelays: [Duration] = [.zero, .milliseconds(300), .milliseconds(800)]
+        var lastError: Error?
+
+        for delay in retryDelays {
+            if delay > .zero {
+                try? await Task.sleep(for: delay)
+            }
+
+            do {
+                return try await getDocument(url: url, baseURL: baseURL)
+            } catch {
+                lastError = error
+
+                if let urlError = error as? URLError {
+                    switch urlError.code {
+                    case .badServerResponse, .timedOut, .networkConnectionLost, .cannotFindHost, .cannotConnectToHost:
+                        continue
+                    default:
+                        throw error
+                    }
+                } else {
+                    throw error
+                }
             }
         }
+
+        if let urlError = lastError as? URLError, urlError.code == .badServerResponse {
+            return nil
+        }
+
+        throw lastError ?? URLError(.unknown)
     }
 
     private func parseISO8601Date(_ text: String) -> Date? {
@@ -222,15 +244,6 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     private func findItineraryPath(in document: Document) throws -> String? {
-        let tabLinks = try document.select("a.page-tabs__tab[href]")
-        for tabLink in tabLinks {
-            let href = try tabLink.attr("href")
-            let text = try tabLink.text().trimmingCharacters(in: .whitespacesAndNewlines)
-            if href.localizedCaseInsensitiveContains("/itinerary-") || text.localizedCaseInsensitiveContains("itinerary") {
-                return href
-            }
-        }
-
         let scripts = try document.select("script")
         for script in scripts {
             let scriptContent = try script.html()
@@ -293,8 +306,8 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     private func parseStageLine(_ text: String) -> (hour: Int, minute: Int, title: String, isConfirmed: Bool)? {
-        guard let stageTimeMatch = text.firstMatch(of: #/^\s*(?<hour>\d{1,2}):(?<minute>\d{2})\s*:\s*(?<title>.+?)\s*$/#) else {
-            let title = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let stageTimeMatch = text.firstMatch(of: #/^\s*(?<hour>\d{1,2}):(?<minute>\d{2})(?:\s*:\s*|\s+)(?<title>.+?)\s*$/#) else {
+            let title = normalizedStageTitle(text)
             guard !title.isEmpty else { return nil }
             return (0, 0, title, false)
         }
@@ -306,8 +319,63 @@ struct WRCCalendarProvider: CalendarProvider {
             return nil
         }
 
-        let title = String(stageTimeMatch.output.title).trimmingCharacters(in: .whitespacesAndNewlines)
+        let title = normalizedStageTitle(String(stageTimeMatch.output.title))
         return (hour, minute, title, true)
+    }
+
+    private func normalizedStageTitle(_ rawTitle: String) -> String {
+        let withoutDistance = rawTitle
+            .replacingOccurrences(of: #"\s*\(\s*\d+(?:\.\d+)?\s*km\s*\)\s*$"#, with: "", options: [.regularExpression, .caseInsensitive])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let titleCased = titleCaseIfAllUppercase(withoutDistance)
+        let normalizedAcronyms = normalizeStageAcronyms(in: titleCased)
+        return removeDuplicateLeadingStageNumber(in: normalizedAcronyms)
+    }
+
+    private func titleCaseIfAllUppercase(_ text: String) -> String {
+        let letters = text.unicodeScalars.filter { CharacterSet.letters.contains($0) }
+        guard !letters.isEmpty else { return text }
+        guard letters.allSatisfy({ CharacterSet.uppercaseLetters.contains($0) }) else { return text }
+
+        var converted = text.localizedLowercase.capitalized
+
+        let replacements: [(String, String)] = [
+            (#"\bSs(?<number>\d+)\b"#, "SS$1"),
+            (#"\bSss(?<number>\d+)\b"#, "SSS$1"),
+            (#"\bSss\b"#, "SSS"),
+            (#"\bTbc\b"#, "TBC"),
+            (#"\bBp\b"#, "BP"),
+        ]
+
+        for (pattern, template) in replacements {
+            converted = converted.replacingOccurrences(
+                of: pattern,
+                with: template,
+                options: .regularExpression
+            )
+        }
+
+        return converted
+    }
+
+    private func normalizeStageAcronyms(in text: String) -> String {
+        var normalized = text
+            .replacingOccurrences(of: #"\bSSS\s+(?<number>\d+)\b"#, with: "SSS$1", options: .regularExpression)
+            .replacingOccurrences(of: #"\bSS\s+(?<number>\d+)\b"#, with: "SS$1", options: .regularExpression)
+            .replacingOccurrences(of: #"\bSss\b"#, with: "SSS", options: .regularExpression)
+        if normalized.localizedCaseInsensitiveContains("SSS") {
+            normalized = normalized.replacingOccurrences(of: #"\bSss(?<number>\d+)\b"#, with: "SSS$1", options: .regularExpression)
+        }
+        return normalized
+    }
+
+    private func removeDuplicateLeadingStageNumber(in text: String) -> String {
+        guard let match = text.firstMatch(of: #/^\s*(?<first>SSS?\d+)\s+(?<second>SSS?\d+)\s+(?<rest>.+?)\s*$/#) else {
+            return text
+        }
+
+        return "\(match.output.first) \(match.output.rest)"
     }
 
     private func monthNumberFromSentence(_ text: String) -> Int? {
