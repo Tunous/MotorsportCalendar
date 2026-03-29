@@ -88,20 +88,41 @@ struct WRCCalendarProvider: CalendarProvider {
             }
 
             let stageNodes = try stageSection.select(".faq-view__answer li.inline-enumeration__item")
+            var lastStageDateInDay: Date?
             for stageNode in stageNodes {
                 let stageText = try stageNode.text().trimmingCharacters(in: .whitespacesAndNewlines)
-                guard
-                    let stageData = parseStageLine(stageText),
-                    let stageDate = makeDate(
+                guard let stageData = parseStageLine(stageText) else {
+                    continue
+                }
+
+                let stageDate: Date
+                if stageData.isConfirmed {
+                    guard let confirmedDate = makeDate(
                         year: stageDay.year,
                         month: stageDay.month,
                         day: stageDay.day,
                         hour: stageData.hour,
                         minute: stageData.minute,
                         timeZone: timeZone
-                    )
-                else {
-                    continue
+                    ) else {
+                        continue
+                    }
+                    stageDate = confirmedDate
+                } else if let previousDate = lastStageDateInDay {
+                    // Keep TBC entries aligned with prior stage time when listed later in the same day.
+                    stageDate = previousDate
+                } else {
+                    guard let startOfDayDate = makeDate(
+                        year: stageDay.year,
+                        month: stageDay.month,
+                        day: stageDay.day,
+                        hour: 0,
+                        minute: 0,
+                        timeZone: timeZone
+                    ) else {
+                        continue
+                    }
+                    stageDate = startOfDayDate
                 }
 
                 stages.append(
@@ -113,6 +134,7 @@ struct WRCCalendarProvider: CalendarProvider {
                         isSignificant: isSignificant(title: stageData.title)
                     )
                 )
+                lastStageDateInDay = stageDate
             }
         }
 
@@ -132,6 +154,12 @@ struct WRCCalendarProvider: CalendarProvider {
 
         return title.firstMatch(of: Regex {
             ChoiceOf {
+                Regex {
+                    Anchor.wordBoundary
+                    "SSS"
+                    OneOrMore(.digit)
+                    Anchor.wordBoundary
+                }
                 Regex {
                     Anchor.wordBoundary
                     "SS"
