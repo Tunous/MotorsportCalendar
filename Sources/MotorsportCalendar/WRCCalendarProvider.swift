@@ -23,6 +23,9 @@ struct WRCCalendarProvider: CalendarProvider {
         let calendarURL = URL(string: "https://www.wrc.com/en/calendar?rb3TabId=upcoming")!
         let document = try await getDocument(url: calendarURL, baseURL: baseURL)
         let eventCards = try document.select("a.event-feed-card[href]")
+        let existingEventsByTitle = Dictionary(
+            uniqueKeysWithValues: (await load(year: year) ?? []).map { ($0.title, $0) }
+        )
 
         var events: [MotorsportEvent] = []
         for eventCard in eventCards {
@@ -52,7 +55,15 @@ struct WRCCalendarProvider: CalendarProvider {
             }
 
             let eventYear = Calendar.gmt.component(.year, from: startDate)
-            let stages = try await extractStages(for: eventURL, baseURL: baseURL, fallbackYear: eventYear)
+            let parsedStages = try await extractStages(for: eventURL, baseURL: baseURL, fallbackYear: eventYear)
+            let stages: [MotorsportEventStage]
+            if parsedStages.isEmpty,
+               let existingEvent = existingEventsByTitle[eventTitle],
+               !existingEvent.stages.isEmpty {
+                stages = existingEvent.stages
+            } else {
+                stages = parsedStages
+            }
 
             let event = MotorsportEvent(
                 title: eventTitle,
