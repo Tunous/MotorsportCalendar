@@ -18,7 +18,8 @@ protocol CalendarProvider: Sendable {
 extension CalendarProvider {
     func run(year: Int) async throws -> Bool {
         let events = try await events(year: year)
-        let eventsData = try JSONEncoder.motorsportCalendar.encode(events)
+        let mergedEvents = await addBackRemovedCancelledEvents(from: events, year: year)
+        let eventsData = try JSONEncoder.motorsportCalendar.encode(mergedEvents)
 
         let directory = outputURL.appending(path: series.rawValue)
         let url = directory.appending(path: "\(year).json")
@@ -33,6 +34,35 @@ extension CalendarProvider {
         try eventsData.write(to: url)
         print("[\(series)] Updated")
         return true
+    }
+
+    func addBackRemovedCancelledEvents(from updatedEvents: [MotorsportEvent], year: Int) async -> [MotorsportEvent] {
+        guard let existingEvents = await load(year: year) else {
+            return updatedEvents
+        }
+
+        let updatedTitles = Set(updatedEvents.map { normalizedEventTitle($0.title) })
+        let removedCancelledEvents = existingEvents.filter {
+            $0.isCancelled && !updatedTitles.contains(normalizedEventTitle($0.title))
+        }
+
+        guard !removedCancelledEvents.isEmpty else {
+            return updatedEvents
+        }
+
+        var mergedEvents = updatedEvents
+        mergedEvents.append(contentsOf: removedCancelledEvents)
+        mergedEvents.sort {
+            if $0.startDate == $1.startDate {
+                return $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+            }
+            return $0.startDate < $1.startDate
+        }
+        return mergedEvents
+    }
+
+    private func normalizedEventTitle(_ title: String) -> String {
+        title.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 
     func load(year: Int) async -> [MotorsportEvent]? {
