@@ -25,7 +25,21 @@ struct Formula1CalendarProvider: CalendarProvider {
     }
 
     func events(year: Int) async throws -> [MotorsportEvent] {
-        let updatedEvents = try RacingICalParser.parse(calendarURL, year: year)
+        let updatedEvents: [MotorsportEvent]
+        do {
+            updatedEvents = try RacingICalParser.parse(calendarURL, year: year)
+        } catch {
+            logParseError("Failed to parse iCal: \(error)")
+            throw error
+        }
+
+        if updatedEvents.isEmpty {
+            logParseWarning("No events parsed for year \(year)")
+        }
+        for event in updatedEvents where event.stages.isEmpty {
+            logParseWarning("Event has no stages: \(event.title)")
+        }
+
         return await onlyNotEndedEvents(updatedEvents, year: year)
     }
 }

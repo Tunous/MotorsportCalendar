@@ -16,6 +16,18 @@ protocol CalendarProvider: Sendable {
 }
 
 extension CalendarProvider {
+    func logParseInfo(_ message: String) {
+        print("[\(series)][parse] \(message)")
+    }
+
+    func logParseWarning(_ message: String) {
+        print("[\(series)][parse][warning] \(message)")
+    }
+
+    func logParseError(_ message: String) {
+        print("[\(series)][parse][error] \(message)")
+    }
+
     func run(year: Int) async throws -> Bool {
         let events = try await events(year: year)
         let mergedEvents = await addBackRemovedCancelledEvents(from: events, year: year)

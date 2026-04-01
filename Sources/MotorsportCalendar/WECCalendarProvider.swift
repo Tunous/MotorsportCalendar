@@ -19,15 +19,19 @@ struct WECCalendarProvider: CalendarProvider {
 
     func events(year: Int) async throws -> [MotorsportEvent] {
         let baseURL = URL(string: "https://www.fiawec.com")!
+        logParseInfo("Loading season page \(baseURL.absoluteString) for \(year)")
         let html = try String(contentsOf: baseURL, encoding: .utf8)
         let document = try SwiftSoup.parse(html, baseURL.absoluteString)
         guard let elements = try document.select(".season-overview .season-content").last()?.select("a") else {
+            logParseWarning("Season overview links not found")
             return []
         }
+
         var allEvents: [MotorsportEvent] = []
         for element in elements {
             let href = try element.attr("href")
             guard let eventURL = URL(string: href, relativeTo: baseURL)?.absoluteURL else {
+                logParseWarning("Invalid event URL: \(href)")
                 continue
             }
 
@@ -35,14 +39,32 @@ struct WECCalendarProvider: CalendarProvider {
             let eventDocument = try SwiftSoup.parse(eventHTML, eventURL.absoluteString)
 
             let isConfirmedMapping = try extractConfirmedState(from: eventDocument)
-            let calendarURLString = try unwrap(extractCalendarURL(from: eventDocument))
+            guard let calendarURLString = try extractCalendarURL(from: eventDocument) else {
+                logParseWarning("Calendar URL missing on event page \(eventURL.absoluteString)")
+                continue
+            }
             let calendarURL = try unwrap(URL(string: calendarURLString, relativeTo: eventURL)?.absoluteURL)
 
-            var events = try RacingICalParser.parse(calendarURL, year: year)
+            logParseInfo("Parsing event iCal \(calendarURL.absoluteString)")
+            var events: [MotorsportEvent]
+            do {
+                events = try RacingICalParser.parse(calendarURL, year: year)
+            } catch {
+                logParseError("Failed parsing iCal \(calendarURL.absoluteString): \(error)")
+                throw error
+            }
+
+            if events.isEmpty {
+                logParseWarning("No events parsed from \(calendarURL.absoluteString)")
+            }
             if !events.isEmpty {
                 updateEventConfirmedState(&events[0], isConfirmedMapping: isConfirmedMapping)
             }
             allEvents.append(contentsOf: events)
+        }
+
+        for event in allEvents where event.stages.isEmpty {
+            logParseWarning("Event has no stages: \(event.title)")
         }
 
         return await onlyNotEndedEvents(allEvents, year: year)

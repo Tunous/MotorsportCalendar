@@ -21,8 +21,12 @@ struct WRCCalendarProvider: CalendarProvider {
     func events(year: Int) async throws -> [MotorsportEvent] {
         let baseURL = URL(string: "https://www.wrc.com")!
         let calendarURL = URL(string: "https://www.wrc.com/en/calendar?rb3TabId=upcoming")!
+        logParseInfo("Loading calendar page \(calendarURL.absoluteString) for \(year)")
         let document = try await getDocument(url: calendarURL, baseURL: baseURL)
         let eventCards = try document.select("a.event-feed-card[href]")
+        if eventCards.isEmpty {
+            logParseWarning("No event cards found on calendar page")
+        }
         let existingEventsByTitle = Dictionary(
             uniqueKeysWithValues: (await load(year: year) ?? []).map { ($0.title, $0) }
         )
@@ -33,6 +37,7 @@ struct WRCCalendarProvider: CalendarProvider {
                 let titleNode = try eventCard.select(".event-feed-card__title").first(),
                 let dateNode = try eventCard.select("time.event-feed-card__date-text").first()
             else {
+                logParseWarning("Skipping event card: missing title or date node")
                 continue
             }
 
@@ -40,6 +45,7 @@ struct WRCCalendarProvider: CalendarProvider {
             let eventTitle = cleanEventTitle(rawTitle, year: year)
             let dateTimeText = try dateNode.attr("datetime")
             guard let startDate = parseISO8601Date(dateTimeText) else {
+                logParseWarning("Skipping \(eventTitle): invalid datetime '\(dateTimeText)'")
                 continue
             }
 
@@ -51,6 +57,7 @@ struct WRCCalendarProvider: CalendarProvider {
             let fallbackEndDate = parseEventEndDate(from: startDateText, fallbackStartDate: startDate) ?? startDate
             let eventPath = try eventCard.attr("href")
             guard let eventURL = URL(string: eventPath, relativeTo: baseURL)?.absoluteURL else {
+                logParseWarning("Skipping \(eventTitle): invalid event URL '\(eventPath)'")
                 continue
             }
 
@@ -60,9 +67,14 @@ struct WRCCalendarProvider: CalendarProvider {
             if parsedStages.isEmpty,
                let existingEvent = existingEventsByTitle[eventTitle],
                !existingEvent.stages.isEmpty {
+                logParseWarning("Using existing stages for \(eventTitle) because parse returned no stages")
                 stages = existingEvent.stages
             } else {
                 stages = parsedStages
+            }
+
+            if stages.isEmpty {
+                logParseWarning("Event has no stages: \(eventTitle)")
             }
 
             let event = MotorsportEvent(
@@ -79,12 +91,23 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     private func extractStages(for eventURL: URL, baseURL: URL, fallbackYear: Int) async throws -> [MotorsportEventStage] {
-        guard
-            let eventDocument = try await getDocumentIgnoringBadResponse(url: eventURL, baseURL: baseURL),
-            let itineraryPath = try findItineraryPath(in: eventDocument),
-            let itineraryURL = URL(string: itineraryPath, relativeTo: eventURL)?.absoluteURL,
-            let itineraryDocument = try await getDocumentIgnoringBadResponse(url: itineraryURL, baseURL: baseURL)
-        else {
+        guard let eventDocument = try await getDocumentIgnoringBadResponse(url: eventURL, baseURL: baseURL) else {
+            logParseWarning("Event page unavailable: \(eventURL.absoluteString)")
+            return []
+        }
+
+        guard let itineraryPath = try findItineraryPath(in: eventDocument) else {
+            logParseWarning("Itinerary link not found for event page \(eventURL.absoluteString)")
+            return []
+        }
+
+        guard let itineraryURL = URL(string: itineraryPath, relativeTo: eventURL)?.absoluteURL else {
+            logParseWarning("Invalid itinerary URL '\(itineraryPath)' for event page \(eventURL.absoluteString)")
+            return []
+        }
+
+        guard let itineraryDocument = try await getDocumentIgnoringBadResponse(url: itineraryURL, baseURL: baseURL) else {
+            logParseWarning("Itinerary page unavailable: \(itineraryURL.absoluteString)")
             return []
         }
 
@@ -95,6 +118,7 @@ struct WRCCalendarProvider: CalendarProvider {
         for stageSection in stageSections {
             let dateText = try stageSection.select(".faq-view__question").text()
             guard let stageDay = parseItineraryDay(from: dateText, fallbackYear: fallbackYear) else {
+                logParseWarning("Skipping stage section with unparseable date '\(dateText)' at \(itineraryURL.absoluteString)")
                 continue
             }
 
@@ -103,6 +127,7 @@ struct WRCCalendarProvider: CalendarProvider {
             for stageNode in stageNodes {
                 let stageText = try stageNode.text().trimmingCharacters(in: .whitespacesAndNewlines)
                 guard let stageData = parseStageLine(stageText) else {
+                    logParseWarning("Skipping stage line with unparseable data '\(stageText)' at \(itineraryURL.absoluteString)")
                     continue
                 }
 
@@ -116,6 +141,7 @@ struct WRCCalendarProvider: CalendarProvider {
                         minute: stageData.minute,
                         timeZone: timeZone
                     ) else {
+                        logParseWarning("Skipping stage '\(stageData.title)': failed to build date from \(stageDay.year)-\(stageDay.month)-\(stageDay.day) \(stageData.hour):\(stageData.minute)")
                         continue
                     }
                     stageDate = confirmedDate
@@ -131,6 +157,7 @@ struct WRCCalendarProvider: CalendarProvider {
                         minute: 0,
                         timeZone: timeZone
                     ) else {
+                        logParseWarning("Skipping stage '\(stageData.title)': failed to build fallback day-start date for \(stageDay.year)-\(stageDay.month)-\(stageDay.day)")
                         continue
                     }
                     stageDate = startOfDayDate
@@ -209,6 +236,7 @@ struct WRCCalendarProvider: CalendarProvider {
                 return try await getDocument(url: url, baseURL: baseURL)
             } catch {
                 lastError = error
+                logParseWarning("Failed loading \(url.absoluteString): \(error)")
 
                 if let urlError = error as? URLError {
                     switch urlError.code {
