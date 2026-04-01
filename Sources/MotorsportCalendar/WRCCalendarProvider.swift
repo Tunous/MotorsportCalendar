@@ -62,19 +62,24 @@ struct WRCCalendarProvider: CalendarProvider {
             }
 
             let eventYear = Calendar.gmt.component(.year, from: startDate)
-            let parsedStages = try await extractStages(for: eventURL, baseURL: baseURL, fallbackYear: eventYear)
+            let parsedStages = try await extractStages(
+                for: eventURL,
+                eventTitle: eventTitle,
+                baseURL: baseURL,
+                fallbackYear: eventYear
+            )
             let stages: [MotorsportEventStage]
             if parsedStages.isEmpty,
                let existingEvent = existingEventsByTitle[eventTitle],
-               !existingEvent.stages.isEmpty {
-                logParseWarning("Using existing stages for \(eventTitle) because parse returned no stages")
+               hasUsefulStages(existingEvent.stages) {
+                logParseInfo("Using existing stages for \(eventTitle) because no stages were parsed this run")
                 stages = existingEvent.stages
             } else {
                 stages = parsedStages
             }
 
             if stages.isEmpty {
-                logParseWarning("Event has no stages: \(eventTitle)")
+                logMissingStages(for: eventTitle, startDate: startDate)
             }
 
             let event = MotorsportEvent(
@@ -90,29 +95,55 @@ struct WRCCalendarProvider: CalendarProvider {
         return await onlyNotEndedEvents(events, year: year)
     }
 
-    private func extractStages(for eventURL: URL, baseURL: URL, fallbackYear: Int) async throws -> [MotorsportEventStage] {
+    private func extractStages(for eventURL: URL, eventTitle: String, baseURL: URL, fallbackYear: Int) async throws -> [MotorsportEventStage] {
         guard let eventDocument = try await getDocumentIgnoringBadResponse(url: eventURL, baseURL: baseURL) else {
             logParseWarning("Event page unavailable: \(eventURL.absoluteString)")
             return []
         }
 
-        guard let itineraryPath = try findItineraryPath(in: eventDocument) else {
-            logParseWarning("Itinerary link not found for event page \(eventURL.absoluteString)")
+        if let itineraryPath = try findItineraryPath(in: eventDocument),
+           let itineraryURL = URL(string: itineraryPath, relativeTo: eventURL)?.absoluteURL,
+           let itineraryDocument = try await getDocumentIgnoringBadResponse(url: itineraryURL, baseURL: baseURL) {
+            let itineraryStages = try parseStagesFromItineraryDocument(
+                itineraryDocument,
+                itineraryURL: itineraryURL,
+                fallbackYear: fallbackYear
+            )
+            if !itineraryStages.isEmpty {
+                return itineraryStages
+            }
+        }
+
+        guard let iCalPath = try extractICalPath(from: eventDocument) else {
             return []
         }
 
-        guard let itineraryURL = URL(string: itineraryPath, relativeTo: eventURL)?.absoluteURL else {
-            logParseWarning("Invalid itinerary URL '\(itineraryPath)' for event page \(eventURL.absoluteString)")
+        guard let iCalURL = URL(string: iCalPath, relativeTo: eventURL)?.absoluteURL else {
+            logParseWarning("Invalid iCal URL '\(iCalPath)' for event page \(eventURL.absoluteString)")
             return []
         }
 
-        guard let itineraryDocument = try await getDocumentIgnoringBadResponse(url: itineraryURL, baseURL: baseURL) else {
-            logParseWarning("Itinerary page unavailable: \(itineraryURL.absoluteString)")
+        do {
+            let iCalEvents = try RacingICalParser.parse(iCalURL, year: fallbackYear)
+            let fallbackEvent = bestMatchingEvent(from: iCalEvents, eventTitle: eventTitle)
+            let fallbackStages = fallbackEvent?.stages ?? []
+            return sanitizeStages(fallbackStages, eventTitle: eventTitle, source: "iCal fallback")
+        } catch {
+            logParseWarning("Failed parsing iCal fallback \(iCalURL.absoluteString): \(error)")
             return []
         }
+    }
 
+    private func parseStagesFromItineraryDocument(
+        _ itineraryDocument: Document,
+        itineraryURL: URL,
+        fallbackYear: Int
+    ) throws -> [MotorsportEventStage] {
         let timeZone = try extractEventTimeZone(from: itineraryDocument)
         let stageSections = try itineraryDocument.select(".faq-layout-view .faq-view")
+        if stageSections.isEmpty {
+            return []
+        }
 
         var stages: [MotorsportEventStage] = []
         for stageSection in stageSections {
@@ -128,6 +159,11 @@ struct WRCCalendarProvider: CalendarProvider {
                 let stageText = try stageNode.text().trimmingCharacters(in: .whitespacesAndNewlines)
                 guard let stageData = parseStageLine(stageText) else {
                     logParseWarning("Skipping stage line with unparseable data '\(stageText)' at \(itineraryURL.absoluteString)")
+                    continue
+                }
+                let stageTitle = stageData.title.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !stageTitle.isEmpty else {
+                    logParseWarning("Skipping stage with empty title at \(itineraryURL.absoluteString)")
                     continue
                 }
 
@@ -165,11 +201,11 @@ struct WRCCalendarProvider: CalendarProvider {
 
                 stages.append(
                     MotorsportEventStage(
-                        title: stageData.title,
+                        title: stageTitle,
                         startDate: stageDate,
                         endDate: stageDate,
                         isConfirmed: stageData.isConfirmed,
-                        isSignificant: isSignificant(title: stageData.title)
+                        isSignificant: isSignificant(title: stageTitle)
                     )
                 )
                 lastStageDateInDay = stageDate
@@ -183,6 +219,47 @@ struct WRCCalendarProvider: CalendarProvider {
         stages.sort { $0.startDate < $1.startDate }
         tweakDates(of: &stages)
         return stages
+    }
+
+    private func bestMatchingEvent(from events: [MotorsportEvent], eventTitle: String) -> MotorsportEvent? {
+        guard !events.isEmpty else { return nil }
+        let normalizedTitle = normalizedEventTitle(eventTitle)
+        return events.first(where: { normalizedEventTitle($0.title) == normalizedTitle && !$0.stages.isEmpty })
+            ?? events.first(where: { !$0.stages.isEmpty })
+    }
+
+    private func normalizedEventTitle(_ title: String) -> String {
+        title
+            .lowercased()
+            .replacingOccurrences(of: #"\bwrc\b"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\s*-\s*rally of .+$"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\b\d{4}\b"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func logMissingStages(for eventTitle: String, startDate: Date) {
+        let warningHorizon = Date.now.addingTimeInterval(60 * 60 * 24 * 45)
+        if startDate <= warningHorizon {
+            logParseWarning("Event has no stages: \(eventTitle)")
+        } else {
+            logParseInfo("Event has no stages yet (likely not published): \(eventTitle)")
+        }
+    }
+
+    private func sanitizeStages(_ stages: [MotorsportEventStage], eventTitle: String, source: String) -> [MotorsportEventStage] {
+        let filteredStages = stages.filter {
+            !$0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        }
+        let droppedCount = stages.count - filteredStages.count
+        if droppedCount > 0 {
+            logParseInfo("Dropped \(droppedCount) empty-title stage(s) for \(eventTitle) from \(source)")
+        }
+        return filteredStages
+    }
+
+    private func hasUsefulStages(_ stages: [MotorsportEventStage]) -> Bool {
+        stages.contains { !$0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
     }
 
     private func isSignificant(title: String) -> Bool {
@@ -320,6 +397,17 @@ struct WRCCalendarProvider: CalendarProvider {
             }
 
             if let match = scriptContent.firstMatch(of: #/"text":"Itinerary","link":"(?<url>[^"]+)"/#) {
+                return String(match.output.url).replacingOccurrences(of: #"\/"#, with: "/")
+            }
+        }
+        return nil
+    }
+
+    private func extractICalPath(from document: Document) throws -> String? {
+        let scripts = try document.select("script")
+        for script in scripts {
+            let scriptContent = try script.html()
+            if let match = scriptContent.firstMatch(of: #/"icalLink":"(?<url>[^"]+)"/#) {
                 return String(match.output.url).replacingOccurrences(of: #"\/"#, with: "/")
             }
         }

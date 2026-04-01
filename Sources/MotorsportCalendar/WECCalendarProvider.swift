@@ -45,7 +45,6 @@ struct WECCalendarProvider: CalendarProvider {
             }
             let calendarURL = try unwrap(URL(string: calendarURLString, relativeTo: eventURL)?.absoluteURL)
 
-            logParseInfo("Parsing event iCal \(calendarURL.absoluteString)")
             var events: [MotorsportEvent]
             do {
                 events = try RacingICalParser.parse(calendarURL, year: year)
