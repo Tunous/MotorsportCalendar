@@ -88,6 +88,70 @@ struct StageLineTests {
         #expect(result?.title == "Águeda / Sever")
     }
 
+    // MARK: - Stage abbreviation uppercase
+
+    @Test("Lowercase ss abbreviation with number is uppercased")
+    func lowercaseSSAbbreviationUppercased() {
+        #expect(StageLine.parse("08:00: ss3 Stage Name")?.title == "SS3 Stage Name")
+    }
+
+    @Test("Mixed-case Ss abbreviation with number is uppercased")
+    func mixedCaseSSAbbreviationUppercased() {
+        #expect(StageLine.parse("08:00: Ss3 Stage Name")?.title == "SS3 Stage Name")
+    }
+
+    @Test("Lowercase sss abbreviation with number is uppercased")
+    func lowercaseSSSAbbreviationUppercased() {
+        #expect(StageLine.parse("08:00: sss1 Stage Name")?.title == "SSS1 Stage Name")
+    }
+
+    @Test("Title-cased Sss abbreviation with number is uppercased")
+    func titleCasedSSSAbbreviationUppercased() {
+        #expect(StageLine.parse("08:00: Sss1 Stage Name")?.title == "SSS1 Stage Name")
+    }
+
+    @Test("Standalone Sss without number is uppercased")
+    func standaloneSssUppercased() {
+        #expect(StageLine.parse("08:00: Sss Stage Name")?.title == "SSS Stage Name")
+    }
+
+    @Test("Correct SS abbreviation is unchanged")
+    func correctSSAbbreviationUnchanged() {
+        #expect(StageLine.parse("08:00: SS3 Stage Name")?.title == "SS3 Stage Name")
+    }
+
+    @Test("Correct SSS abbreviation is unchanged")
+    func correctSSSAbbreviationUnchanged() {
+        #expect(StageLine.parse("08:00: SSS1 Stage Name")?.title == "SSS1 Stage Name")
+    }
+
+    // MARK: - Duplicate leading abbreviation removal
+
+    @Test("Duplicate SS numbers at start are deduplicated keeping first")
+    func duplicateSSNumbersDeduplicatedKeepingFirst() {
+        #expect(StageLine.parse("08:00: SS1 SS2 Stage Name")?.title == "SS1 Stage Name")
+    }
+
+    @Test("Duplicate SSS numbers at start are deduplicated keeping first")
+    func duplicateSSSNumbersDeduplicatedKeepingFirst() {
+        #expect(StageLine.parse("08:00: SSS1 SSS2 Stage Name")?.title == "SSS1 Stage Name")
+    }
+
+    @Test("Mixed SS and SSS duplicates at start are deduplicated keeping first")
+    func mixedSSAndSSSDeduplicatedKeepingFirst() {
+        #expect(StageLine.parse("08:00: SS1 SSS1 Stage Name")?.title == "SS1 Stage Name")
+    }
+
+    @Test("Single SS abbreviation at start is not changed")
+    func singleSSAbbreviationUnchanged() {
+        #expect(StageLine.parse("08:00: SS1 Stage Name")?.title == "SS1 Stage Name")
+    }
+
+    @Test("SS abbreviations not at the start are not removed")
+    func ssAbbreviationsNotAtStartPreserved() {
+        #expect(StageLine.parse("08:00: Stage Name SS1 SS2")?.title == "Stage Name SS1 SS2")
+    }
+
     // MARK: - Invalid input
 
     @Test("Empty string returns nil")

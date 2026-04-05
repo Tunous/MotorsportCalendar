@@ -33,7 +33,7 @@ struct WRCCalendarProvider: CalendarProvider {
             }
 
             let rawTitle = try titleNode.text().trimmingCharacters(in: .whitespacesAndNewlines)
-            let eventTitle = cleanEventTitle(rawTitle, year: year)
+            let eventTitle = EventTitleCleaner(year: year).clean(rawTitle)
             let dateTimeText = try dateNode.attr("datetime")
             guard let startDate = parseISO8601Date(dateTimeText) else {
                 logParseWarning("Skipping \(eventTitle): invalid datetime '\(dateTimeText)'")
@@ -262,13 +262,6 @@ struct WRCCalendarProvider: CalendarProvider {
         }
 
         return Calendar.gmt.date(byAdding: .day, value: 2, to: fallbackStartDate)
-    }
-
-    private func cleanEventTitle(_ text: String, year: Int) -> String {
-        return text
-            .replacingOccurrences(of: #"\s+\#(year)$"#, with: "", options: .regularExpression)
-            .replacingOccurrences(of: #"^\s*WRC\s+"#, with: "", options: .regularExpression)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private func extractTimeZone(from text: String) -> TimeZone? {
