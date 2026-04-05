@@ -49,6 +49,8 @@ extension StageLine {
         raw
             .applying(removeDistanceSuffix)
             .trimmingWhitespace()
+            .applying(collapseInternalWhitespace)
+            .applying(removeLeadingTBCPrefix)
             .applying(titleCaseAllCapsWords)
             .applying(uppercaseStageAbbreviations)
             .applying(removeDuplicateLeadingAbbreviations)
@@ -61,6 +63,18 @@ extension StageLine {
             with: "",
             options: [.regularExpression, .caseInsensitive]
         )
+    }
+
+    /// Collapses any run of multiple spaces into a single space so that source data
+    /// with irregular spacing does not produce double spaces in the final title.
+    private static func collapseInternalWhitespace(_ text: String) -> String {
+        text.replacingOccurrences(of: #" {2,}"#, with: " ", options: .regularExpression)
+    }
+
+    /// Strips a leading "TBC:" prefix that some unconfirmed stages carry before their actual title
+    /// (e.g. `TBC: SS1 Eko SSS` → `SS1 Eko SSS`).
+    private static func removeLeadingTBCPrefix(_ text: String) -> String {
+        text.replacingOccurrences(of: #"^TBC\s*:\s*"#, with: "", options: [.regularExpression, .caseInsensitive])
     }
 
     /// Converts words that are entirely uppercase alphabetic characters to title case

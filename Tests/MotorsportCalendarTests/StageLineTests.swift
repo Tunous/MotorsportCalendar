@@ -88,6 +88,52 @@ struct StageLineTests {
         #expect(result?.title == "Águeda / Sever")
     }
 
+    // MARK: - TBC prefix removal
+
+    @Test("Leading 'TBC:' prefix is stripped from title")
+    func leadingTBCColonPrefixStripped() {
+        let result = StageLine.parse("TBC: SS1 Eko SSS")
+        #expect(result?.title == "SS1 Eko SSS")
+    }
+
+    @Test("Leading 'TBC:' prefix with no space after colon is stripped")
+    func leadingTBCColonNoSpaceStripped() {
+        let result = StageLine.parse("TBC:SS1 Eko SSS")
+        #expect(result?.title == "SS1 Eko SSS")
+    }
+
+    @Test("Leading lowercase 'tbc:' prefix is stripped")
+    func leadingLowercaseTBCPrefixStripped() {
+        let result = StageLine.parse("tbc: SS1 Eko SSS")
+        #expect(result?.title == "SS1 Eko SSS")
+    }
+
+    @Test("Timed line with leading 'TBC:' prefix is stripped")
+    func timedLineWithTBCPrefixStripped() {
+        let result = StageLine.parse("14:00: TBC: SS1 Eko SSS")
+        #expect(result?.title == "SS1 Eko SSS")
+    }
+
+    @Test("'TBC:' in the middle of the title is not removed")
+    func tbcInMiddlePreserved() {
+        let result = StageLine.parse("SS1 TBC: Stage Name")
+        #expect(result?.title == "SS1 TBC: Stage Name")
+    }
+
+    // MARK: - Internal whitespace
+
+    @Test("Double spaces in source title are collapsed to single space")
+    func doubleSpacesCollapsed() {
+        let result = StageLine.parse("17:35: SS1  BP ULTIMATE (2.27 km)")
+        #expect(result?.title == "SS1 Bp Ultimate")
+    }
+
+    @Test("Full real-world line with double space and all-caps title")
+    func realWorldLineWithDoubleSpaceAndAllCaps() {
+        let result = StageLine.parse("17:35: SS1 BP ULTIMATE - CIRCUITO ISLAS CANARIAS SSS (2.27 km)")
+        #expect(result?.title == "SS1 Bp Ultimate - Circuito Islas Canarias SSS")
+    }
+
     // MARK: - Stage abbreviation uppercase
 
     @Test("Lowercase ss abbreviation with number is uppercased")
