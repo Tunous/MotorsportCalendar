@@ -32,5 +32,11 @@ let package = Package(
                 .copy("../../data"),
             ]
         ),
+        .testTarget(
+            name: "MotorsportCalendarTests",
+            dependencies: [
+                .target(name: "MotorsportCalendar"),
+            ]
+        ),
     ]
 )

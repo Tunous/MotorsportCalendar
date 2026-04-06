@@ -1,10 +1,3 @@
-//
-//  WRCCalendarProvider.swift
-//  
-//
-//  Created by Łukasz Rutkowski on 09/03/2024.
-//
-
 import Foundation
 import MotorsportCalendarData
 import SwiftSoup
@@ -22,14 +15,12 @@ struct WRCCalendarProvider: CalendarProvider {
         let baseURL = URL(string: "https://www.wrc.com")!
         let calendarURL = URL(string: "https://www.wrc.com/en/calendar?rb3TabId=upcoming")!
         logParseInfo("Loading calendar page \(calendarURL.absoluteString) for \(year)")
+
         let document = try await getDocument(url: calendarURL, baseURL: baseURL)
         let eventCards = try document.select("a.event-feed-card[href]")
         if eventCards.isEmpty {
             logParseWarning("No event cards found on calendar page")
         }
-        let existingEventsByTitle = Dictionary(
-            uniqueKeysWithValues: (await load(year: year) ?? []).map { ($0.title, $0) }
-        )
 
         var events: [MotorsportEvent] = []
         for eventCard in eventCards {
@@ -42,7 +33,7 @@ struct WRCCalendarProvider: CalendarProvider {
             }
 
             let rawTitle = try titleNode.text().trimmingCharacters(in: .whitespacesAndNewlines)
-            let eventTitle = cleanEventTitle(rawTitle, year: year)
+            let eventTitle = EventTitleCleaner(year: year).clean(rawTitle)
             let dateTimeText = try dateNode.attr("datetime")
             guard let startDate = parseISO8601Date(dateTimeText) else {
                 logParseWarning("Skipping \(eventTitle): invalid datetime '\(dateTimeText)'")
@@ -55,32 +46,19 @@ struct WRCCalendarProvider: CalendarProvider {
 
             let startDateText = try dateNode.text()
             let fallbackEndDate = parseEventEndDate(from: startDateText, fallbackStartDate: startDate) ?? startDate
+
             let eventPath = try eventCard.attr("href")
             guard let eventURL = URL(string: eventPath, relativeTo: baseURL)?.absoluteURL else {
                 logParseWarning("Skipping \(eventTitle): invalid event URL '\(eventPath)'")
                 continue
             }
 
-            let eventYear = Calendar.gmt.component(.year, from: startDate)
-            let parsedStages = try await extractStages(
-                for: eventURL,
-                eventTitle: eventTitle,
-                eventStartDate: startDate,
-                baseURL: baseURL,
-                fallbackYear: eventYear
-            )
+            let slug = eventURL.lastPathComponent
             let stages: [MotorsportEventStage]
-            if parsedStages.isEmpty,
-               let existingEvent = existingEventsByTitle[eventTitle],
-               hasUsefulStages(existingEvent.stages) {
-                logParseInfo("Using existing stages for \(eventTitle) because no stages were parsed this run")
-                stages = existingEvent.stages
+            if let itineraryLink = try await fetchItineraryLink(forEventSlug: slug) {
+                stages = try await fetchStages(forEventSlug: String(itineraryLink.dropFirst()), fallbackYear: year)
             } else {
-                stages = parsedStages
-            }
-
-            if stages.isEmpty {
-                logMissingStages(for: eventTitle, startDate: startDate)
+                stages = []
             }
 
             let event = MotorsportEvent(
@@ -92,308 +70,153 @@ struct WRCCalendarProvider: CalendarProvider {
             )
             events.append(event)
         }
+
         events.sort { $0.startDate < $1.startDate }
         return await onlyNotEndedEvents(events, year: year)
     }
 
-    private func extractStages(
-        for eventURL: URL,
-        eventTitle: String,
-        eventStartDate: Date,
-        baseURL: URL,
-        fallbackYear: Int
-    ) async throws -> [MotorsportEventStage] {
-        guard let eventDocument = try await getDocumentIgnoringBadResponse(url: eventURL, baseURL: baseURL) else {
-            logParseWarning("Event page unavailable: \(eventURL.absoluteString)")
-            return []
-        }
+    private func fetchItineraryLink(forEventSlug eventSlug: String) async throws -> String? {
+        let endpoint = makeEventLinksURL(eventSlug: eventSlug)
+        let responseData = try await getData(url: endpoint)
 
-        if let itineraryPath = try findItineraryPath(in: eventDocument) {
-            guard let itineraryURL = URL(string: itineraryPath, relativeTo: eventURL)?.absoluteURL else {
-                logParseWarning("Invalid itinerary URL '\(itineraryPath)' for event page \(eventURL.absoluteString)")
-                return []
-            }
-
-            guard let itineraryDocument = try await getDocumentIgnoringBadResponse(url: itineraryURL, baseURL: baseURL) else {
-                logParseWarning("Itinerary page unavailable: \(itineraryURL.absoluteString)")
-                return []
-            }
-
-            let itineraryStages = try parseStagesFromItineraryDocument(
-                itineraryDocument,
-                itineraryURL: itineraryURL,
-                fallbackYear: fallbackYear
-            )
-            if itineraryStages.isEmpty {
-                logParseWarning("Itinerary page available but produced no parseable stages: \(itineraryURL.absoluteString)")
-                return []
-            }
-            return itineraryStages
-        }
-
-        guard let iCalPath = try extractICalPath(from: eventDocument) else {
-            return []
-        }
-
-        guard let iCalURL = URL(string: iCalPath, relativeTo: eventURL)?.absoluteURL else {
-            logParseWarning("Invalid iCal URL '\(iCalPath)' for event page \(eventURL.absoluteString)")
-            return []
-        }
-
-        do {
-            let iCalEvents = try RacingICalParser.parse(iCalURL, year: fallbackYear)
-            let fallbackEvent = bestMatchingEvent(
-                from: iCalEvents,
-                eventTitle: eventTitle,
-                eventStartDate: eventStartDate
-            )
-            return fallbackEvent?.stages ?? []
-        } catch {
-            logParseWarning("Failed parsing iCal fallback \(iCalURL.absoluteString): \(error)")
-            return []
-        }
+        let decoder = JSONDecoder()
+        let payload = try decoder.decode(WRCEventLinksResponse.self, from: responseData)
+        return payload.data.tabs.first { $0.label == "Itinerary" }?.url
     }
 
-    private func parseStagesFromItineraryDocument(
-        _ itineraryDocument: Document,
-        itineraryURL: URL,
-        fallbackYear: Int
-    ) throws -> [MotorsportEventStage] {
-        let timeZone = try extractEventTimeZone(from: itineraryDocument)
-        let stageSections = try itineraryDocument.select(".faq-layout-view .faq-view")
-        if stageSections.isEmpty {
+    private func fetchStages(forEventSlug eventSlug: String, fallbackYear: Int) async throws -> [MotorsportEventStage] {
+        let endpoint = makeEventDetailsURL(eventSlug: eventSlug)
+        let responseData = try await getData(url: endpoint)
+
+        let decoder = JSONDecoder()
+        let payload = try decoder.decode(WRCEventDetailsResponse.self, from: responseData)
+        let faqBlocks = payload.data.items.filter { $0.type == "faq" && !($0.elements ?? []).isEmpty }
+        guard !faqBlocks.isEmpty else {
+            logParseError("Couldn't find any FAQ blocks with stage information")
             return []
         }
+
+        let eventTimeZone = faqBlocks
+            .compactMap { $0.title }
+            .compactMap(extractTimeZone(from:))
+            .first ?? .gmt
 
         var stages: [MotorsportEventStage] = []
-        for stageSection in stageSections {
-            let dateText = try stageSection.select(".faq-view__question").text()
-            guard let stageDay = parseItineraryDay(from: dateText, fallbackYear: fallbackYear) else {
-                logParseWarning("Skipping stage section with unparseable date '\(dateText)' at \(itineraryURL.absoluteString)")
-                continue
-            }
-
-            let stageNodes = try stageSection.select(".faq-view__answer li.inline-enumeration__item")
-            var lastStageDateInDay: Date?
-            for stageNode in stageNodes {
-                let stageText = try stageNode.text().trimmingCharacters(in: .whitespacesAndNewlines)
-                guard let stageData = parseStageLine(stageText) else {
-                    logParseWarning("Skipping stage line with unparseable data '\(stageText)' at \(itineraryURL.absoluteString)")
-                    continue
-                }
-                let stageTitle = stageData.title.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !stageTitle.isEmpty else {
-                    logParseWarning("Skipping stage with empty title at \(itineraryURL.absoluteString)")
+        for faqBlock in faqBlocks {
+            for element in faqBlock.elements ?? [] {
+                let questionText = (element.question ?? []).compactMap(\.text).joined(separator: " ").trimmingCharacters(in: .whitespacesAndNewlines)
+                guard let stageDay = EventDay.parse(questionText, year: fallbackYear) else {
+                    logParseError("Couldn't parse stages date from: \(questionText)")
                     continue
                 }
 
-                let stageDate: Date
-                if stageData.isConfirmed {
-                    guard let confirmedDate = makeDate(
-                        year: stageDay.year,
-                        month: stageDay.month,
-                        day: stageDay.day,
-                        hour: stageData.hour,
-                        minute: stageData.minute,
-                        timeZone: timeZone
-                    ) else {
-                        logParseWarning("Skipping stage '\(stageData.title)': failed to build date from \(stageDay.year)-\(stageDay.month)-\(stageDay.day) \(stageData.hour):\(stageData.minute)")
-                        continue
-                    }
-                    stageDate = confirmedDate
-                } else if let previousDate = lastStageDateInDay {
-                    // Keep TBC entries aligned with prior stage time when listed later in the same day.
-                    stageDate = previousDate
-                } else {
-                    guard let startOfDayDate = makeDate(
-                        year: stageDay.year,
-                        month: stageDay.month,
-                        day: stageDay.day,
-                        hour: 0,
-                        minute: 0,
-                        timeZone: timeZone
-                    ) else {
-                        logParseWarning("Skipping stage '\(stageData.title)': failed to build fallback day-start date for \(stageDay.year)-\(stageDay.month)-\(stageDay.day)")
-                        continue
-                    }
-                    stageDate = startOfDayDate
-                }
+                let rawStageLines = (element.answer ?? [])
+                    .flatMap(\.items)
+                    .flatMap(\.elements)
+                    .compactMap(\.text)
 
-                stages.append(
-                    MotorsportEventStage(
-                        title: stageTitle,
-                        startDate: stageDate,
-                        endDate: stageDate,
-                        isConfirmed: stageData.isConfirmed,
-                        isSignificant: isSignificant(title: stageTitle)
-                    )
+                let dayStart = makeDate(
+                    year: stageDay.year,
+                    month: stageDay.month,
+                    day: stageDay.day,
+                    hour: 0,
+                    minute: 0,
+                    timeZone: eventTimeZone
                 )
-                lastStageDateInDay = stageDate
+
+                for rawLine in rawStageLines {
+                    guard let stageLine = StageLine.parse(rawLine) else {
+                        logParseError("Couldn't parse stage line from: \(rawLine)")
+                        continue
+                    }
+
+                    let stageDate: Date
+                    if let time = stageLine.time {
+                        stageDate = makeDate(
+                            year: stageDay.year,
+                            month: stageDay.month,
+                            day: stageDay.day,
+                            hour: time.hour,
+                            minute: time.minute,
+                            timeZone: eventTimeZone
+                        )
+                    } else {
+                        var calendar = Calendar(identifier: .gregorian)
+                        calendar.timeZone = eventTimeZone
+                        if let last = stages.last, calendar.isDate(last.endDate, inSameDayAs: dayStart) {
+                            stageDate = last.endDate
+                        } else {
+                            stageDate = dayStart
+                        }
+                    }
+
+                    stages.append(
+                        MotorsportEventStage(
+                            title: stageLine.title,
+                            startDate: stageDate,
+                            endDate: stageDate,
+                            isConfirmed: stageLine.isConfirmed,
+                            isSignificant: isSignificant(title: stageLine.title)
+                        )
+                    )
+                }
             }
         }
 
-        if stages.isEmpty {
+        guard !stages.isEmpty else {
+            logParseError("Couldn't fetch stages for event: \(eventSlug)")
             return []
         }
-
         stages.sort { $0.startDate < $1.startDate }
         tweakDates(of: &stages)
         return stages
     }
 
-    private func bestMatchingEvent(from events: [MotorsportEvent], eventTitle: String, eventStartDate: Date) -> MotorsportEvent? {
-        let targetTitle = normalizedEventTitle(eventTitle)
-
-        struct Candidate {
-            let event: MotorsportEvent
-            let normalizedTitle: String
-            let usefulStageCount: Int
-            let startDateDistance: TimeInterval
-        }
-
-        let candidates: [Candidate] = events.compactMap { event in
-            let usefulStageCount = event.stages.filter {
-                !$0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            }.count
-
-            guard usefulStageCount > 0 else {
-                return nil
-            }
-
-            return Candidate(
-                event: event,
-                normalizedTitle: normalizedEventTitle(event.title),
-                usefulStageCount: usefulStageCount,
-                startDateDistance: abs(event.startDate.timeIntervalSince(eventStartDate))
-            )
-        }
-
-        guard !candidates.isEmpty else {
-            return nil
-        }
-
-        let sorted = candidates.sorted { lhs, rhs in
-            let lhsExact = lhs.normalizedTitle == targetTitle
-            let rhsExact = rhs.normalizedTitle == targetTitle
-            if lhsExact != rhsExact {
-                return lhsExact && !rhsExact
-            }
-
-            let lhsContains = lhs.normalizedTitle.contains(targetTitle) || targetTitle.contains(lhs.normalizedTitle)
-            let rhsContains = rhs.normalizedTitle.contains(targetTitle) || targetTitle.contains(rhs.normalizedTitle)
-            if lhsContains != rhsContains {
-                return lhsContains && !rhsContains
-            }
-
-            if lhs.startDateDistance != rhs.startDateDistance {
-                return lhs.startDateDistance < rhs.startDateDistance
-            }
-
-            if lhs.usefulStageCount != rhs.usefulStageCount {
-                return lhs.usefulStageCount > rhs.usefulStageCount
-            }
-
-            return lhs.normalizedTitle < rhs.normalizedTitle
-        }
-
-        return sorted.first?.event
+    private func makeEventDetailsURL(eventSlug: String) -> URL {
+        var components = URLComponents(string: "https://www.wrc.com/v3/api/graphql/v1/v3/feed/en-INT")!
+        components.queryItems = [
+            URLQueryItem(name: "disableUsageRestrictions", value: "true"),
+            URLQueryItem(name: "filter[type]", value: "event-details"),
+            URLQueryItem(name: "filter[uriSlug]", value: eventSlug),
+            URLQueryItem(name: "page[limit]", value: "1"),
+            URLQueryItem(name: "rb3Schema", value: "v1:inlineContent"),
+            URLQueryItem(name: "rb3Locale", value: "en"),
+        ]
+        return components.url!
     }
 
-    private func normalizedEventTitle(_ title: String) -> String {
-        title
-            .lowercased()
-            .replacingOccurrences(of: #"\bwrc\b"#, with: "", options: .regularExpression)
-            .replacingOccurrences(of: #"\s*-\s*rally of .+$"#, with: "", options: .regularExpression)
-            .replacingOccurrences(of: #"\b\d{4}\b"#, with: "", options: .regularExpression)
-            .replacingOccurrences(of: #"[^a-z0-9\s]"#, with: " ", options: .regularExpression)
-            .replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    private func logMissingStages(for eventTitle: String, startDate: Date) {
-        let warningHorizon = Date.now.addingTimeInterval(60 * 60 * 24 * 45)
-        if startDate <= warningHorizon {
-            logParseWarning("Event has no stages: \(eventTitle)")
-        } else {
-            logParseInfo("Event has no stages yet (likely not published): \(eventTitle)")
-        }
-    }
-
-    private func hasUsefulStages(_ stages: [MotorsportEventStage]) -> Bool {
-        stages.contains { !$0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-    }
-
-    private func isSignificant(title: String) -> Bool {
-        if title.localizedCaseInsensitiveContains("shakedown") {
-            return true
-        }
-
-        return title.firstMatch(of: Regex {
-            ChoiceOf {
-                Regex {
-                    Anchor.wordBoundary
-                    "SSS"
-                    OneOrMore(.digit)
-                    Anchor.wordBoundary
-                }
-                Regex {
-                    Anchor.wordBoundary
-                    "SS"
-                    OneOrMore(.digit)
-                    Anchor.wordBoundary
-                }
-            }
-        }) != nil
+    private func makeEventLinksURL(eventSlug: String) -> URL {
+        var components = URLComponents(string: "https://www.wrc.com/v3/api/graphql/v1/v3/query/en-INT")!
+        components.queryItems = [
+            URLQueryItem(name: "filter[type]", value: "event-profiles"),
+            URLQueryItem(name: "filter[uriSlug]", value: eventSlug),
+            URLQueryItem(name: "rb3Schema", value: "v1:pageTabs"),
+            URLQueryItem(name: "rb3Locale", value: "en"),
+            URLQueryItem(name: "rb3PageTabsBaseUrl", value: "/")
+        ]
+        return components.url!
     }
 
     private func getDocument(url: URL, baseURL: URL) async throws -> Document {
+        let htmlData = try await getData(url: url)
+        guard let html = String(data: htmlData, encoding: .utf8) else {
+            throw URLError(.badServerResponse)
+        }
+        return try SwiftSoup.parse(html, baseURL.absoluteString)
+    }
+
+    private func getData(url: URL) async throws -> Data {
         var request = URLRequest(url: url)
         request.setValue("MotoWeekParser/1.0", forHTTPHeaderField: "User-Agent")
 
         let (data, response) = try await URLSession.shared.data(for: request)
         guard
             let httpResponse = response as? HTTPURLResponse,
-            httpResponse.statusCode == 200,
-            let html = String(data: data, encoding: .utf8)
+            httpResponse.statusCode == 200
         else {
             throw URLError(.badServerResponse)
         }
-        return try SwiftSoup.parse(html, baseURL.absoluteString)
-    }
-
-    private func getDocumentIgnoringBadResponse(url: URL, baseURL: URL) async throws -> Document? {
-        let retryDelays: [Duration] = [.zero, .milliseconds(300), .milliseconds(800)]
-        var lastError: Error?
-
-        for delay in retryDelays {
-            if delay > .zero {
-                try? await Task.sleep(for: delay)
-            }
-
-            do {
-                return try await getDocument(url: url, baseURL: baseURL)
-            } catch {
-                lastError = error
-                logParseWarning("Failed loading \(url.absoluteString): \(error)")
-
-                if let urlError = error as? URLError {
-                    switch urlError.code {
-                    case .badServerResponse, .timedOut, .networkConnectionLost, .cannotFindHost, .cannotConnectToHost:
-                        continue
-                    default:
-                        throw error
-                    }
-                } else {
-                    throw error
-                }
-            }
-        }
-
-        if let urlError = lastError as? URLError, urlError.code == .badServerResponse {
-            return nil
-        }
-
-        throw lastError ?? URLError(.unknown)
+        return data
     }
 
     private func parseISO8601Date(_ text: String) -> Date? {
@@ -441,166 +264,38 @@ struct WRCCalendarProvider: CalendarProvider {
         return Calendar.gmt.date(byAdding: .day, value: 2, to: fallbackStartDate)
     }
 
-    private func cleanEventTitle(_ text: String, year: Int) -> String {
-        return text
-            .replacingOccurrences(of: #"\s+\#(year)$"#, with: "", options: .regularExpression)
-            .replacingOccurrences(of: #"^\s*WRC\s+"#, with: "", options: .regularExpression)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    private func findItineraryPath(in document: Document) throws -> String? {
-        let scripts = try document.select("script")
-        for script in scripts {
-            let scriptContent = try script.html()
-
-            if let match = scriptContent.firstMatch(of: #/"label":"Itinerary","url":"(?<url>[^"]+)"/#) {
-                return String(match.output.url).replacingOccurrences(of: #"\/"#, with: "/")
-            }
-
-            if let match = scriptContent.firstMatch(of: #/"text":"Itinerary","link":"(?<url>[^"]+)"/#) {
-                return String(match.output.url).replacingOccurrences(of: #"\/"#, with: "/")
-            }
+    private func extractTimeZone(from text: String) -> TimeZone? {
+        if let timeZoneMatch = text.firstMatch(of: #/UTC\s*(?<sign>[+-])\s*(?<hours>\d{1,2})(?::?(?<minutes>\d{2}))?/#),
+           let hours = Int(timeZoneMatch.output.hours) {
+            let minutes = timeZoneMatch.output.minutes.flatMap { Int($0) } ?? 0
+            let multiplier = String(timeZoneMatch.output.sign) == "-" ? -1 : 1
+            let offset = multiplier * ((hours * 60 * 60) + (minutes * 60))
+            return TimeZone(secondsFromGMT: offset)
         }
         return nil
     }
 
-    private func extractICalPath(from document: Document) throws -> String? {
-        let scripts = try document.select("script")
-        for script in scripts {
-            let scriptContent = try script.html()
-            if let match = scriptContent.firstMatch(of: #/"icalLink":"(?<url>[^"]+)"/#) {
-                return String(match.output.url).replacingOccurrences(of: #"\/"#, with: "/")
+    private func isSignificant(title: String) -> Bool {
+        if title.localizedCaseInsensitiveContains("shakedown") {
+            return true
+        }
+
+        return title.firstMatch(of: Regex {
+            ChoiceOf {
+                Regex {
+                    Anchor.wordBoundary
+                    "SSS"
+                    OneOrMore(.digit)
+                    Anchor.wordBoundary
+                }
+                Regex {
+                    Anchor.wordBoundary
+                    "SS"
+                    OneOrMore(.digit)
+                    Anchor.wordBoundary
+                }
             }
-        }
-        return nil
-    }
-
-    private func parseItineraryDay(from text: String, fallbackYear: Int) -> (year: Int, month: Int, day: Int)? {
-        let normalized = text.replacingOccurrences(of: "\u{00a0}", with: " ")
-        let extractedYear = normalized.firstMatch(of: #/(?<year>\d{4})/#).flatMap { Int($0.output.year) } ?? fallbackYear
-
-        if let numericMatch = normalized.firstMatch(of: #/(?<day>\d{1,2})\.(?<month>\d{1,2})\.?/#),
-           let day = Int(numericMatch.output.day),
-           let month = Int(numericMatch.output.month),
-           (1...31).contains(day),
-           (1...12).contains(month) {
-            return (extractedYear, month, day)
-        }
-
-        // Handles malformed headers like "Saturday, April 202611" => April 11, 2026
-        if let concatMatch = normalized.firstMatch(of: #/(?<month>[A-Za-z]+)\s+(?<year>\d{4})(?<day>\d{1,2})\b/#),
-           let month = monthNumber(from: String(concatMatch.output.month)),
-           let year = Int(concatMatch.output.year),
-           let day = Int(concatMatch.output.day),
-           (1...31).contains(day) {
-            return (year, month, day)
-        }
-
-        if let monthDayYear = normalized.firstMatch(of: #/(?<month>[A-Za-z]+)\s+(?<day>\d{1,2})(?!\d)(?:,?\s*(?<year>\d{4}))?/#),
-           let month = monthNumber(from: String(monthDayYear.output.month)),
-           let day = Int(monthDayYear.output.day),
-           (1...31).contains(day) {
-            let year = monthDayYear.output.year.flatMap { Int($0) } ?? extractedYear
-            return (year, month, day)
-        }
-
-        if let dayMonthYear = normalized.firstMatch(of: #/(?<day>\d{1,2})(?!\d)\s+(?<month>[A-Za-z]+)(?:\s+(?<year>\d{4}))?/#),
-           let month = monthNumber(from: String(dayMonthYear.output.month)),
-           let day = Int(dayMonthYear.output.day),
-           (1...31).contains(day) {
-            let year = dayMonthYear.output.year.flatMap { Int($0) } ?? extractedYear
-            return (year, month, day)
-        }
-
-        if let dayMatch = normalized.firstMatch(of: #/\d{4}(?<day>\d{1,2})\b/#),
-           let month = monthNumberFromSentence(normalized),
-           let day = Int(dayMatch.output.day) {
-            return (extractedYear, month, day)
-        }
-
-        return nil
-    }
-
-    private func parseStageLine(_ text: String) -> (hour: Int, minute: Int, title: String, isConfirmed: Bool)? {
-        guard let stageTimeMatch = text.firstMatch(of: #/^\s*(?<hour>\d{1,2}):(?<minute>\d{2})(?:\s*:\s*|\s+)(?<title>.+?)\s*$/#) else {
-            let title = normalizedStageTitle(text)
-            guard !title.isEmpty else { return nil }
-            return (0, 0, title, false)
-        }
-
-        guard
-            let hour = Int(stageTimeMatch.output.hour),
-            let minute = Int(stageTimeMatch.output.minute)
-        else {
-            return nil
-        }
-
-        let title = normalizedStageTitle(String(stageTimeMatch.output.title))
-        return (hour, minute, title, true)
-    }
-
-    private func normalizedStageTitle(_ rawTitle: String) -> String {
-        let withoutDistance = rawTitle
-            .replacingOccurrences(of: #"\s*\(\s*\d+(?:\.\d+)?\s*km\s*\)\s*$"#, with: "", options: [.regularExpression, .caseInsensitive])
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        let titleCased = titleCaseIfAllUppercase(withoutDistance)
-        let normalizedAcronyms = normalizeStageAcronyms(in: titleCased)
-        return removeDuplicateLeadingStageNumber(in: normalizedAcronyms)
-    }
-
-    private func titleCaseIfAllUppercase(_ text: String) -> String {
-        let letters = text.unicodeScalars.filter { CharacterSet.letters.contains($0) }
-        guard !letters.isEmpty else { return text }
-        guard letters.allSatisfy({ CharacterSet.uppercaseLetters.contains($0) }) else { return text }
-
-        var converted = text.localizedLowercase.capitalized
-
-        let replacements: [(String, String)] = [
-            (#"\bSs(?<number>\d+)\b"#, "SS$1"),
-            (#"\bSss(?<number>\d+)\b"#, "SSS$1"),
-            (#"\bSss\b"#, "SSS"),
-            (#"\bTbc\b"#, "TBC"),
-            (#"\bBp\b"#, "BP"),
-        ]
-
-        for (pattern, template) in replacements {
-            converted = converted.replacingOccurrences(
-                of: pattern,
-                with: template,
-                options: .regularExpression
-            )
-        }
-
-        return converted
-    }
-
-    private func normalizeStageAcronyms(in text: String) -> String {
-        var normalized = text
-            .replacingOccurrences(of: #"\bSSS\s+(?<number>\d+)\b"#, with: "SSS$1", options: .regularExpression)
-            .replacingOccurrences(of: #"\bSS\s+(?<number>\d+)\b"#, with: "SS$1", options: .regularExpression)
-            .replacingOccurrences(of: #"\bSss\b"#, with: "SSS", options: .regularExpression)
-        if normalized.localizedCaseInsensitiveContains("SSS") {
-            normalized = normalized.replacingOccurrences(of: #"\bSss(?<number>\d+)\b"#, with: "SSS$1", options: .regularExpression)
-        }
-        return normalized
-    }
-
-    private func removeDuplicateLeadingStageNumber(in text: String) -> String {
-        guard let match = text.firstMatch(of: #/^\s*(?<first>SSS?\d+)\s+(?<second>SSS?\d+)\s+(?<rest>.+?)\s*$/#) else {
-            return text
-        }
-
-        return "\(match.output.first) \(match.output.rest)"
-    }
-
-    private func monthNumberFromSentence(_ text: String) -> Int? {
-        for (name, month) in Self.monthMapping {
-            if text.localizedCaseInsensitiveContains(name) {
-                return month
-            }
-        }
-        return nil
+        }) != nil
     }
 
     private func monthNumber(from text: String) -> Int? {
@@ -608,7 +303,7 @@ struct WRCCalendarProvider: CalendarProvider {
         return Self.monthMapping[lowered]
     }
 
-    private func makeDate(year: Int, month: Int, day: Int, hour: Int, minute: Int, timeZone: TimeZone) -> Date? {
+    private func makeDate(year: Int, month: Int, day: Int, hour: Int, minute: Int, timeZone: TimeZone) -> Date {
         DateComponents(
             calendar: .gmt,
             timeZone: timeZone,
@@ -618,46 +313,28 @@ struct WRCCalendarProvider: CalendarProvider {
             hour: hour,
             minute: minute,
             second: 0
-        ).date
+        ).date!
     }
 
     private func tweakDates(of stages: inout [MotorsportEventStage]) {
         let maxDurationInHours = 3
         let calendar = Calendar.gmt
         for index in stages.indices.dropLast() {
-            // Stages sometimes are marked as starting earlier than previous.
-            // Override the start date for them to start date of previous to always have dates in order.
             stages[index + 1].startDate = max(stages[index].startDate, stages[index + 1].startDate)
 
             let nextStage = stages[index + 1]
-            let dateBeforeStartOfNextStage = max(stages[index].startDate.addingTimeInterval(10*60), nextStage.startDate.addingTimeInterval(-1))
+            let dateBeforeStartOfNextStage = max(stages[index].startDate.addingTimeInterval(10 * 60), nextStage.startDate.addingTimeInterval(-1))
             let areStagesInSameDay = calendar.isDate(stages[index].startDate, inSameDayAs: nextStage.startDate)
 
-            if areStagesInSameDay && nextStage.startDate > stages[index].startDate && DateInterval(start: stages[index].startDate, end: nextStage.startDate).duration < (60*60 * TimeInterval(maxDurationInHours)) {
-                // For stages that are in the same day and are close to each other order set their end dates to be connected
+            if areStagesInSameDay && nextStage.startDate > stages[index].startDate && DateInterval(start: stages[index].startDate, end: nextStage.startDate).duration < (60 * 60 * TimeInterval(maxDurationInHours)) {
                 stages[index].endDate = dateBeforeStartOfNextStage
             } else {
-                // Otherwise set end date up to the specified hours limit
                 stages[index].endDate = min(calendar.date(byAdding: .hour, value: maxDurationInHours, to: stages[index].startDate)!, dateBeforeStartOfNextStage)
             }
         }
         if !stages.isEmpty {
-            // Set end time for last stage of event to max value
             stages[stages.count - 1].endDate = calendar.date(byAdding: .hour, value: maxDurationInHours, to: stages[stages.count - 1].startDate)!
         }
-    }
-
-    private func extractEventTimeZone(from document: Document) throws -> TimeZone {
-        let timeZoneText = try document.select(".faq-layout-view__header-title").text()
-        if let timeZoneMatch = timeZoneText.firstMatch(of: #/UTC\s*(?<sign>[+-])\s*(?<hours>\d{1,2})(?::?(?<minutes>\d{2}))?/#),
-           let hours = Int(timeZoneMatch.output.hours) {
-            let minutes = timeZoneMatch.output.minutes.flatMap { Int($0) } ?? 0
-            let multiplier = String(timeZoneMatch.output.sign) == "-" ? -1 : 1
-            let offset = multiplier * ((hours * 60 * 60) + (minutes * 60))
-            return TimeZone(secondsFromGMT: offset) ?? .gmt
-        }
-
-        return .gmt
     }
 
     private static let monthMapping: [String: Int] = [
@@ -676,10 +353,58 @@ struct WRCCalendarProvider: CalendarProvider {
     ]
 }
 
-extension Calendar {
-    static var gmt: Calendar {
-        var calendar = Calendar.current
-        calendar.timeZone = .gmt
-        return calendar
+struct WRCEventDetailsResponse: Decodable {
+    let data: DataNode
+
+    struct DataNode: Decodable {
+        let items: [Item]
+    }
+
+    struct Item: Decodable {
+        let type: String
+        let title: String?
+        let elements: [Element]?
+    }
+
+    struct Element: Decodable {
+        let question: [InlinePart]?
+        let answer: [AnswerBlock]?
+    }
+
+    struct InlinePart: Decodable {
+        let text: String?
+    }
+
+    struct AnswerBlock: Decodable {
+        let type: String?
+        let items: [AnswerItem]
+
+        private enum CodingKeys: String, CodingKey {
+            case type
+            case items
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            type = try container.decodeIfPresent(String.self, forKey: .type)
+            items = try container.decodeIfPresent([AnswerItem].self, forKey: .items) ?? []
+        }
+    }
+
+    struct AnswerItem: Decodable {
+        let elements: [InlinePart]
+    }
+}
+
+struct WRCEventLinksResponse: Decodable {
+    let data: DataNode
+
+    struct DataNode: Decodable {
+        let tabs: [Tab]
+    }
+
+    struct Tab: Decodable {
+        let label: String
+        let url: String
     }
 }
