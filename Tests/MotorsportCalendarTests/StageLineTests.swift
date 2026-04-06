@@ -198,6 +198,23 @@ struct StageLineTests {
         #expect(StageLine.parse("08:00: Stage Name SS1 SS2")?.title == "Stage Name SS1 SS2")
     }
 
+    // MARK: - Spaced stage number abbreviations
+
+    @Test("SS with space before number is collapsed")
+    func spacedSSNumberCollapsed() {
+        #expect(StageLine.parse("08:00: SS 23 Stage Name")?.title == "SS23 Stage Name")
+    }
+
+    @Test("SSS with space before number is collapsed")
+    func spacedSSSNumberCollapsed() {
+        #expect(StageLine.parse("08:00: SSS 4 Stage Name")?.title == "SSS4 Stage Name")
+    }
+
+    @Test("SS without space before number is unchanged")
+    func compactSSNumberUnchanged() {
+        #expect(StageLine.parse("08:00: SS23 Stage Name")?.title == "SS23 Stage Name")
+    }
+
     // MARK: - Invalid input
 
     @Test("Empty string returns nil")

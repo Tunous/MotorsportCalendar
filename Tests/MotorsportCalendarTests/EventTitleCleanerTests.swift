@@ -66,6 +66,18 @@ struct EventTitleCleanerTests {
         #expect(cleaner.clean("Rally Estonia") == "Rally Estonia")
     }
 
+    // MARK: - First letter capitalization
+
+    @Test("Lowercase first letter is capitalized")
+    func lowercaseFirstLetterCapitalized() {
+        #expect(cleaner.clean("ueno Rally del Paraguay") == "Ueno Rally del Paraguay")
+    }
+
+    @Test("Already-capitalized title is unchanged")
+    func capitalizedTitleUnchanged() {
+        #expect(cleaner.clean("Rally Estonia") == "Rally Estonia")
+    }
+
     // MARK: - Whitespace trimming
 
     @Test("Leading and trailing whitespace is trimmed")

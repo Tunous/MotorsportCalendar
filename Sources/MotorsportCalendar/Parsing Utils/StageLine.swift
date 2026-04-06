@@ -53,6 +53,7 @@ extension StageLine {
             .applying(removeLeadingTBCPrefix)
             .applying(titleCaseAllCapsWords)
             .applying(uppercaseStageAbbreviations)
+            .applying(collapseSpacedStageNumbers)
             .applying(removeDuplicateLeadingAbbreviations)
     }
 
@@ -104,6 +105,16 @@ extension StageLine {
                 String(match.output.1).uppercased() + String(match.output.2)
             }
             .replacingOccurrences(of: #"\bSss\b"#, with: "SSS", options: .regularExpression)
+    }
+
+    /// Collapses a spaced-out stage number abbreviation into a compact form
+    /// (e.g. `SS 23` → `SS23`, `SSS 4` → `SSS4`).
+    private static func collapseSpacedStageNumbers(_ text: String) -> String {
+        text.replacingOccurrences(
+            of: #"\b(SSS?) (\d+)\b"#,
+            with: "$1$2",
+            options: .regularExpression
+        )
     }
 
     /// Removes a duplicate numbered stage abbreviation at the start of the title when two
