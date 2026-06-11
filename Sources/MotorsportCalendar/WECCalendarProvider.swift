@@ -57,6 +57,8 @@ struct WECCalendarProvider: CalendarProvider {
                 logParseWarning("No events parsed from \(calendarURL.absoluteString)")
             }
             if !events.isEmpty {
+                let itineraryStartDates = try WECItineraryParser.startDates(from: eventDocument)
+                WECItineraryParser.apply(startDates: itineraryStartDates, to: &events[0])
                 updateEventConfirmedState(&events[0], isConfirmedMapping: isConfirmedMapping)
             }
             allEvents.append(contentsOf: events)
@@ -103,5 +105,47 @@ struct WECCalendarProvider: CalendarProvider {
 
     private func extractCalendarURL(from document: Document) throws -> String? {
         return try document.select(#"a[href*="/race/calendar/"]"#).first()?.attr("href")
+    }
+}
+
+enum WECItineraryParser {
+    static func startDates(from document: Document) throws -> [String: Date] {
+        let sessions = try document.select("[is=timemode-switch] div.d-flex.flex-column.align-items-start.gap-1")
+        var startDates: [String: Date] = [:]
+
+        for session in sessions {
+            guard
+                let nameElement = try session.select("div.fw-bold.lh-sm").first(),
+                let timestampElement = try session.select("[data-timestamp]").first(),
+                let timestamp = TimeInterval(try timestampElement.attr("data-timestamp"))
+            else {
+                continue
+            }
+
+            let name = try nameElement.text().trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !name.isEmpty else { continue }
+            startDates[name] = Date(timeIntervalSince1970: timestamp)
+        }
+
+        return startDates
+    }
+
+    static func apply(startDates: [String: Date], to event: inout MotorsportEvent) {
+        for index in event.stages.indices {
+            guard let correctedStartDate = startDates[event.stages[index].title] else { continue }
+
+            let offset = correctedStartDate.timeIntervalSince(event.stages[index].startDate)
+            event.stages[index].startDate = correctedStartDate
+            event.stages[index].endDate = event.stages[index].endDate.addingTimeInterval(offset)
+        }
+
+        guard
+            let startDate = event.stages.map(\.startDate).min(),
+            let endDate = event.stages.map(\.endDate).max()
+        else {
+            return
+        }
+        event.startDate = startDate
+        event.endDate = endDate
     }
 }
