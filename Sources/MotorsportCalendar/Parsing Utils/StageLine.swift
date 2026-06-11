@@ -97,11 +97,11 @@ extension StageLine {
     }
 
     /// Restores correct uppercase on stage abbreviations (`SS`, `SSS`) followed by a number
-    /// that may have been lowered by title-casing (e.g. `Ss3` → `SS3`, `Sss1` → `SSS1`).
+    /// that may have been lowered by title-casing (e.g. `Ss3` → `SS3`, `Sss 1` → `SSS1`).
     /// Also corrects the standalone `Sss` form that carries no number (e.g. `Sss` → `SSS`).
     private static func uppercaseStageAbbreviations(_ text: String) -> String {
         text
-            .replacing(/\b([Ss][Ss][Ss]?)(\d+)\b/) { match in
+            .replacing(/\b([Ss][Ss][Ss]?)\s*(\d+)\b/) { match in
                 String(match.output.1).uppercased() + String(match.output.2)
             }
             .replacingOccurrences(of: #"\bSss\b"#, with: "SSS", options: .regularExpression)
