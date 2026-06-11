@@ -17,3 +17,25 @@ extension Calendar {
         return calendar
     }
 }
+
+extension Task where Success == Never, Failure == Never {
+    static func retry<T>(
+        maxAttempts: Int = 3,
+        onRetry: ((Int, any Error) -> Void)? = nil,
+        operation: () async throws -> T
+    ) async throws -> T {
+        precondition(maxAttempts > 0)
+
+        for attempt in 1...maxAttempts {
+            do {
+                return try await operation()
+            } catch {
+                guard attempt < maxAttempts else { throw error }
+                onRetry?(attempt, error)
+                try await Task.sleep(for: .seconds(attempt))
+            }
+        }
+
+        fatalError("Unreachable")
+    }
+}

@@ -16,11 +16,7 @@ struct WRCCalendarProvider: CalendarProvider {
         let calendarURL = URL(string: "https://www.wrc.com/en/calendar?rb3TabId=upcoming")!
         logParseInfo("Loading calendar page \(calendarURL.absoluteString) for \(year)")
 
-        let document = try await getDocument(url: calendarURL, baseURL: baseURL)
-        let eventCards = try document.select("a.event-feed-card[href]")
-        if eventCards.isEmpty {
-            logParseWarning("No event cards found on calendar page")
-        }
+        let eventCards = try await fetchCalendarEventCards(url: calendarURL, baseURL: baseURL)
 
         var events: [MotorsportEvent] = []
         for eventCard in eventCards {
@@ -205,18 +201,35 @@ struct WRCCalendarProvider: CalendarProvider {
         return try SwiftSoup.parse(html, baseURL.absoluteString)
     }
 
-    private func getData(url: URL) async throws -> Data {
-        var request = URLRequest(url: url)
-        request.setValue("MotoWeekParser/1.0", forHTTPHeaderField: "User-Agent")
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard
-            let httpResponse = response as? HTTPURLResponse,
-            httpResponse.statusCode == 200
-        else {
-            throw URLError(.badServerResponse)
+    private func fetchCalendarEventCards(url: URL, baseURL: URL) async throws -> Elements {
+        try await Task.retry(onRetry: { _, _ in
+            logParseWarning("No event cards found on calendar page; retrying")
+        }) {
+            let document = try await getDocument(url: url, baseURL: baseURL)
+            let eventCards = try document.select("a.event-feed-card[href]")
+            guard !eventCards.isEmpty else {
+                throw CalendarParsingError.missingValue(
+                    description: "No WRC event cards found on calendar page"
+                )
+            }
+            return eventCards
         }
-        return data
+    }
+
+    private func getData(url: URL) async throws -> Data {
+        try await Task.retry {
+            var request = URLRequest(url: url)
+            request.setValue("MotoWeekParser/1.0", forHTTPHeaderField: "User-Agent")
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard
+                let httpResponse = response as? HTTPURLResponse,
+                httpResponse.statusCode == 200
+            else {
+                throw URLError(.badServerResponse)
+            }
+            return data
+        }
     }
 
     private func parseISO8601Date(_ text: String) -> Date? {
