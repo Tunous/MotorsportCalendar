@@ -8,6 +8,16 @@
 import Foundation
 import MotorsportCalendarData
 
+enum LogColor {
+    static let red = "\u{001B}[31m"
+    static let orange = "\u{001B}[38;5;208m"
+    static let reset = "\u{001B}[0m"
+}
+
+func coloredLog(_ message: String, color: String) -> String {
+    "\(color)\(message)\(LogColor.reset)"
+}
+
 protocol CalendarProvider: Sendable {
     var outputURL: URL { get }
     var series: Series { get }
@@ -21,11 +31,11 @@ extension CalendarProvider {
     }
 
     func logParseWarning(_ message: String) {
-        print("[\(series)][parse][warning] \(message)")
+        print(coloredLog("[\(series)][parse][warning] \(message)", color: LogColor.orange))
     }
 
     func logParseError(_ message: String) {
-        print("[\(series)][parse][error] \(message)")
+        print(coloredLog("[\(series)][parse][error] \(message)", color: LogColor.red))
     }
 
     func run(year: Int) async throws -> Bool {

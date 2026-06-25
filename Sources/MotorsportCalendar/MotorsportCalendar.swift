@@ -36,7 +36,7 @@ struct MotorsportCalendar: AsyncParsableCommand {
                         let didUpdate = try await provider.run(year: year)
                         return (provider.series, didUpdate)
                     } catch {
-                        print("[\(provider.series)] Error:", error)
+                        print(coloredLog("[\(provider.series)] Error: \(error)", color: LogColor.red))
                         throw error
                     }
                 }

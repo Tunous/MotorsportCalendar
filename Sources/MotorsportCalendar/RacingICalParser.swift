@@ -182,7 +182,7 @@ fileprivate enum SessionType: String, Encodable {
                 return
             }
         }
-        print("!! Unsupported session type: \(summary)")
+        print(coloredLog("!! Unsupported session type: \(summary)", color: LogColor.orange))
         return nil
     }
 }
