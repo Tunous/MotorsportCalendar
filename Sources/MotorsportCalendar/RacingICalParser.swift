@@ -15,8 +15,21 @@ enum RacingICalParser {
     static func parse(_ url: URL, year: Int) throws -> [MotorsportEvent] {
         let string = try String(contentsOf: url)
         let cleanedString = string.replacingOccurrences(of: "\r\n", with: "\n")
+        guard cleanedString.localizedCaseInsensitiveContains("BEGIN:VCALENDAR") else {
+            throw CalendarParsingError.invalidICalendar(
+                url: url.absoluteString,
+                firstLine: cleanedString.firstNonEmptyLine?.logPreview ?? "<empty response>",
+                byteCount: cleanedString.utf8.count
+            )
+        }
         let parser = ICalParser()
-        let calendar = try unwrap(parser.parseCalendar(ics: cleanedString))
+        guard let calendar = parser.parseCalendar(ics: cleanedString) else {
+            throw CalendarParsingError.invalidICalendar(
+                url: url.absoluteString,
+                firstLine: cleanedString.firstNonEmptyLine?.logPreview ?? "<empty response>",
+                byteCount: cleanedString.utf8.count
+            )
+        }
 
         let events = calendar.events.compactMap { event -> Event? in
             guard let startDate = event.dtstart?.date else { return nil }
@@ -73,6 +86,20 @@ enum RacingICalParser {
 enum CalendarParsingError: Error {
     case missingValue(description: String)
     case duplicateStages(eventName: String, stages: [String])
+    case invalidICalendar(url: String, firstLine: String, byteCount: Int)
+}
+
+extension CalendarParsingError: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .missingValue(let description):
+            "Missing value: \(description)"
+        case .duplicateStages(let eventName, let stages):
+            "Duplicate stages for \(eventName): \(stages.joined(separator: ", "))"
+        case .invalidICalendar(let url, let firstLine, let byteCount):
+            "Invalid iCalendar response from \(url) (\(byteCount) bytes, first line: \(firstLine))"
+        }
+    }
 }
 
 func unwrap<T>(_ value: T?, function: StaticString = #function, line: UInt8 = #line) throws -> T {
@@ -80,6 +107,20 @@ func unwrap<T>(_ value: T?, function: StaticString = #function, line: UInt8 = #l
         throw CalendarParsingError.missingValue(description: "\(function) at line \(line) value is nil")
     }
     return value
+}
+
+private extension String {
+    var firstNonEmptyLine: String? {
+        split(whereSeparator: \.isNewline)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .first { !$0.isEmpty }
+    }
+
+    var logPreview: String {
+        let limit = 160
+        guard count > limit else { return self }
+        return String(prefix(limit)) + "..."
+    }
 }
 
 fileprivate struct Event: Comparable {

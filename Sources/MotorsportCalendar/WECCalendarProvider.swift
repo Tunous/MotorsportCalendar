@@ -22,19 +22,19 @@ struct WECCalendarProvider: CalendarProvider {
         logParseInfo("Loading season page \(baseURL.absoluteString) for \(year)")
         let html = try String(contentsOf: baseURL, encoding: .utf8)
         let document = try SwiftSoup.parse(html, baseURL.absoluteString)
-        guard let elements = try document.select(".season-overview .season-content").last()?.select("a") else {
-            logParseWarning("Season overview links not found")
+        guard let seasonContent = try seasonContent(in: document, year: year) else {
+            logParseWarning("Season \(year) overview links not found")
             return []
         }
+        let eventLinks = try seasonEventLinks(from: seasonContent, baseURL: baseURL)
+        let skippedCompletedEvents = eventLinks.filter(\.isCompleted)
+        let activeEventLinks = eventLinks.filter { !$0.isCompleted }
+        logParseInfo("Found \(eventLinks.count) WEC event links for \(year), skipping \(skippedCompletedEvents.count) completed")
 
         var allEvents: [MotorsportEvent] = []
-        for element in elements {
-            let href = try element.attr("href")
-            guard let eventURL = URL(string: href, relativeTo: baseURL)?.absoluteURL else {
-                logParseWarning("Invalid event URL: \(href)")
-                continue
-            }
-
+        for eventLink in activeEventLinks {
+            let eventURL = eventLink.url
+            logParseInfo("Loading event page \(eventURL.absoluteString)")
             let eventHTML = try String(contentsOf: eventURL, encoding: .utf8)
             let eventDocument = try SwiftSoup.parse(eventHTML, eventURL.absoluteString)
 
@@ -47,6 +47,7 @@ struct WECCalendarProvider: CalendarProvider {
 
             var events: [MotorsportEvent]
             do {
+                logParseInfo("Parsing iCal \(calendarURL.absoluteString)")
                 events = try RacingICalParser.parse(calendarURL, year: year)
             } catch {
                 logParseError("Failed parsing iCal \(calendarURL.absoluteString): \(error)")
@@ -69,6 +70,46 @@ struct WECCalendarProvider: CalendarProvider {
         }
 
         return await onlyNotEndedEvents(allEvents, year: year)
+    }
+
+    private func seasonContent(in document: Document, year: Int) throws -> Element? {
+        let seasonIdentifier = try document
+            .select(".season-overview .season-selector[data-season]")
+            .first { try $0.text().localizedCaseInsensitiveContains("Season \(year)") }?
+            .attr("data-season")
+
+        if let seasonIdentifier {
+            return try document
+                .select(#".season-overview .season-content[data-season="\#(seasonIdentifier)"]"#)
+                .first()
+        }
+
+        return try document.select(".season-overview .season-content").first()
+    }
+
+    private func seasonEventLinks(from seasonContent: Element, baseURL: URL) throws -> [WECSeasonEventLink] {
+        let elements = try seasonContent.select(#"a[href*="/en/race/"]"#)
+        var links: [WECSeasonEventLink] = []
+        var seenURLs: Set<URL> = []
+
+        for element in elements {
+            let href = try element.attr("href")
+            guard let eventURL = URL(string: href, relativeTo: baseURL)?.absoluteURL else {
+                logParseWarning("Invalid event URL: \(href)")
+                continue
+            }
+            guard seenURLs.insert(eventURL).inserted else {
+                continue
+            }
+            links.append(
+                WECSeasonEventLink(
+                    url: eventURL,
+                    isCompleted: try element.classNames().contains("opacity-25")
+                )
+            )
+        }
+
+        return links
     }
 
     private func updateEventConfirmedState(_ event: inout MotorsportEvent, isConfirmedMapping: [String: Bool]) {
@@ -106,6 +147,11 @@ struct WECCalendarProvider: CalendarProvider {
     private func extractCalendarURL(from document: Document) throws -> String? {
         return try document.select(#"a[href*="/race/calendar/"]"#).first()?.attr("href")
     }
+}
+
+private struct WECSeasonEventLink {
+    let url: URL
+    let isCompleted: Bool
 }
 
 enum WECItineraryParser {
