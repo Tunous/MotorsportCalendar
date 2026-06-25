@@ -52,7 +52,11 @@ struct WRCCalendarProvider: CalendarProvider {
             let slug = eventURL.lastPathComponent
             let stages: [MotorsportEventStage]
             if let itineraryLink = try await fetchItineraryLink(forEventSlug: slug) {
-                stages = try await fetchStages(forEventSlug: String(itineraryLink.dropFirst()), fallbackYear: year)
+                stages = try await fetchStages(
+                    forEventSlug: String(itineraryLink.dropFirst()),
+                    fallbackYear: year,
+                    eventStartDate: startDate
+                )
             } else {
                 stages = []
             }
@@ -80,7 +84,7 @@ struct WRCCalendarProvider: CalendarProvider {
         return payload.data.tabs.first { $0.label == "Itinerary" }?.url
     }
 
-    private func fetchStages(forEventSlug eventSlug: String, fallbackYear: Int) async throws -> [MotorsportEventStage] {
+    private func fetchStages(forEventSlug eventSlug: String, fallbackYear: Int, eventStartDate: Date) async throws -> [MotorsportEventStage] {
         let endpoint = makeEventDetailsURL(eventSlug: eventSlug)
         let responseData = try await getData(url: endpoint)
 
@@ -88,7 +92,9 @@ struct WRCCalendarProvider: CalendarProvider {
         let payload = try decoder.decode(WRCEventDetailsResponse.self, from: responseData)
         let faqBlocks = payload.data.items.filter { $0.type == "faq" && !($0.elements ?? []).isEmpty }
         guard !faqBlocks.isEmpty else {
-            logParseError("Couldn't find any FAQ blocks with stage information")
+            if eventStartDate <= .now {
+                logParseWarning("No WRC itinerary FAQ blocks found for '\(eventSlug)' after event start; recovering with event-level dates and empty stages.")
+            }
             return []
         }
 
