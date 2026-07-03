@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
-
 printf "# Changes\n\n" > /tmp/changes.md
 for file in $(git --no-pager diff HEAD~1 HEAD --name-only); do
   printf "<details><summary>%s</summary>\n\n\`\`\`diff\n" "$file" >> /tmp/changes.md
