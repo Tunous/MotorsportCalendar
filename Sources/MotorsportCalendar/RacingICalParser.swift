@@ -139,7 +139,8 @@ fileprivate struct Event: Comparable {
         else {
             return nil
         }
-        self.stageName = summary.split(separator: " - ").dropFirst().joined(separator: " - ")
+        let stageName = summary.split(separator: " - ").dropFirst().joined(separator: " - ")
+        self.stageName = stageName == "Practice 0" ? "Practice 1" : stageName
         self.startDate = min(startDate.date, endDate.date)
         self.endDate = max(startDate.date, endDate.date)
         if let location = event.location {
