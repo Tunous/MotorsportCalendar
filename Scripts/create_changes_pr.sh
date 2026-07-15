@@ -9,4 +9,8 @@ done
 
 printf "@Tunous\n" >> /tmp/changes.md
 
-gh pr create --title "Update schedule" --body-file /tmp/changes.md
+if pr_number="$(gh pr view --json number --jq .number 2>/dev/null)"; then
+  gh pr edit "$pr_number" --title "Update schedule" --body-file /tmp/changes.md
+else
+  gh pr create --title "Update schedule" --body-file /tmp/changes.md
+fi
