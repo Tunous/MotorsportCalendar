@@ -27,4 +27,31 @@ struct RacingICalParserTests {
 
         #expect(event.stages.map(\.title) == ["Practice 1"])
     }
+
+    @Test func `trailing TBC is removed and stage is unconfirmed`() throws {
+        let calendar = """
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        PRODID:-//MotorsportCalendar Tests//EN
+        BEGIN:VEVENT
+        DTSTART:20261001T113000Z
+        DTEND:20261001T123000Z
+        LOCATION:Belgium
+        SUMMARY:FORMULA 1 BELGIAN GRAND PRIX 2026 - Practice 1 (TBC)
+        UID:tbc-practice
+        END:VEVENT
+        END:VCALENDAR
+        """
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("formula-1-tbc-\(UUID().uuidString).ics")
+        try calendar.write(to: url, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let events = try RacingICalParser.parse(url, year: 2026)
+        let event = try #require(events.first)
+
+        #expect(event.stages.map(\.title) == ["Practice 1"])
+        #expect(event.stages.map(\.isConfirmed) == [false])
+        #expect(event.isConfirmed == false)
+    }
 }

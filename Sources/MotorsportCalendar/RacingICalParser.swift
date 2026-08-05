@@ -47,6 +47,7 @@ enum RacingICalParser {
                     title: $0.stageName,
                     startDate: $0.startDate,
                     endDate: $0.endDate,
+                    isConfirmed: $0.hasConfirmedDates,
                     isSignificant: !$0.stageName.localizedCaseInsensitiveContains("practice")
                 )
             }
@@ -139,7 +140,8 @@ fileprivate struct Event: Comparable {
         else {
             return nil
         }
-        let stageName = summary.split(separator: " - ").dropFirst().joined(separator: " - ")
+        let rawStageName = summary.split(separator: " - ").dropFirst().joined(separator: " - ")
+        let stageName = EventTitleCleaner(year: year).clean(rawStageName)
         self.stageName = stageName == "Practice 0" ? "Practice 1" : stageName
         self.startDate = min(startDate.date, endDate.date)
         self.endDate = max(startDate.date, endDate.date)
@@ -148,7 +150,10 @@ fileprivate struct Event: Comparable {
         } else {
             self.name = EventName.wec(summary: summary, year: year)
         }
-        self.hasConfirmedDates = !summary.hasSuffix("(TBC)")
+        self.hasConfirmedDates = summary.range(
+            of: #"\s*\(TBC\)\s*$"#,
+            options: [.regularExpression, .caseInsensitive]
+        ) == nil
         self.isCancelled = summary.starts(with: "CALLED OFF")
     }
 

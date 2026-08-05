@@ -93,4 +93,9 @@ struct EventTitleCleanerTests {
     // MARK: - Helpers
 
     private var cleaner: EventTitleCleaner { EventTitleCleaner(year: year) }
+
+    @Test("Trailing TBC marker is removed")
+    func trailingTBCMarkerIsRemoved() {
+        #expect(cleaner.clean("Practice 1 (TBC)") == "Practice 1")
+    }
 }
