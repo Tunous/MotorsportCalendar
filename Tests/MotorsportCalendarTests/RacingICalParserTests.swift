@@ -28,7 +28,7 @@ struct RacingICalParserTests {
         #expect(event.stages.map(\.title) == ["Practice 1"])
     }
 
-    @Test func `trailing TBC is removed and stage is unconfirmed`() throws {
+    @Test func `Grand Prix in location is extracted and trailing TBC is removed`() throws {
         let calendar = """
         BEGIN:VCALENDAR
         VERSION:2.0
@@ -36,9 +36,9 @@ struct RacingICalParserTests {
         BEGIN:VEVENT
         DTSTART:20261001T113000Z
         DTEND:20261001T123000Z
-        LOCATION:Belgium
-        SUMMARY:FORMULA 1 BELGIAN GRAND PRIX 2026 - Practice 1 (TBC)
-        UID:tbc-practice
+        LOCATION:Malaysia
+        SUMMARY:⏱️ FORMULA 1 GULF AIR BAHRAIN GRAND PRIX IN MALAYSIA 2026 - Qualifying (TBC)
+        UID:bahrain-in-malaysia-qualifying
         END:VEVENT
         END:VCALENDAR
         """
@@ -50,7 +50,8 @@ struct RacingICalParserTests {
         let events = try RacingICalParser.parse(url, year: 2026)
         let event = try #require(events.first)
 
-        #expect(event.stages.map(\.title) == ["Practice 1"])
+        #expect(event.title == "Bahrain Grand Prix in Malaysia")
+        #expect(event.stages.map(\.title) == ["Qualifying"])
         #expect(event.stages.map(\.isConfirmed) == [false])
         #expect(event.isConfirmed == false)
     }

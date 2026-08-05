@@ -146,7 +146,7 @@ fileprivate struct Event: Comparable {
         self.startDate = min(startDate.date, endDate.date)
         self.endDate = max(startDate.date, endDate.date)
         if let location = event.location {
-            self.name = EventName.formula1(summary: summary, location: location)
+            self.name = GrandPrixNameParser.parse(summary: summary, location: location)
         } else {
             self.name = EventName.wec(summary: summary, year: year)
         }
@@ -205,61 +205,4 @@ fileprivate struct EventName {
         return raw
     }
 
-    static func formula1(summary: String, location: String) -> String {
-        let namePrefix: String
-        switch location.lowercased() {
-        case "saudi arabia":
-            namePrefix = "Saudi Arabian"
-        case "australia":
-            namePrefix = "Australian"
-        case "japan":
-            namePrefix = "Japanese"
-        case "china":
-            namePrefix = "Chinese"
-        case "united states":
-            if summary.localizedStandardContains("miami") {
-                namePrefix = "Miami"
-            } else if summary.localizedStandardContains("las vegas") {
-                namePrefix = "Las Vegas"
-            } else {
-                namePrefix = "United States"
-            }
-        case "italy":
-            if summary.localizedStandardContains("romagna") {
-                namePrefix = "Emilia Romagna"
-            } else {
-                namePrefix = "Italian"
-            }
-        case "canada":
-            namePrefix = "Canadian"
-        case "spain":
-            if summary.localizedStandardContains("barcelona") {
-                namePrefix = "Barcelona-Catalunya"
-            } else {
-                namePrefix = "Spanish"
-            }
-        case "austria":
-            namePrefix = "Austrian"
-        case "united kingdom":
-            namePrefix = "British"
-        case "hungary":
-            namePrefix = "Hungarian"
-        case "belgium":
-            namePrefix = "Belgian"
-        case "netherlands":
-            namePrefix = "Dutch"
-        case "mexico":
-            namePrefix = "Mexico City"
-        case "brazil":
-            namePrefix = "São Paulo"
-        case "united arab emirates":
-            namePrefix = "Abu Dhabi"
-        default:
-            if summary.localizedCaseInsensitiveContains("pre-season testing") {
-                return preSeasonTestingName
-            }
-            namePrefix = location
-        }
-        return namePrefix + " Grand Prix"
-    }
 }
