@@ -55,7 +55,8 @@ struct WRCCalendarProvider: CalendarProvider {
                 stages = try await fetchStages(
                     forEventSlug: String(itineraryLink.dropFirst()),
                     fallbackYear: year,
-                    eventStartDate: startDate
+                    eventStartDate: startDate,
+                    fallbackTimeZone: Self.timeZone(fromISO8601: dateTimeText) ?? .gmt
                 )
             } else {
                 stages = []
@@ -84,7 +85,12 @@ struct WRCCalendarProvider: CalendarProvider {
         return payload.data.tabs.first { $0.label == "Itinerary" }?.url
     }
 
-    private func fetchStages(forEventSlug eventSlug: String, fallbackYear: Int, eventStartDate: Date) async throws -> [MotorsportEventStage] {
+    private func fetchStages(
+        forEventSlug eventSlug: String,
+        fallbackYear: Int,
+        eventStartDate: Date,
+        fallbackTimeZone: TimeZone
+    ) async throws -> [MotorsportEventStage] {
         let endpoint = makeEventDetailsURL(eventSlug: eventSlug)
         let responseData = try await getData(url: endpoint)
 
@@ -98,10 +104,10 @@ struct WRCCalendarProvider: CalendarProvider {
             return []
         }
 
-        let eventTimeZone = faqBlocks
-            .compactMap { $0.title }
-            .compactMap(extractTimeZone(from:))
-            .first ?? .gmt
+        let eventTimeZone = Self.eventTimeZone(
+            faqTitles: faqBlocks.compactMap(\.title),
+            fallback: fallbackTimeZone
+        )
 
         var stages: [MotorsportEventStage] = []
         for faqBlock in faqBlocks {
@@ -283,7 +289,25 @@ struct WRCCalendarProvider: CalendarProvider {
         return Calendar.gmt.date(byAdding: .day, value: 2, to: fallbackStartDate)
     }
 
-    private func extractTimeZone(from text: String) -> TimeZone? {
+    static func eventTimeZone(faqTitles: [String], fallback: TimeZone) -> TimeZone {
+        faqTitles.compactMap(extractTimeZone(from:)).first
+            ?? fallback
+    }
+
+    static func timeZone(fromISO8601 text: String) -> TimeZone? {
+        if text.hasSuffix("Z") {
+            return .gmt
+        }
+        guard let match = text.firstMatch(of: #/(?<sign>[+-])(?<hours>\d{2}):(?<minutes>\d{2})$/#),
+              let hours = Int(match.output.hours),
+              let minutes = Int(match.output.minutes) else {
+            return nil
+        }
+        let multiplier = String(match.output.sign) == "-" ? -1 : 1
+        return TimeZone(secondsFromGMT: multiplier * ((hours * 60 * 60) + (minutes * 60)))
+    }
+
+    private static func extractTimeZone(from text: String) -> TimeZone? {
         if let timeZoneMatch = text.firstMatch(of: #/UTC\s*(?<sign>[+-])\s*(?<hours>\d{1,2})(?::?(?<minutes>\d{2}))?/#),
            let hours = Int(timeZoneMatch.output.hours) {
             let minutes = timeZoneMatch.output.minutes.flatMap { Int($0) } ?? 0
@@ -370,6 +394,7 @@ struct WRCCalendarProvider: CalendarProvider {
         "nov": 11, "november": 11,
         "dec": 12, "december": 12,
     ]
+
 }
 
 struct WRCEventDetailsResponse: Decodable {
