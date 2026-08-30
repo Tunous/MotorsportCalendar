@@ -17,4 +17,19 @@ struct WRCCalendarProviderTests {
         #expect(explicit.secondsFromGMT() == 2 * 60 * 60)
         #expect(paraguay.secondsFromGMT(for: Date(timeIntervalSince1970: 1_787_918_580)) == -3 * 60 * 60)
     }
+
+    @Test("First untimed stage uses the confirmed event start on the same day")
+    func untimedFirstStageUsesEventStart() throws {
+        let paraguay = try #require(TimeZone(identifier: "America/Asuncion"))
+        let eventStartDate = Date(timeIntervalSince1970: 1_787_832_000)
+        let fallback = WRCCalendarProvider.untimedStageFallback(
+            dayStart: Date(timeIntervalSince1970: 1_787_799_600),
+            eventStartDate: eventStartDate,
+            previousStageEndDate: nil,
+            timeZone: paraguay
+        )
+
+        #expect(fallback.date == eventStartDate)
+        #expect(fallback.isConfirmed)
+    }
 }

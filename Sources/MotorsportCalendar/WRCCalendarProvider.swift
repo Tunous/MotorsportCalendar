@@ -139,6 +139,7 @@ struct WRCCalendarProvider: CalendarProvider {
                     }
 
                     let stageDate: Date
+                    let isConfirmed: Bool
                     if let time = stageLine.time {
                         stageDate = makeDate(
                             year: stageDay.year,
@@ -148,14 +149,16 @@ struct WRCCalendarProvider: CalendarProvider {
                             minute: time.minute,
                             timeZone: eventTimeZone
                         )
+                        isConfirmed = true
                     } else {
-                        var calendar = Calendar(identifier: .gregorian)
-                        calendar.timeZone = eventTimeZone
-                        if let last = stages.last, calendar.isDate(last.endDate, inSameDayAs: dayStart) {
-                            stageDate = last.endDate
-                        } else {
-                            stageDate = dayStart
-                        }
+                        let fallback = Self.untimedStageFallback(
+                            dayStart: dayStart,
+                            eventStartDate: eventStartDate,
+                            previousStageEndDate: stages.last?.endDate,
+                            timeZone: eventTimeZone
+                        )
+                        stageDate = fallback.date
+                        isConfirmed = fallback.isConfirmed
                     }
 
                     stages.append(
@@ -163,7 +166,7 @@ struct WRCCalendarProvider: CalendarProvider {
                             title: stageLine.title,
                             startDate: stageDate,
                             endDate: stageDate,
-                            isConfirmed: stageLine.isConfirmed,
+                            isConfirmed: isConfirmed,
                             isSignificant: isSignificant(title: stageLine.title)
                         )
                     )
@@ -292,6 +295,23 @@ struct WRCCalendarProvider: CalendarProvider {
     static func eventTimeZone(faqTitles: [String], fallback: TimeZone) -> TimeZone {
         faqTitles.compactMap(extractTimeZone(from:)).first
             ?? fallback
+    }
+
+    static func untimedStageFallback(
+        dayStart: Date,
+        eventStartDate: Date,
+        previousStageEndDate: Date?,
+        timeZone: TimeZone
+    ) -> (date: Date, isConfirmed: Bool) {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        if let previousStageEndDate, calendar.isDate(previousStageEndDate, inSameDayAs: dayStart) {
+            return (previousStageEndDate, false)
+        }
+        if calendar.isDate(eventStartDate, inSameDayAs: dayStart) {
+            return (eventStartDate, true)
+        }
+        return (dayStart, false)
     }
 
     static func timeZone(fromISO8601 text: String) -> TimeZone? {
