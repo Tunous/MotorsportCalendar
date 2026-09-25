@@ -14,20 +14,47 @@ struct MotorsportCalendar: AsyncParsableCommand {
         }
         return url
     })
-    var formula1CalendarURL: URL
+    var formula1CalendarURL: URL?
+
+    @Flag(help: "Generate the Formula 1 calendar")
+    var formula1 = false
+
+    @Flag(help: "Generate the WRC calendar")
+    var wrc = false
+
+    @Flag(help: "Generate the WEC calendar")
+    var wec = false
 
     @Option
     var year: Int = Calendar.current.component(.year, from: .now)
+
+    var selectedSeries: Set<Series> {
+        let selections: [Series?] = [
+            formula1 ? .formula1 : nil,
+            wrc ? .wrc : nil,
+            wec ? .wec : nil,
+        ]
+        let selected = Set(selections.compactMap { $0 })
+        return selected.isEmpty ? Set(Series.allCases) : selected
+    }
 
     mutating func run() async throws {
         let outputPath = NSString(string: output).expandingTildeInPath
         let outputURL = URL(filePath: outputPath, directoryHint: .isDirectory)
 
-        let providers: [any CalendarProvider] = [
-            Formula1CalendarProvider(outputURL: outputURL, calendarURL: formula1CalendarURL),
-            WRCCalendarProvider(outputURL: outputURL),
-            WECCalendarProvider(outputURL: outputURL),
-        ]
+        var providers: [any CalendarProvider] = []
+        if selectedSeries.contains(.formula1) {
+            guard let formula1CalendarURL else {
+                throw ValidationError("--formula1-calendar-url is required when generating Formula 1")
+            }
+            providers.append(Formula1CalendarProvider(outputURL: outputURL, calendarURL: formula1CalendarURL))
+        }
+        if selectedSeries.contains(.wrc) {
+            providers.append(WRCCalendarProvider(outputURL: outputURL))
+        }
+        if selectedSeries.contains(.wec) {
+            providers.append(WECCalendarProvider(outputURL: outputURL))
+        }
 
         let updatedSeries = try await withThrowingTaskGroup(of: (Series, Bool).self, returning: Set<Series>.self) { group in
             for provider in providers {
