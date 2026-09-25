@@ -82,7 +82,11 @@ struct WRCCalendarProvider: CalendarProvider {
 
         let decoder = JSONDecoder()
         let payload = try decoder.decode(WRCEventLinksResponse.self, from: responseData)
-        return payload.data.tabs.first { $0.label == "Itinerary" }?.url
+        return payload.data.tabs.first { Self.isItineraryTabLabel($0.label) }?.url
+    }
+
+    static func isItineraryTabLabel(_ label: String) -> Bool {
+        label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == "itinerary"
     }
 
     private func fetchStages(

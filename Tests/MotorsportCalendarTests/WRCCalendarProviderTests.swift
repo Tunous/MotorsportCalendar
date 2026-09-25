@@ -4,6 +4,14 @@ import Testing
 
 @Suite("WRC event timezone")
 struct WRCCalendarProviderTests {
+    @Test(
+        "Itinerary tab labels ignore whitespace and letter case",
+        arguments: ["Itinerary", " Itinerary ", "ITINERARY", "\nItInErArY\t"]
+    )
+    func itineraryTabLabel(_ label: String) {
+        #expect(WRCCalendarProvider.isItineraryTabLabel(label))
+    }
+
     @Test("Itinerary offsets take precedence over the calendar card offset")
     func eventTimeZoneSelection() throws {
         let paraguay = try #require(WRCCalendarProvider.timeZone(
