@@ -1,9 +1,23 @@
 import Foundation
 import Testing
 @testable import MotorsportCalendar
+import MotorsportCalendarData
 
 @Suite("WRC event timezone")
 struct WRCCalendarProviderTests {
+    @Test("Repeated semantic identifiers receive chronological ordinal suffixes")
+    func duplicateStageIdentifiers() {
+        var stages = [
+            stage(id: "regroup", title: "Regroup - First", time: 1),
+            stage(id: "ss1", title: "SS1 New Name", time: 2),
+            stage(id: "regroup", title: "Regroup - Second", time: 3),
+        ]
+
+        WRCCalendarProvider.disambiguateStageIdentifiers(&stages)
+
+        #expect(stages.map(\.id) == ["regroup-1", "ss1", "regroup-2"])
+    }
+
     @Test(
         "Itinerary tab labels ignore whitespace and letter case",
         arguments: ["Itinerary", " Itinerary ", "ITINERARY", "\nItInErArY\t"]
@@ -39,5 +53,16 @@ struct WRCCalendarProviderTests {
 
         #expect(fallback.date == eventStartDate)
         #expect(fallback.isConfirmed)
+    }
+
+    private func stage(id: String, title: String, time: TimeInterval) -> MotorsportEventStage {
+        MotorsportEventStage(
+            id: id,
+            title: title,
+            startDate: Date(timeIntervalSince1970: time),
+            endDate: Date(timeIntervalSince1970: time),
+            isConfirmed: true,
+            isSignificant: false
+        )
     }
 }

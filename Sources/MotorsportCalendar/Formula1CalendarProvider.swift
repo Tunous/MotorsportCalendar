@@ -27,7 +27,7 @@ struct Formula1CalendarProvider: CalendarProvider {
     func events(year: Int) async throws -> [MotorsportEvent] {
         let updatedEvents: [MotorsportEvent]
         do {
-            updatedEvents = try RacingICalParser.parse(calendarURL, year: year)
+            updatedEvents = try RacingICalParser.parse(calendarURL, year: year, series: series)
         } catch {
             logParseError("Failed to parse iCal: \(error)")
             throw error

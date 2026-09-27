@@ -48,7 +48,7 @@ struct WECCalendarProvider: CalendarProvider {
             var events: [MotorsportEvent]
             do {
                 logParseInfo("Parsing iCal \(calendarURL.absoluteString)")
-                events = try RacingICalParser.parse(calendarURL, year: year)
+                events = try RacingICalParser.parse(calendarURL, year: year, series: series)
             } catch {
                 logParseError("Failed parsing iCal \(calendarURL.absoluteString): \(error)")
                 throw error

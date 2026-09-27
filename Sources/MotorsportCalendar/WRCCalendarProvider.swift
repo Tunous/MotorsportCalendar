@@ -63,6 +63,7 @@ struct WRCCalendarProvider: CalendarProvider {
             }
 
             let event = MotorsportEvent(
+                id: StableIdentifier.event(slug, series: series),
                 title: eventTitle,
                 startDate: stages.first?.startDate ?? startDate,
                 endDate: stages.last?.endDate ?? fallbackEndDate,
@@ -167,6 +168,7 @@ struct WRCCalendarProvider: CalendarProvider {
 
                     stages.append(
                         MotorsportEventStage(
+                            id: StableIdentifier.session(stageLine.title, series: series),
                             title: stageLine.title,
                             startDate: stageDate,
                             endDate: stageDate,
@@ -183,8 +185,18 @@ struct WRCCalendarProvider: CalendarProvider {
             return []
         }
         stages.sort { $0.startDate < $1.startDate }
+        Self.disambiguateStageIdentifiers(&stages)
         tweakDates(of: &stages)
         return stages
+    }
+
+    static func disambiguateStageIdentifiers(_ stages: inout [MotorsportEventStage]) {
+        let indexGroups = Dictionary(grouping: stages.indices) { stages[$0].id }
+        for indices in indexGroups.values where indices.count > 1 {
+            for (offset, index) in indices.enumerated() {
+                stages[index].id += "-\(offset + 1)"
+            }
+        }
     }
 
     private func makeEventDetailsURL(eventSlug: String) -> URL {

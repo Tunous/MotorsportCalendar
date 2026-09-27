@@ -22,10 +22,11 @@ struct RacingICalParserTests {
         try calendar.write(to: url, atomically: true, encoding: .utf8)
         defer { try? FileManager.default.removeItem(at: url) }
 
-        let events = try RacingICalParser.parse(url, year: 2026)
+        let events = try RacingICalParser.parse(url, year: 2026, series: .formula1)
         let event = try #require(events.first)
 
         #expect(event.stages.map(\.title) == ["Practice 1"])
+        #expect(event.stages.map(\.id) == ["practice-1"])
     }
 
     @Test func `Grand Prix in location is extracted and trailing TBC is removed`() throws {
@@ -47,12 +48,45 @@ struct RacingICalParserTests {
         try calendar.write(to: url, atomically: true, encoding: .utf8)
         defer { try? FileManager.default.removeItem(at: url) }
 
-        let events = try RacingICalParser.parse(url, year: 2026)
+        let events = try RacingICalParser.parse(url, year: 2026, series: .formula1)
         let event = try #require(events.first)
 
         #expect(event.title == "Bahrain Grand Prix in Malaysia")
+        #expect(event.id == "bahrain-grand-prix-in-malaysia")
         #expect(event.stages.map(\.title) == ["Qualifying"])
         #expect(event.stages.map(\.isConfirmed) == [false])
         #expect(event.isConfirmed == false)
+    }
+
+    @Test func `class names disambiguate practice sessions`() throws {
+        let calendar = """
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        PRODID:-//MotorsportCalendar Tests//EN
+        BEGIN:VEVENT
+        DTSTART:20260717T113000Z
+        DTEND:20260717T123000Z
+        SUMMARY:6 HOURS OF BARCELONA 2026 - Free Practice 3 - LMGT3
+        UID:practice-a@example.com
+        END:VEVENT
+        BEGIN:VEVENT
+        DTSTART:20260717T133000Z
+        DTEND:20260717T143000Z
+        SUMMARY:6 HOURS OF BARCELONA 2026 - Free Practice 3 - Hypercar
+        UID:practice-b@example.com
+        END:VEVENT
+        END:VCALENDAR
+        """
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("wec-duplicate-practice-\(UUID().uuidString).ics")
+        try calendar.write(to: url, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let event = try #require(RacingICalParser.parse(url, year: 2026, series: .wec).first)
+
+        #expect(event.stages.map(\.id) == [
+            "practice-3-lmgt3",
+            "practice-3-hypercar",
+        ])
     }
 }

@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct MotorsportEvent: Codable, Hashable, Sendable {
+public struct MotorsportEvent: Identifiable, Codable, Hashable, Sendable {
+    public var id: String
     public var title: String
     public var startDate: Date
     public var endDate: Date
@@ -16,6 +17,7 @@ public struct MotorsportEvent: Codable, Hashable, Sendable {
     public var isCancelled: Bool
 
     public init(
+        id: String,
         title: String,
         startDate: Date,
         endDate: Date,
@@ -23,6 +25,7 @@ public struct MotorsportEvent: Codable, Hashable, Sendable {
         isConfirmed: Bool,
         isCancelled: Bool = false,
     ) {
+        self.id = id
         self.title = title
         self.startDate = startDate
         self.endDate = endDate
@@ -33,6 +36,7 @@ public struct MotorsportEvent: Codable, Hashable, Sendable {
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
         self.title = try container.decode(String.self, forKey: .title)
         self.startDate = try container.decode(Date.self, forKey: .startDate)
         self.endDate = try container.decode(Date.self, forKey: .endDate)

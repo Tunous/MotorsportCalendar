@@ -12,7 +12,7 @@ import ICalSwift
 let preSeasonTestingName = "Pre-Season Testing"
 
 enum RacingICalParser {
-    static func parse(_ url: URL, year: Int) throws -> [MotorsportEvent] {
+    static func parse(_ url: URL, year: Int, series: Series) throws -> [MotorsportEvent] {
         let string = try String(contentsOf: url)
         let cleanedString = string.replacingOccurrences(of: "\r\n", with: "\n")
         guard cleanedString.localizedCaseInsensitiveContains("BEGIN:VCALENDAR") else {
@@ -42,13 +42,14 @@ enum RacingICalParser {
         let sortedEvents = groupedEvents.sorted(using: KeyPathComparator(\.value.first))
 
         return try sortedEvents.map { name, sessions -> MotorsportEvent in
-            let stages = sessions.map {
+            let stages = sessions.map { session in
                 MotorsportEventStage(
-                    title: $0.stageName,
-                    startDate: $0.startDate,
-                    endDate: $0.endDate,
-                    isConfirmed: $0.hasConfirmedDates,
-                    isSignificant: !$0.stageName.localizedCaseInsensitiveContains("practice")
+                    id: StableIdentifier.session(session.stageName, series: series),
+                    title: session.stageName,
+                    startDate: session.startDate,
+                    endDate: session.endDate,
+                    isConfirmed: session.hasConfirmedDates,
+                    isSignificant: !session.stageName.localizedCaseInsensitiveContains("practice")
                 )
             }
             let titles = stages.map(\.title)
@@ -58,6 +59,7 @@ enum RacingICalParser {
             let startDate = sessions.min(by: { $0.startDate < $1.startDate })!.startDate
             let endDate = sessions.max(by: { $0.endDate < $1.endDate })!.endDate
             return MotorsportEvent(
+                id: StableIdentifier.event(name, series: series),
                 title: name,
                 startDate: startDate,
                 endDate: endDate,
@@ -87,6 +89,8 @@ enum RacingICalParser {
 enum CalendarParsingError: Error {
     case missingValue(description: String)
     case duplicateStages(eventName: String, stages: [String])
+    case duplicateIdentifiers(scope: String, identifiers: [String])
+    case invalidIdentifier(identifier: String, scope: String)
     case invalidICalendar(url: String, firstLine: String, byteCount: Int)
 }
 
@@ -97,6 +101,10 @@ extension CalendarParsingError: CustomStringConvertible {
             "Missing value: \(description)"
         case .duplicateStages(let eventName, let stages):
             "Duplicate stages for \(eventName): \(stages.joined(separator: ", "))"
+        case .duplicateIdentifiers(let scope, let identifiers):
+            "Duplicate identifiers in \(scope): \(identifiers.joined(separator: ", "))"
+        case .invalidIdentifier(let identifier, let scope):
+            "Invalid identifier '\(identifier)' in \(scope)"
         case .invalidICalendar(let url, let firstLine, let byteCount):
             "Invalid iCalendar response from \(url) (\(byteCount) bytes, first line: \(firstLine))"
         }

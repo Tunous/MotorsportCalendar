@@ -41,6 +41,7 @@ extension CalendarProvider {
     func run(year: Int) async throws -> Bool {
         let events = try await events(year: year)
         let mergedEvents = await addBackRemovedCancelledEvents(from: events, year: year)
+        try validateIdentifiers(in: mergedEvents)
         let eventsData = try JSONEncoder.motorsportCalendar.encode(mergedEvents)
 
         let directory = outputURL.appending(path: series.rawValue)
@@ -56,6 +57,24 @@ extension CalendarProvider {
         try eventsData.write(to: url)
         print("[\(series)] Updated")
         return true
+    }
+
+    private func validateIdentifiers(in events: [MotorsportEvent]) throws {
+        try validateUnique(events.map(\.id), scope: "\(series) events")
+        for event in events {
+            try validateUnique(event.stages.map(\.id), scope: "\(series) event '\(event.title)'")
+        }
+    }
+
+    private func validateUnique(_ identifiers: [String], scope: String) throws {
+        for identifier in identifiers {
+            guard StableIdentifier.isNormalized(identifier) else {
+                throw CalendarParsingError.invalidIdentifier(identifier: identifier, scope: scope)
+            }
+        }
+        guard identifiers.count == Set(identifiers).count else {
+            throw CalendarParsingError.duplicateIdentifiers(scope: scope, identifiers: identifiers)
+        }
     }
 
     func addBackRemovedCancelledEvents(from updatedEvents: [MotorsportEvent], year: Int) async -> [MotorsportEvent] {
