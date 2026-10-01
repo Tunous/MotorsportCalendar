@@ -211,6 +211,7 @@ enum WECEventPageParser {
         )
         guard !title.isEmpty else { return nil }
         let utcOffset = try trackUTCOffset(from: document)
+        let raceDuration = raceDuration(fromTitle: title)
 
         var stages: [MotorsportEventStage] = []
         for day in try document.select("[is=timemode-switch] .grid > div") {
@@ -223,13 +224,19 @@ enum WECEventPageParser {
             let dayEnd = dayStart.addingTimeInterval(secondsInDay)
 
             for session in try WECPageSession.all(in: Elements([day])) {
+                let id = StableIdentifier.session(session.name, series: series)
+                let endDate = if let startDate = session.startDate, id == "race", let raceDuration {
+                    startDate.addingTimeInterval(raceDuration)
+                } else {
+                    // Page has no session durations, so sessions last until the end of the track day.
+                    max(dayEnd, session.startDate ?? dayStart)
+                }
                 stages.append(
                     MotorsportEventStage(
-                        id: StableIdentifier.session(session.name, series: series),
+                        id: id,
                         title: session.name,
                         startDate: session.startDate ?? dayStart,
-                        // Page has no session durations, so sessions last until the end of the track day.
-                        endDate: max(dayEnd, session.startDate ?? dayStart),
+                        endDate: endDate,
                         isConfirmed: session.isConfirmed,
                         isSignificant: !session.name.localizedCaseInsensitiveContains("practice")
                     )
@@ -252,6 +259,17 @@ enum WECEventPageParser {
             isConfirmed: stages.allSatisfy(\.isConfirmed),
             isCancelled: false
         )
+    }
+
+    /// Race length from titles like "24 Hours of Le Mans".
+    static func raceDuration(fromTitle title: String) -> TimeInterval? {
+        guard
+            let match = title.firstMatch(of: /\b(\d+)\s+Hours\b/.ignoresCase()),
+            let hours = Int(match.1)
+        else {
+            return nil
+        }
+        return TimeInterval(hours * 60 * 60)
     }
 
     private static let timeFormatter: DateFormatter = {

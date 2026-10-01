@@ -51,7 +51,14 @@ struct WECEventPageParserTests {
         #expect(race.isSignificant)
         #expect(race.startDate == Date(timeIntervalSince1970: 1_806_141_600))
         #expect(event.startDate == practice.startDate)
+        #expect(race.endDate == race.startDate.addingTimeInterval(6 * 60 * 60))
         #expect(event.endDate == race.endDate)
+    }
+
+    @Test func `race length is taken from event title`() throws {
+        #expect(WECEventPageParser.raceDuration(fromTitle: "24 Hours of Le Mans") == TimeInterval(24 * 60 * 60))
+        #expect(WECEventPageParser.raceDuration(fromTitle: "Bapco Energies 8 Hours of Bahrain") == TimeInterval(8 * 60 * 60))
+        #expect(WECEventPageParser.raceDuration(fromTitle: "Qatar 1812km") == nil)
     }
 
     @Test func `track offset handles negative offsets and falls back to UTC`() throws {
