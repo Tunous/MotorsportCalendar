@@ -41,6 +41,10 @@ extension CalendarProvider {
     func run(year: Int) async throws -> Bool {
         let events = try await events(year: year)
         let mergedEvents = await addBackRemovedCancelledEvents(from: events, year: year)
+        guard !mergedEvents.isEmpty else {
+            print(coloredLog("[\(series)] No events found, skipping", color: LogColor.orange))
+            return false
+        }
         try validateIdentifiers(in: mergedEvents)
         let eventsData = try JSONEncoder.motorsportCalendar.encode(mergedEvents)
 
