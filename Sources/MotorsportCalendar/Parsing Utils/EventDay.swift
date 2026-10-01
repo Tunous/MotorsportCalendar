@@ -7,7 +7,7 @@ struct EventDay: Equatable {
 }
 
 extension EventDay {
-    /// Parses a day from a question heading in various WRC itinerary formats.
+    /// Parses a day from a WRC itinerary question heading or a WEC schedule day header.
     /// Uses `fallbackYear` when no year is present in the text.
     ///
     /// Supported formats:
@@ -17,9 +17,11 @@ extension EventDay {
     /// - `Thursday, April 23`       — Weekday, Month Day
     /// - `Thursday, 28 May`         — Weekday, Day Month
     /// - `Wednesday, 06.05.`        — Weekday, Day.Month.
+    /// - `March 25th`               — Month Day with optional ordinal suffix, no weekday
     static func parse(_ text: String, year fallbackYear: Int) -> EventDay? {
         let normalized = text.trimmingWhitespace()
         return parseDotSeparatedNumeric(normalized, fallbackYear: fallbackYear)
+            ?? parseMonthOrdinalDay(normalized, fallbackYear: fallbackYear)
             ?? parseConcatenatedYearDay(normalized)
             ?? parseWithExplicitYear(normalized)
             ?? parseWithFallbackYear(normalized, fallbackYear: fallbackYear)
@@ -33,6 +35,19 @@ extension EventDay {
             return nil
         }
         guard let day = Int(match.output.day), let month = Int(match.output.month) else {
+            return nil
+        }
+        return EventDay(day: day, month: month, year: fallbackYear)
+    }
+
+    /// Handles `March 25th` — month name and day with optional ordinal suffix, no weekday or year.
+    private static func parseMonthOrdinalDay(_ text: String, fallbackYear: Int) -> EventDay? {
+        guard
+            let match = text.firstMatch(of: /^(?<month>[A-Za-z]+)\s+(?<day>\d{1,2})(?:st|nd|rd|th)?$/.ignoresCase()),
+            let day = Int(match.output.day),
+            (1...31).contains(day),
+            let month = monthNumber(from: String(match.output.month))
+        else {
             return nil
         }
         return EventDay(day: day, month: month, year: fallbackYear)
@@ -93,6 +108,13 @@ extension EventDay {
     }
 
     private static let posixLocale = Locale(identifier: "en_US_POSIX")
+}
+
+extension EventDay {
+    /// Midnight UTC at the start of this day.
+    var startOfDayUTC: Date? {
+        Calendar.gmt.date(from: DateComponents(year: year, month: month, day: day))
+    }
 }
 
 private extension Date {

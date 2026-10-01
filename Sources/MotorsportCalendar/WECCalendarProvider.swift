@@ -49,6 +49,9 @@ struct WECCalendarProvider: CalendarProvider {
             do {
                 logParseInfo("Parsing iCal \(calendarURL.absoluteString)")
                 events = try RacingICalParser.parse(calendarURL, year: year, series: series)
+            } catch CalendarParsingError.invalidICalendar {
+                logParseWarning("iCal unavailable at \(calendarURL.absoluteString), falling back to event page schedule")
+                events = try WECEventPageParser.event(from: eventDocument, year: year, series: series).map { [$0] } ?? []
             } catch {
                 logParseError("Failed parsing iCal \(calendarURL.absoluteString): \(error)")
                 throw error
@@ -124,24 +127,8 @@ struct WECCalendarProvider: CalendarProvider {
     }
 
     private func extractConfirmedState(from document: Document) throws -> [String: Bool] {
-        let currentSessions = try document.select("[is=timemode-switch] div.d-flex.flex-column.align-items-start.gap-1")
-        guard !currentSessions.isEmpty else { return [:] }
-        let mapping = try currentSessions.compactMap { session -> (String, Bool)? in
-            guard
-                let nameElement = try session.select("div.fw-bold.lh-sm").first(),
-                let timeElement = try session.select("div.text-primary.fst-italic").first()
-            else {
-                return nil
-            }
-            let name = try nameElement.text().trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !name.isEmpty else {
-                return nil
-            }
-            let timeText = try timeElement.text().trimmingCharacters(in: .whitespacesAndNewlines)
-            let isConfirmed = !timeText.localizedCaseInsensitiveContains("TBC")
-            return (name, isConfirmed)
-        }
-        return Dictionary(uniqueKeysWithValues: mapping)
+        let sessions = try WECPageSession.all(in: try timemodeSwitch(in: document))
+        return Dictionary(uniqueKeysWithValues: sessions.map { ($0.name, $0.isConfirmed) })
     }
 
     private func extractCalendarURL(from document: Document) throws -> String? {
@@ -156,23 +143,10 @@ private struct WECSeasonEventLink {
 
 enum WECItineraryParser {
     static func startDates(from document: Document) throws -> [String: Date] {
-        let sessions = try document.select("[is=timemode-switch] div.d-flex.flex-column.align-items-start.gap-1")
         var startDates: [String: Date] = [:]
-
-        for session in sessions {
-            guard
-                let nameElement = try session.select("div.fw-bold.lh-sm").first(),
-                let timestampElement = try session.select("[data-timestamp]").first(),
-                let timestamp = TimeInterval(try timestampElement.attr("data-timestamp"))
-            else {
-                continue
-            }
-
-            let name = try nameElement.text().trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !name.isEmpty else { continue }
-            startDates[name] = Date(timeIntervalSince1970: timestamp)
+        for session in try WECPageSession.all(in: try timemodeSwitch(in: document)) {
+            startDates[session.name] = session.startDate
         }
-
         return startDates
     }
 
@@ -193,5 +167,123 @@ enum WECItineraryParser {
         }
         event.startDate = startDate
         event.endDate = endDate
+    }
+}
+
+private func timemodeSwitch(in document: Document) throws -> Elements {
+    try document.select("[is=timemode-switch]")
+}
+
+/// A session listed in the schedule on a WEC event page.
+struct WECPageSession {
+    let name: String
+    /// Missing while the session time is TBC.
+    let startDate: Date?
+    let isConfirmed: Bool
+
+    static func all(in root: Elements) throws -> [WECPageSession] {
+        try root.select("div.d-flex.flex-column.align-items-start.gap-1").array().compactMap { session in
+            guard let nameElement = try session.select("div.fw-bold.lh-sm").first() else { return nil }
+            let name = try nameElement.text().trimmingWhitespace()
+            guard !name.isEmpty else { return nil }
+
+            let startDate = try session.select("[data-timestamp]").first()
+                .flatMap { TimeInterval(try $0.attr("data-timestamp")) }
+                .map { Date(timeIntervalSince1970: $0) }
+            let timeText = try session.select("div.text-primary.fst-italic").first()?.text() ?? ""
+            return WECPageSession(
+                name: name,
+                startDate: startDate,
+                isConfirmed: !timeText.localizedCaseInsensitiveContains("TBC")
+            )
+        }
+    }
+}
+
+/// Builds an event from the schedule shown on the event page. Used when the
+/// iCalendar feed is not published yet (e.g. next season's events).
+enum WECEventPageParser {
+    private static let secondsInDay: TimeInterval = 24 * 60 * 60
+
+    static func event(from document: Document, year: Int, series: Series) throws -> MotorsportEvent? {
+        let title = EventTitleCleaner(year: year).clean(
+            try document.select("h1 span").array().map { try $0.text() }.joined(separator: " ")
+        )
+        guard !title.isEmpty else { return nil }
+        let utcOffset = try trackUTCOffset(from: document)
+
+        var stages: [MotorsportEventStage] = []
+        for day in try document.select("[is=timemode-switch] .grid > div") {
+            guard
+                let dayHeader = try day.select("div.ff-normal").first(),
+                let dayStart = dayStart(from: try dayHeader.text(), year: year, utcOffset: utcOffset)
+            else {
+                continue
+            }
+            let dayEnd = dayStart.addingTimeInterval(secondsInDay)
+
+            for session in try WECPageSession.all(in: Elements([day])) {
+                stages.append(
+                    MotorsportEventStage(
+                        id: StableIdentifier.session(session.name, series: series),
+                        title: session.name,
+                        startDate: session.startDate ?? dayStart,
+                        // Page has no session durations, so sessions last until the end of the track day.
+                        endDate: max(dayEnd, session.startDate ?? dayStart),
+                        isConfirmed: session.isConfirmed,
+                        isSignificant: !session.name.localizedCaseInsensitiveContains("practice")
+                    )
+                )
+            }
+        }
+
+        guard
+            let startDate = stages.map(\.startDate).min(),
+            let endDate = stages.map(\.endDate).max()
+        else {
+            return nil
+        }
+        return MotorsportEvent(
+            id: StableIdentifier.event(title, series: series),
+            title: title,
+            startDate: startDate,
+            endDate: endDate,
+            stages: stages.sorted(using: KeyPathComparator(\.startDate)),
+            isConfirmed: stages.allSatisfy(\.isConfirmed),
+            isCancelled: false
+        )
+    }
+
+    private static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .gmt
+        formatter.dateFormat = "hh:mm a"
+        return formatter
+    }()
+
+    /// Derives the track UTC offset from a session showing both its track-local time and its timestamp.
+    /// Falls back to UTC when no session is scheduled yet.
+    static func trackUTCOffset(from document: Document) throws -> TimeInterval {
+        for element in try document.select("[is=timemode-switch] [data-local][data-timestamp]") {
+            guard
+                let timestamp = TimeInterval(try element.attr("data-timestamp")),
+                let localTime = timeFormatter.date(from: try element.attr("data-local"))
+            else {
+                continue
+            }
+            let utcTimeOfDay = timestamp.truncatingRemainder(dividingBy: secondsInDay)
+            let localTimeOfDay = localTime.timeIntervalSince1970.truncatingRemainder(dividingBy: secondsInDay)
+            var offset = localTimeOfDay - utcTimeOfDay
+            if offset > 14 * 60 * 60 { offset -= secondsInDay }
+            if offset < -12 * 60 * 60 { offset += secondsInDay }
+            return offset
+        }
+        return 0
+    }
+
+    /// Parses a day header like "March 25th" into the start of that day in track time.
+    static func dayStart(from header: String, year: Int, utcOffset: TimeInterval) -> Date? {
+        EventDay.parse(header, year: year)?.startOfDayUTC?.addingTimeInterval(-utcOffset)
     }
 }

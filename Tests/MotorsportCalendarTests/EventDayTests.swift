@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import MotorsportCalendar
 
@@ -105,6 +106,21 @@ struct EventDayTests {
     func weekdayCommaDotSeparatedEndOfYear() {
         let result = EventDay.parse("Tuesday, 31.12.", year: fallbackYear)
         #expect(result == EventDay(day: 31, month: 12, year: fallbackYear))
+    }
+
+    // MARK: - Month Day (WEC schedule header)
+
+    @Test("March 25th — month and day with ordinal suffix")
+    func monthOrdinalDay() {
+        #expect(EventDay.parse("March 25th", year: fallbackYear) == EventDay(day: 25, month: 3, year: fallbackYear))
+        #expect(EventDay.parse("June 1st", year: fallbackYear) == EventDay(day: 1, month: 6, year: fallbackYear))
+        #expect(EventDay.parse("July 9", year: fallbackYear) == EventDay(day: 9, month: 7, year: fallbackYear))
+    }
+
+    @Test("Start of day is midnight UTC")
+    func startOfDayUTC() {
+        let day = EventDay(day: 25, month: 3, year: 2027)
+        #expect(day.startOfDayUTC == Date(timeIntervalSince1970: 1_805_932_800))
     }
 
     // MARK: - Fallback year usage
