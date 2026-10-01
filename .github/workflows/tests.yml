@@ -1,0 +1,21 @@
+name: Tests
+
+on:
+  pull_request:
+  # Pull requests opened by update-schedule use GITHUB_TOKEN, which doesn't trigger
+  # pull_request workflows, so update-schedule dispatches this workflow explicitly.
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: macos-26
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Run unit tests
+      run: swift test
