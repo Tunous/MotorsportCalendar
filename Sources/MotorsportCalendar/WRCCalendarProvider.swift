@@ -17,6 +17,12 @@ struct WRCCalendarProvider: CalendarProvider {
         logParseInfo("Loading calendar page \(calendarURL.absoluteString) for \(year)")
 
         let eventCards = try await fetchCalendarEventCards(url: calendarURL, baseURL: baseURL)
+        if eventCards.isEmpty {
+            // No upcoming events is valid at the end of the season, but only if the past tab still parses.
+            try await validatePastEventsParse(baseURL: baseURL)
+            logParseInfo("No upcoming WRC events found, but past events parse correctly; treating as end of season")
+            return []
+        }
 
         var events: [MotorsportEvent] = []
         for eventCard in eventCards {
@@ -233,17 +239,26 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     private func fetchCalendarEventCards(url: URL, baseURL: URL) async throws -> Elements {
-        try await Task.retry(onRetry: { _, _ in
-            logParseWarning("No event cards found on calendar page; retrying")
-        }) {
-            let document = try await getDocument(url: url, baseURL: baseURL)
-            let eventCards = try document.select("a.event-feed-card[href]")
-            guard !eventCards.isEmpty else {
-                throw CalendarParsingError.missingValue(
-                    description: "No WRC event cards found on calendar page"
-                )
+        let document = try await getDocument(url: url, baseURL: baseURL)
+        return try document.select("a.event-feed-card[href]")
+    }
+
+    private func validatePastEventsParse(baseURL: URL) async throws {
+        let pastURL = URL(string: "https://www.wrc.com/en/calendar?rb3TabId=past")!
+        let pastEventCards = try await fetchCalendarEventCards(url: pastURL, baseURL: baseURL)
+        let hasParsableEvent = try pastEventCards.contains { eventCard in
+            guard
+                try eventCard.select(".event-feed-card__title").first() != nil,
+                let dateNode = try eventCard.select("time.event-feed-card__date-text").first()
+            else {
+                return false
             }
-            return eventCards
+            return parseISO8601Date(try dateNode.attr("datetime")) != nil
+        }
+        guard hasParsableEvent else {
+            throw CalendarParsingError.missingValue(
+                description: "No WRC event cards found on upcoming calendar page and no past event could be parsed"
+            )
         }
     }
 
