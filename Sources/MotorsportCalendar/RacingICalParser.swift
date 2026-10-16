@@ -32,8 +32,8 @@ enum RacingICalParser {
         }
 
         let events = calendar.events.compactMap { event -> Event? in
-            guard let startDate = event.dtstart?.date else { return nil }
-            guard Calendar.current.component(.year, from: startDate) == year else { return nil }
+            guard let startDate = event.dtstart?.utcDate else { return nil }
+            guard Calendar.gmt.component(.year, from: startDate) == year else { return nil }
             return Event(event: event, year: year)
         }
         var groupedEvents = Dictionary(grouping: events, by: \.name)
@@ -63,7 +63,15 @@ enum RacingICalParser {
                 title: name,
                 startDate: startDate,
                 endDate: endDate,
-                stages: stages.sorted(using: KeyPathComparator(\.startDate)),
+                stages: stages.enumerated()
+                    .sorted { lhs, rhs in
+                        if lhs.element.startDate != rhs.element.startDate {
+                            return lhs.element.startDate < rhs.element.startDate
+                        }
+                        let (lhsRank, rhsRank) = (SessionType.rank(of: lhs.element.title), SessionType.rank(of: rhs.element.title))
+                        return lhsRank != rhsRank ? lhsRank < rhsRank : lhs.offset < rhs.offset
+                    }
+                    .map(\.element),
                 isConfirmed: !stages.isEmpty && sessions.allSatisfy({ $0.hasConfirmedDates }),
                 isCancelled: sessions.contains(where: { $0.isCancelled }),
             )
@@ -75,7 +83,7 @@ enum RacingICalParser {
         var index = 1
         var week = 0
         for event in preSeasonTestingEvents {
-            let eventWeek = Calendar.current.component(.weekOfYear, from: event.startDate)
+            let eventWeek = Calendar.gmt.component(.weekOfYear, from: event.startDate)
             if eventWeek != week && week > 0 {
                 index += 1
             }
@@ -151,8 +159,8 @@ fileprivate struct Event: Comparable {
         let rawStageName = summary.split(separator: " - ").dropFirst().joined(separator: " - ")
         let stageName = EventTitleCleaner(year: year).clean(rawStageName)
         self.stageName = stageName == "Practice 0" ? "Practice 1" : stageName
-        self.startDate = min(startDate.date, endDate.date)
-        self.endDate = max(startDate.date, endDate.date)
+        self.startDate = min(startDate.utcDate, endDate.utcDate)
+        self.endDate = max(startDate.utcDate, endDate.utcDate)
         if let location = event.location {
             self.name = GrandPrixNameParser.parse(summary: summary, location: location)
         } else {
@@ -170,7 +178,7 @@ fileprivate struct Event: Comparable {
     }
 }
 
-fileprivate enum SessionType: String, Encodable {
+fileprivate enum SessionType: String, Encodable, CaseIterable {
     case practice1 = "Practice 1"
     case practice2 = "Practice 2"
     case practice3 = "Practice 3"
@@ -178,6 +186,11 @@ fileprivate enum SessionType: String, Encodable {
     case sprintRace = "Sprint Race"
     case qualifying = "Qualifying"
     case race = "Race"
+
+    // Declaration order is the weekend running order, used to order stages that share a start date.
+    static func rank(of stageName: String) -> Int {
+        SessionType(rawValue: stageName).flatMap(allCases.firstIndex(of:)) ?? allCases.count
+    }
 
     init?(summary: String) {
         let mapping: [String: SessionType] = [
@@ -198,6 +211,15 @@ fileprivate enum SessionType: String, Encodable {
         }
         print(coloredLog("!! Unsupported session type: \(summary)", color: LogColor.orange))
         return nil
+    }
+}
+
+private extension ICalDateTime {
+    // iCalSwift parses date-only values at local midnight, which shifts them off UTC midnight on non-UTC machines.
+    var utcDate: Date {
+        guard isDateOnly else { return date }
+        let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
+        return Calendar.gmt.date(from: components) ?? date
     }
 }
 
