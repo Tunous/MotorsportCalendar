@@ -26,11 +26,14 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Update schedule
-      run: |
-        for year in 2026 2027; do
-          swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }} --year $year
-        done
+    - name: Build
+      run: swift build
+
+    - name: Update year 2026
+      run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }} --year 2026
+
+    - name: Update year 2027
+      run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }} --year 2027
 
     - name: Check for changes
       id: changes
