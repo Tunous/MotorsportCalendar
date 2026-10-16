@@ -240,7 +240,12 @@ struct WRCCalendarProvider: CalendarProvider {
 
     private func fetchCalendarEventCards(url: URL, baseURL: URL) async throws -> Elements {
         let document = try await getDocument(url: url, baseURL: baseURL)
-        return try document.select("a.event-feed-card[href]")
+        let cards = try document.select("a.event-feed-card[href]")
+        if cards.isEmpty() {
+            let pageText = try document.text().prefix(300)
+            logParseWarning("No event cards at \(url.absoluteString); title '\(try document.title())', text: \(pageText)")
+        }
+        return cards
     }
 
     private func validatePastEventsParse(baseURL: URL) async throws {
