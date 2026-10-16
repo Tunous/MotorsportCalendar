@@ -30,7 +30,7 @@ jobs:
       run: swift build
 
     - name: Update year 2026
-      run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }} --year 2026
+      run: swift run MotorsportCalendar --output ./data --formula1 --wec --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }} --year 2026
 
     - name: Update year 2027
       run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }} --year 2027
