@@ -33,7 +33,18 @@ jobs:
       run: swift run MotorsportCalendar --output ./data --formula1 --wec --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }} --year 2026
 
     - name: Update year 2027
+      env:
+        MOTORSPORT_CALENDAR_DEBUG_DIR: ${{ runner.temp }}/debug-output
       run: swift run MotorsportCalendar --output ./data --formula1-calendar-url ${{ secrets.FORMULA_1_CALENDAR_URL }} --year 2027
+
+    - name: Upload debug output
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: update-schedule-debug
+        path: ${{ runner.temp }}/debug-output/
+        if-no-files-found: ignore
+        retention-days: 7
 
     - name: Check for changes
       id: changes

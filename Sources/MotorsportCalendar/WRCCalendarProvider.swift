@@ -230,52 +230,146 @@ struct WRCCalendarProvider: CalendarProvider {
         return components.url!
     }
 
-    private func getDocument(url: URL, baseURL: URL) async throws -> Document {
+    private func getDocument(url: URL, baseURL: URL) async throws -> (document: Document, html: String) {
         let htmlData = try await getData(url: url)
         guard let html = String(data: htmlData, encoding: .utf8) else {
-            throw URLError(.badServerResponse)
+            logParseError("Response from \(url.absoluteString) is not valid UTF-8 (\(htmlData.count) bytes)")
+            throw URLError(.cannotDecodeContentData)
         }
-        return try SwiftSoup.parse(html, baseURL.absoluteString)
+        return (try SwiftSoup.parse(html, baseURL.absoluteString), html)
     }
 
     private func fetchCalendarEventCards(url: URL, baseURL: URL) async throws -> Elements {
-        let document = try await getDocument(url: url, baseURL: baseURL)
-        return try document.select("a.event-feed-card[href]")
+        let (document, html) = try await getDocument(url: url, baseURL: baseURL)
+        let eventCards = try document.select("a.event-feed-card[href]")
+        logCalendarPageDiagnostics(url: url, document: document, html: html, eventCardCount: eventCards.count)
+        return eventCards
+    }
+
+    /// Logs a summary of the fetched calendar page so that intermittent parsing failures
+    /// (e.g. bot protection pages, cached variants or client-side rendered shells) can be identified from CI logs.
+    private func logCalendarPageDiagnostics(url: URL, document: Document, html: String, eventCardCount: Int) {
+        let pageTitle = (try? document.title()) ?? "<unavailable>"
+        let anyCardCount = (try? document.select(".event-feed-card").count) ?? -1
+        let titleNodeCount = (try? document.select(".event-feed-card__title").count) ?? -1
+        let dateNodeCount = (try? document.select("time.event-feed-card__date-text").count) ?? -1
+        let scriptCount = (try? document.select("script").count) ?? -1
+        logParseInfo(
+            "Calendar page \(url.absoluteString): \(html.utf8.count) bytes, title '\(pageTitle)', "
+            + "\(eventCardCount) linked event cards, \(anyCardCount) .event-feed-card elements, "
+            + "\(titleNodeCount) title nodes, \(dateNodeCount) date nodes, \(scriptCount) scripts"
+        )
+
+        guard eventCardCount == 0 else { return }
+
+        let markers = [
+            "event-feed-card", "rb3TabId", "__NEXT_DATA__", "captcha", "cloudflare", "cf-chl",
+            "access denied", "forbidden", "akamai", "enable javascript", "just a moment",
+        ]
+        let lowercasedHTML = html.lowercased()
+        let foundMarkers = markers.filter { lowercasedHTML.contains($0.lowercased()) }
+        logParseWarning("No linked event cards on \(url.absoluteString); markers present in HTML: \(foundMarkers.isEmpty ? "none" : foundMarkers.joined(separator: ", "))")
+
+        let bodyText = ((try? document.body()?.text()) ?? "").trimmingWhitespace()
+        logParseWarning("Body text preview (\(bodyText.count) chars): \(String(bodyText.prefix(1000)))")
+        logParseWarning("HTML preview: \(String(html.prefix(2000)))")
+        saveDebugHTML(html, for: url)
+    }
+
+    /// When `MOTORSPORT_CALENDAR_DEBUG_DIR` is set, dumps the raw HTML so CI can upload it as an artifact.
+    private func saveDebugHTML(_ html: String, for url: URL) {
+        guard let debugDirectory = ProcessInfo.processInfo.environment["MOTORSPORT_CALENDAR_DEBUG_DIR"], !debugDirectory.isEmpty else {
+            return
+        }
+        let directoryURL = URL(filePath: debugDirectory, directoryHint: .isDirectory)
+        let tab = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?.first { $0.name == "rb3TabId" }?.value ?? "page"
+        let timestamp = Int(Date.now.timeIntervalSince1970)
+        let fileURL = directoryURL.appending(path: "wrc-calendar-\(tab)-\(timestamp).html")
+        do {
+            try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            try Data(html.utf8).write(to: fileURL)
+            logParseInfo("Saved calendar page HTML to \(fileURL.path)")
+        } catch {
+            logParseWarning("Failed to save debug HTML to \(fileURL.path): \(error)")
+        }
     }
 
     private func validatePastEventsParse(baseURL: URL) async throws {
         let pastURL = URL(string: "https://www.wrc.com/en/calendar?rb3TabId=past")!
+        logParseInfo("No upcoming WRC event cards found; validating past calendar page \(pastURL.absoluteString)")
         let pastEventCards = try await fetchCalendarEventCards(url: pastURL, baseURL: baseURL)
-        let hasParsableEvent = try pastEventCards.contains { eventCard in
-            guard
-                try eventCard.select(".event-feed-card__title").first() != nil,
-                let dateNode = try eventCard.select("time.event-feed-card__date-text").first()
-            else {
-                return false
+        var missingTitleCount = 0
+        var missingDateCount = 0
+        var invalidDates: [String] = []
+        var parsableCount = 0
+        for eventCard in pastEventCards {
+            guard try eventCard.select(".event-feed-card__title").first() != nil else {
+                missingTitleCount += 1
+                continue
             }
-            return parseISO8601Date(try dateNode.attr("datetime")) != nil
+            guard let dateNode = try eventCard.select("time.event-feed-card__date-text").first() else {
+                missingDateCount += 1
+                continue
+            }
+            let dateTimeText = try dateNode.attr("datetime")
+            if parseISO8601Date(dateTimeText) != nil {
+                parsableCount += 1
+            } else {
+                invalidDates.append(dateTimeText)
+            }
         }
-        guard hasParsableEvent else {
+        let summary = "\(pastEventCards.count) past cards: \(parsableCount) parsable, "
+            + "\(missingTitleCount) missing title, \(missingDateCount) missing date, "
+            + "\(invalidDates.count) invalid datetime\(invalidDates.isEmpty ? "" : " (e.g. '\(invalidDates.prefix(3).joined(separator: "', '"))')")"
+        logParseInfo("Past calendar page validation: \(summary)")
+        guard parsableCount > 0 else {
             throw CalendarParsingError.missingValue(
-                description: "No WRC event cards found on upcoming calendar page and no past event could be parsed"
+                description: "No WRC event cards found on upcoming calendar page and no past event could be parsed (\(summary))"
             )
         }
     }
 
     private func getData(url: URL) async throws -> Data {
-        try await Task.retry {
+        try await Task.retry(onRetry: { attempt, error in
+            logParseWarning("Request attempt \(attempt) for \(url.absoluteString) failed: \(error); retrying")
+        }) {
             var request = URLRequest(url: url)
             request.setValue("MotoWeekParser/1.0", forHTTPHeaderField: "User-Agent")
 
+            let startedAt = Date.now
             let (data, response) = try await URLSession.shared.data(for: request)
-            guard
-                let httpResponse = response as? HTTPURLResponse,
-                httpResponse.statusCode == 200
-            else {
+            let elapsed = Date.now.timeIntervalSince(startedAt)
+            guard let httpResponse = response as? HTTPURLResponse else {
+                logParseError("Non-HTTP response for \(url.absoluteString)")
                 throw URLError(.badServerResponse)
+            }
+            logParseInfo(
+                "GET \(url.absoluteString) -> \(httpResponse.statusCode), \(data.count) bytes in \(String(format: "%.2f", elapsed))s"
+                + Self.diagnosticHeaders(of: httpResponse)
+            )
+            guard httpResponse.statusCode == 200 else {
+                let bodyPreview = String(decoding: data.prefix(500), as: UTF8.self)
+                logParseError("Unexpected HTTP status \(httpResponse.statusCode) for \(url.absoluteString); body preview: \(bodyPreview)")
+                throw URLError(.badServerResponse, userInfo: [
+                    NSLocalizedDescriptionKey: "HTTP \(httpResponse.statusCode) for \(url.absoluteString)"
+                ])
             }
             return data
         }
+    }
+
+    private static let diagnosticHeaderNames = [
+        "Content-Type", "Content-Length", "Content-Encoding", "Server", "Date", "Age", "Cache-Control",
+        "ETag", "Last-Modified", "Vary", "Via", "X-Cache", "X-Cache-Hits", "X-Served-By", "X-Request-Id",
+        "X-Redirect-Chain", "X-Extended-Stale-Cache-Match", "CF-Cache-Status", "CF-Ray", "X-Amz-Cf-Pop", "X-Amz-Cf-Id",
+    ]
+
+    private static func diagnosticHeaders(of response: HTTPURLResponse) -> String {
+        let pairs = diagnosticHeaderNames.compactMap { name in
+            response.value(forHTTPHeaderField: name).map { "\(name)=\($0)" }
+        }
+        return pairs.isEmpty ? "" : " [\(pairs.joined(separator: "; "))]"
     }
 
     private func parseISO8601Date(_ text: String) -> Date? {

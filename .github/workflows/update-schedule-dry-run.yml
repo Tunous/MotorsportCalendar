@@ -1,0 +1,68 @@
+name: Update Schedule (Dry Run)
+
+# Runs the schedule update without committing its output, so parser logs can be inspected.
+# Trigger it either by:
+#  - adding the `run-update-dry-run` label to a pull request (re-add it to run again), or
+#  - running it manually from the Actions tab and picking the PR branch
+#    (available once this workflow exists on the default branch).
+
+on:
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      year:
+        description: Year to update
+        default: '2027'
+        required: true
+      series:
+        description: Space-separated series flags (e.g. "--wrc"); empty runs the same series as the scheduled 2027 update
+        default: ''
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-schedule-dry-run-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dry_run:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'run-update-dry-run'
+    runs-on: macos-15
+
+    env:
+      YEAR: ${{ inputs.year || '2027' }}
+      SERIES: ${{ inputs.series || '' }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: swift build
+
+    - name: Update year ${{ env.YEAR }} (dry run)
+      env:
+        FORMULA_1_CALENDAR_URL: ${{ secrets.FORMULA_1_CALENDAR_URL }}
+        MOTORSPORT_CALENDAR_DEBUG_DIR: ${{ runner.temp }}/debug-output
+      run: |
+        # shellcheck disable=SC2086
+        swift run MotorsportCalendar --output ./data --formula1-calendar-url "$FORMULA_1_CALENDAR_URL" --year "$YEAR" $SERIES
+
+    - name: Show resulting changes (not committed)
+      if: always()
+      run: |
+        git status --porcelain
+        git --no-pager diff --stat
+
+    - name: Upload debug output
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: update-schedule-dry-run-debug
+        path: |
+          ${{ runner.temp }}/debug-output/
+          data/
+        if-no-files-found: ignore
+        retention-days: 7
