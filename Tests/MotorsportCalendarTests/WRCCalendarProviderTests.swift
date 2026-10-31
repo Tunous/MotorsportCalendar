@@ -65,4 +65,13 @@ struct WRCCalendarProviderTests {
             isSignificant: false
         )
     }
+
+    @Test("Empty client-side app shell is detected as an unrendered calendar page")
+    func unrenderedCalendarPageDetection() throws {
+        let shell = #"<!DOCTYPE html><html><head><title></title><script>window.RBGEMC_START_TIME = Date.now();</script></head><body><div id="root"></div><script src="app.js"></script></body></html>"#
+        #expect(try WRCCalendarProvider.isUnrenderedPage(html: shell))
+
+        let emptySeason = #"<html><head><title>WRC Calendar</title></head><body><main>No upcoming events</main></body></html>"#
+        #expect(try !WRCCalendarProvider.isUnrenderedPage(html: emptySeason))
+    }
 }
