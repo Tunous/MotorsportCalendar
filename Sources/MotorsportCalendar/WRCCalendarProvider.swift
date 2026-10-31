@@ -240,10 +240,32 @@ struct WRCCalendarProvider: CalendarProvider {
     }
 
     private func fetchCalendarEventCards(url: URL, baseURL: URL) async throws -> Elements {
-        let (document, html) = try await getDocument(url: url, baseURL: baseURL)
-        let eventCards = try document.select("a.event-feed-card[href]")
-        logCalendarPageDiagnostics(url: url, document: document, html: html, eventCardCount: eventCards.count)
-        return eventCards
+        // wrc.com intermittently responds with HTTP 200 and an empty client-side app shell
+        // (no title, empty body) instead of the server-rendered calendar. Retry those responses.
+        try await Task.retry(maxAttempts: 5, onRetry: { attempt, error in
+            logParseWarning("Attempt \(attempt) to load \(url.absoluteString) failed: \(error); retrying")
+        }) {
+            let (document, html) = try await getDocument(url: url, baseURL: baseURL)
+            let eventCards = try document.select("a.event-feed-card[href]")
+            logCalendarPageDiagnostics(url: url, document: document, html: html, eventCardCount: eventCards.count)
+            if eventCards.isEmpty, try Self.isUnrenderedPage(document) {
+                throw CalendarParsingError.missingValue(
+                    description: "WRC calendar page \(url.absoluteString) was returned without server-rendered content"
+                )
+            }
+            return eventCards
+        }
+    }
+
+    /// Whether the document is the bare client-side app shell, which has an empty title and no body text.
+    static func isUnrenderedPage(_ document: Document) throws -> Bool {
+        let title = try document.title().trimmingWhitespace()
+        let bodyText = try document.body()?.text().trimmingWhitespace() ?? ""
+        return title.isEmpty && bodyText.isEmpty
+    }
+
+    static func isUnrenderedPage(html: String) throws -> Bool {
+        try isUnrenderedPage(SwiftSoup.parse(html))
     }
 
     /// Logs a summary of the fetched calendar page so that intermittent parsing failures
