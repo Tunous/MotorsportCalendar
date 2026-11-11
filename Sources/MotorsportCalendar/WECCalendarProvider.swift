@@ -22,11 +22,15 @@ struct WECCalendarProvider: CalendarProvider {
         logParseInfo("Loading season page \(baseURL.absoluteString) for \(year)")
         let html = try String(contentsOf: baseURL, encoding: .utf8)
         let document = try SwiftSoup.parse(html, baseURL.absoluteString)
-        guard let seasonContent = try seasonContent(in: document, year: year) else {
+        guard let seasonContent = try WECSeasonParser.seasonContent(in: document, year: year) else {
             logParseWarning("Season \(year) overview links not found")
             return []
         }
-        let eventLinks = try seasonEventLinks(from: seasonContent, baseURL: baseURL)
+        let seasonLinks = try WECSeasonParser.eventLinks(from: seasonContent, baseURL: baseURL)
+        let eventLinks = seasonLinks.filter { $0.year == nil || $0.year == year }
+        for link in seasonLinks where !eventLinks.contains(link) {
+            logParseWarning("Skipping event \(link.url.absoluteString) not from season \(year)")
+        }
         let skippedCompletedEvents = eventLinks.filter(\.isCompleted)
         let activeEventLinks = eventLinks.filter { !$0.isCompleted }
         logParseInfo("Found \(eventLinks.count) WEC event links for \(year), skipping \(skippedCompletedEvents.count) completed")
@@ -75,46 +79,6 @@ struct WECCalendarProvider: CalendarProvider {
         return await onlyNotEndedEvents(allEvents, year: year)
     }
 
-    private func seasonContent(in document: Document, year: Int) throws -> Element? {
-        let seasonIdentifier = try document
-            .select(".season-overview .season-selector[data-season]")
-            .first { try $0.text().localizedCaseInsensitiveContains("Season \(year)") }?
-            .attr("data-season")
-
-        if let seasonIdentifier {
-            return try document
-                .select(#".season-overview .season-content[data-season="\#(seasonIdentifier)"]"#)
-                .first()
-        }
-
-        return try document.select(".season-overview .season-content").first()
-    }
-
-    private func seasonEventLinks(from seasonContent: Element, baseURL: URL) throws -> [WECSeasonEventLink] {
-        let elements = try seasonContent.select(#"a[href*="/en/race/"]"#)
-        var links: [WECSeasonEventLink] = []
-        var seenURLs: Set<URL> = []
-
-        for element in elements {
-            let href = try element.attr("href")
-            guard let eventURL = URL(string: href, relativeTo: baseURL)?.absoluteURL else {
-                logParseWarning("Invalid event URL: \(href)")
-                continue
-            }
-            guard seenURLs.insert(eventURL).inserted else {
-                continue
-            }
-            links.append(
-                WECSeasonEventLink(
-                    url: eventURL,
-                    isCompleted: try element.classNames().contains("opacity-25")
-                )
-            )
-        }
-
-        return links
-    }
-
     private func updateEventConfirmedState(_ event: inout MotorsportEvent, isConfirmedMapping: [String: Bool]) {
         for index in event.stages.indices {
             let stage = event.stages[index]
@@ -136,9 +100,63 @@ struct WECCalendarProvider: CalendarProvider {
     }
 }
 
-private struct WECSeasonEventLink {
+struct WECSeasonEventLink: Equatable {
     let url: URL
     let isCompleted: Bool
+
+    /// Year from event URLs like `/en/race/6-hours-of-imola-2027`.
+    var year: Int? {
+        guard let match = url.lastPathComponent.firstMatch(of: /-(\d{4})$/) else { return nil }
+        return Int(match.1)
+    }
+}
+
+/// Finds the event links of a season on the WEC home page.
+enum WECSeasonParser {
+    /// Returns the overview of the given season, or `nil` when the page lists only other seasons
+    /// (e.g. after the season ended and the page switched to the next one).
+    static func seasonContent(in document: Document, year: Int) throws -> Element? {
+        let selectors = try document.select(".season-overview .season-selector[data-season]")
+        if selectors.array().isEmpty {
+            // No season selector at all, assume the only listed season is the requested one.
+            return try document.select(".season-overview .season-content").first()
+        }
+
+        guard let seasonIdentifier = try selectors
+            .first(where: { try $0.text().localizedCaseInsensitiveContains("Season \(year)") })?
+            .attr("data-season")
+        else {
+            return nil
+        }
+
+        return try document
+            .select(#".season-overview .season-content[data-season="\#(seasonIdentifier)"]"#)
+            .first()
+    }
+
+    static func eventLinks(from seasonContent: Element, baseURL: URL) throws -> [WECSeasonEventLink] {
+        let elements = try seasonContent.select(#"a[href*="/en/race/"]"#)
+        var links: [WECSeasonEventLink] = []
+        var seenURLs: Set<URL> = []
+
+        for element in elements {
+            let href = try element.attr("href")
+            guard let eventURL = URL(string: href, relativeTo: baseURL)?.absoluteURL else {
+                continue
+            }
+            guard seenURLs.insert(eventURL).inserted else {
+                continue
+            }
+            links.append(
+                WECSeasonEventLink(
+                    url: eventURL,
+                    isCompleted: try element.classNames().contains("opacity-25")
+                )
+            )
+        }
+
+        return links
+    }
 }
 
 enum WECItineraryParser {
